@@ -1,0 +1,6 @@
+<resources>
+
+    <dimen name="activity_padding_small">8dp</dimen>
+    <dimen name="activity_padding_normal">16dp</dimen>
+
+</resources>
