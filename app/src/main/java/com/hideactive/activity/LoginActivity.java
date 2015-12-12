@@ -10,6 +10,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hideactive.R;
+import com.hideactive.model.User;
+import com.hideactive.util.ToastUtil;
+
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.LogInListener;
 
 public class LoginActivity extends BaseActivity implements OnClickListener {
 
@@ -46,16 +52,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.login:
-			String name = usernameView.getText().toString().trim();
-			String psw = passwordView.getText().toString();
-			if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(psw)) {
-				login(name, psw);
+			String username = usernameView.getText().toString().trim();
+			String password = passwordView.getText().toString();
+			if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+				login(username, password);
 			} else {
-				Toast.makeText(this, "请填写账号或密码！", Toast.LENGTH_SHORT).show();
+                ToastUtil.showShort("请填写账号或密码！");
 			}
 			break;
 		case R.id.regist:
 			startActivity(new Intent(this, RegistActivity.class));
+			finish();
 			break;
 		default:
 			break;
@@ -69,6 +76,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	 */
 	private void login(final String account, String password) {
 		loadingDialog.show();
+        BmobUser.loginByAccount(this, account, password, new LogInListener<User>() {
+            @Override
+            public void done(User user, BmobException e) {
+                if (user != null) {
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
+                } else {
+                    ToastUtil.showShort("账号或密码错误！");
+                }
+            }
+        });
 	}
-	
 }

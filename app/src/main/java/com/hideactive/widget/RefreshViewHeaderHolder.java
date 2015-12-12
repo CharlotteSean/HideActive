@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.hideactive.R;
 
 /**
- * Created by Chunjie on 2015/12/10.
+ * Created by Senierr on 2015/12/10.
  */
 public class RefreshViewHeaderHolder {
 
@@ -22,12 +22,10 @@ public class RefreshViewHeaderHolder {
     public RefreshViewHeaderHolder(Context context) {
         headerView = LayoutInflater.from(context)
                 .inflate(R.layout.layout_refresh_head, null);
-        progressBar = (ProgressBar) headerView.findViewById(R.id.pb_view);
         textView = (TextView) headerView.findViewById(R.id.text_view);
-        textView.setText("下拉刷新");
         imageView = (ImageView) headerView.findViewById(R.id.image_view);
         imageView.setVisibility(View.VISIBLE);
-        imageView.setImageResource(R.mipmap.indicator_arrow);
+        progressBar = (ProgressBar) headerView.findViewById(R.id.pb_view);
         progressBar.setVisibility(View.GONE);
     }
 

@@ -12,8 +12,9 @@
     <color name="blue">#7DBFF3</color>
     <color name="blue_dark">#65ade7</color>
 
+    <color name="actionbar_bg">#303537</color>
+
     <color name="text_color_1">#606060</color>
     <color name="text_color_2">#9D9D9D</color>
-    <color name="text_color_3">#71B3E7</color>
 
 </resources>

@@ -18,16 +18,16 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- 跳转时不显示黑色 -->
-        <item name="android:windowBackground">@null</item>  
-    	<item name="android:windowContentOverlay">@null</item>  <!-- 去除阴影 -->
-    	<item name="android:windowIsTranslucent">false</item>  
-    	<item name="android:windowAnimationStyle">@null</item>  
-    	<item name="android:windowDisablePreview">true</item>  
-    	<item name="android:windowNoDisplay">false</item>
+        <!--<item name="android:windowBackground">@null</item>  -->
+    	<!--<item name="android:windowContentOverlay">@null</item>  &lt;!&ndash; 去除阴影 &ndash;&gt;-->
+    	<!--<item name="android:windowIsTranslucent">false</item>  -->
+    	<!--<item name="android:windowAnimationStyle">@null</item>  -->
+    	<!--<item name="android:windowDisablePreview">true</item>  -->
+    	<!--<item name="android:windowNoDisplay">false</item>-->
     </style>
     
     <style name="CustomActionBarStyle" parent="@android:style/Widget.Holo.ActionBar">
-    	<item name="android:background">#303537</item>
+    	<item name="android:background">@color/actionbar_bg</item>
     	<item name="android:titleTextStyle">@style/WeChatActionBarTitleText</item>  
     </style>
     

@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
+    android:padding="@dimen/activity_padding_normal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/input_eare"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:inputType="textMultiLine"
+        android:textColor="@color/text_color_1"
+        android:textSize="16sp"
+        android:gravity="left|top"
+        android:minLines="6"
+        android:hint="说点什么吧">
+    </EditText>
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:layout_below="@+id/input_eare"
+        android:background="@color/grey"/>
+
+    <LinearLayout
+        android:id="@+id/operation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_eare"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/image_native"
+            android:src="@mipmap/picture"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/transparent"/>
+        <ImageButton
+            android:id="@+id/image_camera"
+            android:src="@mipmap/camera"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/transparent"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/show_image"
+        android:layout_below="@+id/operation"
+        android:layout_marginTop="@dimen/activity_padding_small"
+        android:layout_width="150dp"
+        android:layout_height="150dp"/>
+
+</RelativeLayout>

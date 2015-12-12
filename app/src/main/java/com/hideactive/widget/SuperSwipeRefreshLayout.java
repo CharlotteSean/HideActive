@@ -344,6 +344,18 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     }
 
     /**
+     * 刷新完成调用，结束刷新状态
+     */
+    public void setRefreshCompleted() {
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setRefreshing(false);
+            }
+        }, 500);
+    }
+
+    /**
      * Notify the widget that refresh state has changed. Do not call this when
      * refresh is triggered by a swipe gesture.
      *

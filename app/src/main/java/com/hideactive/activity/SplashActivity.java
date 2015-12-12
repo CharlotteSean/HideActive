@@ -2,6 +2,7 @@ package com.hideactive.activity;
 
 import com.hideactive.R;
 import com.hideactive.config.Constant;
+import com.hideactive.model.User;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -43,7 +44,7 @@ public class SplashActivity extends BaseActivity {
 		// 初始化Bmob
 		Bmob.initialize(this, Constant.BMOB_APP_ID);
 		// 自动登录
-		BmobUser user = application.getCurrentUser(this);
+		User user = application.getCurrentUser();
 		if (user != null) {
 			mHandler.sendEmptyMessageDelayed(GO_HOME, 1000);
 		} else {

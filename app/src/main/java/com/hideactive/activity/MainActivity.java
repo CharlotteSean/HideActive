@@ -1,13 +1,14 @@
 package com.hideactive.activity;
 
 import com.hideactive.fragment.MessageFragment;
-import com.hideactive.fragment.ProductFragment;
+import com.hideactive.fragment.AllPostFragment;
 import com.hideactive.fragment.TodoFragment;
 import com.hideactive.util.ActivityCollector;
 import com.hideactive.widget.PagerSlidingTabStrip;
 import com.hideactive.R;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -24,7 +25,7 @@ import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 
-	private ProductFragment productFragment;
+	private AllPostFragment productFragment;
 	private TodoFragment todoFragment;
 	private MessageFragment messageFragment;
 	
@@ -101,7 +102,7 @@ public class MainActivity extends FragmentActivity {
 			switch (position) {
 			case 0:
 				if (productFragment == null) {
-					productFragment = new ProductFragment();
+					productFragment = new AllPostFragment();
 				}
 				return productFragment;
 			case 1:
@@ -132,22 +133,16 @@ public class MainActivity extends FragmentActivity {
 		return MenuChoice(item);
 	}
 	
-	private void CreateMenu(Menu menu)  
-    {  
-        MenuItem mnu1 = menu.add(0, 0, 0, "创建产品");  
-        {           
-            mnu1.setIcon(R.mipmap.actionbar_add);
-            mnu1.setShowAsAction(  
-                MenuItem.SHOW_AS_ACTION_IF_ROOM);              
-        }  
+	private void CreateMenu(Menu menu) {
+        MenuItem createPostItem = menu.add(0, 0, 0, "创建");
+		createPostItem.setIcon(R.mipmap.actionbar_page);
+		createPostItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
 	
-	private boolean MenuChoice(MenuItem item)  
-    {          
+	private boolean MenuChoice(MenuItem item) {
         switch (item.getItemId()) {  
         case 0:  
-            Toast.makeText(this, "You clicked on Item 1",   
-                Toast.LENGTH_LONG).show();  
+            startActivity(new Intent(this, CreatePostActivity.class));
             return true;  
         }  
         return false;  

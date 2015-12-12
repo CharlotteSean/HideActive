@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.hideactive.R;
 import com.hideactive.model.User;
+import com.hideactive.util.ToastUtil;
 
 import cn.bmob.v3.listener.SaveListener;
 
@@ -48,11 +48,11 @@ public class RegistActivity extends BaseActivity {
 				String password = passwordView.getText().toString().trim();
 				String repassword = repasswordView.getText().toString().trim();
 				if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password) || TextUtils.isEmpty(repassword)) {
-					Toast.makeText(RegistActivity.this, "请填写完整信息！", Toast.LENGTH_SHORT).show();
+					ToastUtil.showShort("请填写完整信息！");
 					return;
 				}
 				if (!password.equals(repassword)) {
-					Toast.makeText(RegistActivity.this, "密码与确认密码不一致！", Toast.LENGTH_SHORT).show();
+					ToastUtil.showShort("密码与确认密码不一致！");
 					repasswordView.setText("");
 					return;
 				}
@@ -75,13 +75,13 @@ public class RegistActivity extends BaseActivity {
 			@Override
 			public void onSuccess() {
 				loadingDialog.dismiss();
-				Toast.makeText(RegistActivity.this, "注册成功！", Toast.LENGTH_SHORT).show();
+				ToastUtil.showShort("注册成功！");
 			}
 
 			@Override
 			public void onFailure(int i, String s) {
 				loadingDialog.dismiss();
-				Toast.makeText(RegistActivity.this, "注册失败！" + s, Toast.LENGTH_SHORT).show();
+				ToastUtil.showShort(s);
 			}
 		});
 	}

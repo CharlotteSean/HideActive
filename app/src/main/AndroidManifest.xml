@@ -34,6 +34,9 @@
         <activity
             android:name="com.hideactive.activity.RegistActivity" >
         </activity>
+        <activity
+            android:name="com.hideactive.activity.CreatePostActivity" >
+        </activity>
 
     </application>
 </manifest>
