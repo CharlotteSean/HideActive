@@ -3,23 +3,26 @@ package com.hideactive.activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import com.bmob.BTPFileResponse;
 import com.bmob.BmobProFile;
 import com.bmob.btp.callback.UploadListener;
+import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.hideactive.R;
 import com.hideactive.config.Constant;
 import com.hideactive.model.Post;
@@ -37,10 +40,13 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     private static final int REQUEST_CODE_IMAGE_NATIVE = 0;
     private static final int REQUEST_CODE_IMAGE_CAMERA = 1;
 
+    private NumberProgressBar numberProgressBar;
     private EditText inputView;
     private ImageButton nativeButton;
     private ImageButton cameraButton;
     private ImageView showImage;
+    private ImageButton showImageDeleteBtn;
+    private RelativeLayout showImageEare;
 
     private String localCameraPath;// 拍照后得到的图片地址
     private String imagePath;// 上传的图片地址
@@ -49,7 +55,6 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
-        getActionBar().setDisplayShowHomeEnabled(false);
         initView();
     }
 
@@ -60,12 +65,39 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     }
 
     public void initView() {
+        Button actionBarLeftBtn = (Button) findViewById(R.id.btn_action_bar_left);
+        Button actionBarRightBtn = (Button) findViewById(R.id.btn_action_bar_right);
+        TextView actionBarTitle = (TextView) findViewById(R.id.tv_action_bar_title);
+        Drawable img_left = getResources().getDrawable(R.mipmap.actionbar_up);
+        img_left.setBounds(0, 0, img_left.getMinimumWidth(), img_left.getMinimumHeight());
+        actionBarLeftBtn.setCompoundDrawables(img_left, null, null, null);
+        actionBarLeftBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        Drawable img_right = getResources().getDrawable(R.mipmap.actionbar_ok);
+        img_right.setBounds(0, 0, img_right.getMinimumWidth(), img_right.getMinimumHeight());
+        actionBarRightBtn.setCompoundDrawables(img_right, null, null, null);
+        actionBarRightBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                post();
+            }
+        });
+        actionBarTitle.setText("发表");
+
+        numberProgressBar
         inputView = (EditText) findViewById(R.id.input_eare);
         nativeButton = (ImageButton) findViewById(R.id.image_native);
         nativeButton.setOnClickListener(this);
         cameraButton = (ImageButton) findViewById(R.id.image_camera);
         cameraButton.setOnClickListener(this);
         showImage = (ImageView) findViewById(R.id.show_image);
+        showImageDeleteBtn = (ImageButton) findViewById(R.id.show_image_delete);
+        showImageDeleteBtn.setOnClickListener(this);
+        showImageEare = (RelativeLayout) findViewById(R.id.show_image_eare);
     }
 
     @Override
@@ -77,35 +109,15 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             case R.id.image_camera:
                 selectImageFromCamera();
                 break;
+            case R.id.show_image_delete:
+                localCameraPath = "";
+                imagePath = "";
+                showImageEare.setVisibility(View.GONE);
+                showImage.setImageDrawable(null);
+                break;
             default:
                 break;
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        CreateMenu(menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return MenuChoice(item);
-    }
-
-    private void CreateMenu(Menu menu) {
-        MenuItem publishItem = menu.add(0, 0, 0, "发表");
-        publishItem.setIcon(R.mipmap.actionbar_ok);
-        publishItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-    }
-
-    private boolean MenuChoice(MenuItem item) {
-        switch (item.getItemId()) {
-            case 0:
-                post();
-                return true;
-        }
-        return false;
     }
 
     /**
@@ -157,6 +169,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             @Override
             public void onSuccess() {
                 ToastUtil.showShort("发表成功！");
+                finish();
             }
 
             @Override
@@ -207,6 +220,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                     String cameraPath = Constant.IMAGE_CACHE_PATH + String.valueOf(System.currentTimeMillis()) + ".jpg";
                     Bitmap cameraBitmap = PhotoUtil.compressImage(localCameraPath, cameraPath, true);
                     // 界面显示
+                    showImageEare.setVisibility(View.VISIBLE);
                     showImage.setImageBitmap(cameraBitmap);
                     imagePath = cameraPath;
                     break;
@@ -224,11 +238,20 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                                 ToastUtil.showShort("未取到图片！");
                                 return;
                             }
-                            String nativePath = Constant.IMAGE_CACHE_PATH + String.valueOf(System.currentTimeMillis()) + ".jpg";
-                            Bitmap nativeBitmap = PhotoUtil.compressImage(localSelectPath, nativePath, false);
+                            Bitmap nativeBitmap = null;
+                            File localFile = new File(localSelectPath);
+                            // 若此文件小于100KB，直接使用
+                            if (localFile.length() < 102400) {
+                                nativeBitmap = BitmapFactory.decodeFile(localSelectPath);
+                                imagePath = localSelectPath;
+                            } else {
+                                String nativePath = Constant.IMAGE_CACHE_PATH + String.valueOf(System.currentTimeMillis()) + ".jpg";
+                                nativeBitmap = PhotoUtil.compressImage(localSelectPath, nativePath, false);
+                                imagePath = nativePath;
+                            }
                             // 界面显示
+                            showImageEare.setVisibility(View.VISIBLE);
                             showImage.setImageBitmap(nativeBitmap);
-                            imagePath = nativePath;
                         }
                     }
                     break;

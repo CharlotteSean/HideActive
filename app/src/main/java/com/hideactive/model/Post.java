@@ -12,6 +12,8 @@ public class Post extends BmobObject {
     private String content;// 内容
     private User author;// 发布者
     private BmobFile image;// 图片
+    private int commentNum;// 评论数
+    private int likeNum;// 点赞数
     private BmobRelation likes;// 用于存储喜欢该帖子的所有用户
 
     public String getContent() {
@@ -28,6 +30,22 @@ public class Post extends BmobObject {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public int getCommentNum() {
+        return commentNum;
+    }
+
+    public void setCommentNum(int commentNum) {
+        this.commentNum = commentNum;
+    }
+
+    public int getLikeNum() {
+        return likeNum;
+    }
+
+    public void setLikeNum(int likeNum) {
+        this.likeNum = likeNum;
     }
 
     public BmobFile getImage() {

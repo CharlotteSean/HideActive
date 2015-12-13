@@ -1,13 +1,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/white"
-    android:padding="@dimen/activity_padding_normal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <include
+        layout="@layout/layout_top_bar">
+    </include>
+
+    <com.daimajia.numberprogressbar.NumberProgressBar
+        android:id="@+id/number_progress_bar"
+        android:layout_below="@+id/action_bar"
+        android:layout_marginTop="@dimen/activity_padding_small"
+        android:paddingLeft="@dimen/activity_padding_small"
+        android:paddingRight="@dimen/activity_padding_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/input_eare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/number_progress_bar"
+        android:layout_marginTop="@dimen/activity_padding_small"
+        android:paddingLeft="@dimen/activity_padding_small"
+        android:paddingRight="@dimen/activity_padding_small"
         android:background="@color/white"
         android:inputType="textMultiLine"
         android:textColor="@color/text_color_1"
@@ -21,12 +37,18 @@
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
         android:layout_below="@+id/input_eare"
+        android:layout_marginTop="@dimen/activity_padding_small"
+        android:paddingLeft="@dimen/activity_padding_small"
+        android:paddingRight="@dimen/activity_padding_small"
         android:background="@color/grey"/>
 
     <LinearLayout
         android:id="@+id/operation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_padding_small"
+        android:paddingLeft="@dimen/activity_padding_small"
+        android:paddingRight="@dimen/activity_padding_small"
         android:layout_below="@+id/input_eare"
         android:orientation="horizontal">
         <ImageButton
@@ -43,11 +65,28 @@
             android:background="@color/transparent"/>
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/show_image"
+    <RelativeLayout
+        android:id="@+id/show_image_eare"
         android:layout_below="@+id/operation"
-        android:layout_marginTop="@dimen/activity_padding_small"
+        android:paddingLeft="@dimen/activity_padding_small"
+        android:paddingRight="@dimen/activity_padding_small"
+        android:visibility="gone"
         android:layout_width="150dp"
-        android:layout_height="150dp"/>
+        android:layout_height="150dp">
+        <ImageView
+            android:id="@+id/show_image"
+            android:src="@mipmap/image_default"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <ImageButton
+            android:id="@+id/show_image_delete"
+            android:src="@mipmap/actionbar_cancle"
+            android:background="@color/grey_dark_dark"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_width="26dp"
+            android:layout_height="26dp" />
+    </RelativeLayout>
 
 </RelativeLayout>

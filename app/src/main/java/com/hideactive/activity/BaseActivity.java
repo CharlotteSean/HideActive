@@ -22,7 +22,6 @@ public class BaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		ActivityCollector.addActivity(this);
 	    hideSoftInputView();
-	    setOverflowShowingAlways();
 	    loadingDialog = new LoadingDialog(this);
 	    application = SessionApplication.getInstance();
 	}
@@ -43,21 +42,5 @@ public class BaseActivity extends Activity {
 				manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		}
 	}
-	
-	/**
-	 * 始终显示ActionBar中的overflow
-	 */
-	private void setOverflowShowingAlways() {  
-        try {  
-            ViewConfiguration config = ViewConfiguration.get(this);  
-            Field menuKeyField = ViewConfiguration.class  
-                    .getDeclaredField("sHasPermanentMenuKey");  
-            menuKeyField.setAccessible(true);  
-            menuKeyField.setBoolean(config, false);  
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        }  
-    }
-	
 	
 }

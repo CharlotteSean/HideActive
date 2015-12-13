@@ -36,6 +36,8 @@ import android.widget.AbsListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
+import com.hideactive.util.ViewUtil;
+
 /**
  * @Author Zheng Haibo
  * @PersonalWebsite http://www.mobctrl.net
@@ -53,7 +55,7 @@ import android.widget.ScrollView;
  */
 @SuppressLint("ClickableViewAccessibility")
 public class SuperSwipeRefreshLayout extends ViewGroup {
-    private static final String LOG_TAG = "CustomeSwipeRefreshLayout";
+    private static final String LOG_TAG = "SwipeRefreshLayout";
     private static final int HEADER_VIEW_HEIGHT = 64;// HeaderView height (dp)
 
     private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
@@ -230,8 +232,12 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
         /**
          * getScaledTouchSlop是一个距离，表示滑动的时候，手的移动要大于这个距离才开始移动控件。如果小于这个距离就不触发移动控件
+         * 但是，需注意的是：设置了这个值后，下拉/上拉时，会突然移动这个距离。
+         * 尼玛，坑爹。--
+         * 所以，大爷我设置为0，嗯，效果还不错。
          */
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+//        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        mTouchSlop = 0;
 
         mMediumAnimationDuration = getResources().getInteger(
                 android.R.integer.config_mediumAnimTime);
@@ -607,7 +613,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
             }
             int lastPos = absListView.getLastVisiblePosition();
             if (lastPos > 0 && count > 0 && lastPos == count - 1) {
-                return true;
+                return !ViewCompat.canScrollVertically(mTarget, 1);
             }
             return false;
         } else if (mTarget instanceof ScrollView) {
@@ -974,6 +980,18 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
         });
         valueAnimator.setInterpolator(mDecelerateInterpolator);
         valueAnimator.start();
+    }
+
+    /**
+     * 加载完成，还原加载状态
+     */
+    public void setLoadMoreCompleted() {
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setLoadMore(false);
+            }
+        }, 500);
     }
 
     /**

@@ -40,7 +40,6 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        getActionBar().hide();
 		// 初始化Bmob
 		Bmob.initialize(this, Constant.BMOB_APP_ID);
 		// 自动登录

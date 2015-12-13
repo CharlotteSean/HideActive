@@ -8,7 +8,7 @@
         android:layout_height="match_parent">
 
         <ListView
-            android:id="@+id/lv_product"
+            android:id="@+id/lv_post"
             style="@style/NormalListView"
             android:paddingLeft="@dimen/activity_padding_normal"
             android:paddingRight="@dimen/activity_padding_normal"

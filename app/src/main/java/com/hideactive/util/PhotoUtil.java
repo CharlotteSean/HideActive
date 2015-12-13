@@ -52,8 +52,8 @@ public class PhotoUtil {
             bitmap.recycle();
         }
         // 删除原本图片
+        File oldFile = new File(srcPath);
         if (isDeteleOld) {
-            File oldFile = new File(srcPath);
             oldFile.delete();
         }
         // 返回新生成的图片
