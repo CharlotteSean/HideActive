@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.+'
     // bmob-sdk ：Bmob的android sdk包
@@ -32,4 +32,8 @@ dependencies {
     compile 'com.bm.photoview:library:1.3.6'
     // 带数字的进度条
     compile 'com.daimajia.numberprogressbar:library:1.2@aar'
+    // 侧滑菜单
+    compile 'com.jeremyfeinstein.slidingmenu:library:1.3@aar'
+    // circleimageview
+    compile 'de.hdodenhof:circleimageview:2.0.0'
 }

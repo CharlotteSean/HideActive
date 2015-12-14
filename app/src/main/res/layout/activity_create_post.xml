@@ -82,7 +82,7 @@
         <ImageButton
             android:id="@+id/show_image_delete"
             android:src="@mipmap/actionbar_cancle"
-            android:background="@color/grey_dark_dark"
+            android:background="@color/grey_dark_transparent"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_width="26dp"

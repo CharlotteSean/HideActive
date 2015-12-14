@@ -1,11 +1,13 @@
 package com.hideactive.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.hideactive.R;
 import com.hideactive.model.User;
@@ -25,7 +27,6 @@ public class RegistActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regist);
-        getActionBar().setDisplayShowHomeEnabled(false);
 
 		initView();
     }
@@ -37,6 +38,21 @@ public class RegistActivity extends BaseActivity {
     }
 
     public void initView() {
+		Button actionBarLeftBtn = (Button) findViewById(R.id.btn_action_bar_left);
+		Button actionBarRightBtn = (Button) findViewById(R.id.btn_action_bar_right);
+		TextView actionBarTitle = (TextView) findViewById(R.id.tv_action_bar_title);
+		Drawable img_left = getResources().getDrawable(R.mipmap.actionbar_up);
+		img_left.setBounds(0, 0, img_left.getMinimumWidth(), img_left.getMinimumHeight());
+		actionBarLeftBtn.setCompoundDrawables(img_left, null, null, null);
+		actionBarLeftBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+                closeActivity();
+			}
+		});
+		actionBarRightBtn.setVisibility(View.GONE);
+		actionBarTitle.setText(getResources().getString(R.string.regist));
+
 		usernameView = (EditText) findViewById(R.id.username);
 		passwordView = (EditText) findViewById(R.id.password);
 		repasswordView = (EditText) findViewById(R.id.repassword);
@@ -76,6 +92,7 @@ public class RegistActivity extends BaseActivity {
 			public void onSuccess() {
 				loadingDialog.dismiss();
 				ToastUtil.showShort("注册成功！");
+                closeActivity();
 			}
 
 			@Override

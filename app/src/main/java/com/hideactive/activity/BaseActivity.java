@@ -2,11 +2,13 @@ package com.hideactive.activity;
 
 import java.lang.reflect.Field;
 
+import com.hideactive.R;
 import com.hideactive.SessionApplication;
 import com.hideactive.dialog.LoadingDialog;
 import com.hideactive.util.ActivityCollector;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
@@ -42,5 +44,24 @@ public class BaseActivity extends Activity {
 				manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		}
 	}
-	
+
+	/**
+	 * 打开Activity，并附带动画
+     * 可选则anim文件夹下任意动画，此处为其中一种案例
+	 * @param intent
+	 */
+	protected void openActivity(Intent intent) {
+		startActivity(intent);
+		overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_left);
+	}
+
+	/**
+	 * 关闭Activity，并附带动画
+     * 可选则anim文件夹下任意动画，此处为其中一种案例
+	 */
+	protected void closeActivity() {
+		finish();
+		overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_left);
+	}
+
 }

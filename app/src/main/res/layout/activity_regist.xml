@@ -1,13 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/white"
-    android:padding="@dimen/activity_padding_normal"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+
+    <include
+        layout="@layout/layout_top_bar">
+    </include>
 
     <LinearLayout 
         android:id="@+id/inputEare"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_below="@+id/action_bar"
+        android:paddingLeft="@dimen/activity_padding_small"
+        android:paddingRight="@dimen/activity_padding_small"
+        android:layout_marginTop="@dimen/activity_padding_small"
         android:orientation="vertical">
         <com.hideactive.widget.ClearEditText
             android:id="@+id/username"

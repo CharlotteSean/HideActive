@@ -40,6 +40,9 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     private static final int REQUEST_CODE_IMAGE_NATIVE = 0;
     private static final int REQUEST_CODE_IMAGE_CAMERA = 1;
 
+    private Button actionBarLeftBtn;
+    private Button actionBarRightBtn;
+    private TextView actionBarTitle;
     private NumberProgressBar numberProgressBar;
     private EditText inputView;
     private ImageButton nativeButton;
@@ -65,16 +68,16 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     }
 
     public void initView() {
-        Button actionBarLeftBtn = (Button) findViewById(R.id.btn_action_bar_left);
-        Button actionBarRightBtn = (Button) findViewById(R.id.btn_action_bar_right);
-        TextView actionBarTitle = (TextView) findViewById(R.id.tv_action_bar_title);
-        Drawable img_left = getResources().getDrawable(R.mipmap.actionbar_up);
+        actionBarLeftBtn = (Button) findViewById(R.id.btn_action_bar_left);
+        actionBarRightBtn = (Button) findViewById(R.id.btn_action_bar_right);
+        actionBarTitle = (TextView) findViewById(R.id.tv_action_bar_title);
+        Drawable img_left = getResources().getDrawable(R.mipmap.actionbar_cancle);
         img_left.setBounds(0, 0, img_left.getMinimumWidth(), img_left.getMinimumHeight());
         actionBarLeftBtn.setCompoundDrawables(img_left, null, null, null);
         actionBarLeftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                closeActivity();
             }
         });
         Drawable img_right = getResources().getDrawable(R.mipmap.actionbar_ok);
@@ -88,7 +91,10 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         });
         actionBarTitle.setText("发表");
 
-        numberProgressBar
+        numberProgressBar = (NumberProgressBar) findViewById(R.id.number_progress_bar);
+        numberProgressBar.setMax(100);
+        numberProgressBar.setProgress(0);
+        numberProgressBar.setVisibility(View.GONE);
         inputView = (EditText) findViewById(R.id.input_eare);
         nativeButton = (ImageButton) findViewById(R.id.image_native);
         nativeButton.setOnClickListener(this);
@@ -124,6 +130,8 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
      * 发表前上传图片
      */
     private void post() {
+        actionBarRightBtn.setClickable(false);
+        numberProgressBar.setVisibility(View.VISIBLE);
         if (TextUtils.isEmpty(imagePath)) {
             // 没有图片，直接发表
             publishPost(null);
@@ -133,13 +141,19 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         BmobProFile.getInstance(this).upload(imagePath, new UploadListener() {
             @Override
             public void onSuccess(String s, String s1, BmobFile bmobFile) {
-                Log.e("bmob", "bmobFile-Url：" + bmobFile.getUrl());
+                Log.d("bmob", "bmobFile-Url：" + bmobFile.getUrl());
                 publishPost(bmobFile);
             }
 
             @Override
             public void onProgress(int i) {
-                Log.e("bmob", "onProgress：" + i);
+                Log.d("bmob", "onProgress：" + i);
+                // 留5%进度给发送post信息
+                if (i > 95) {
+                    numberProgressBar.setProgress(95);
+                } else {
+                    numberProgressBar.setProgress(i);
+                }
             }
 
             @Override
@@ -157,7 +171,9 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         String postContent = inputView.getText().toString();
         // 若没有图片，则发表内容不能为空
         if (imageFile == null && TextUtils.isEmpty(postContent)) {
-            ToastUtil.showShort("请输入内容！");
+            ToastUtil.showShort("请输入内容或添加图片！");
+            actionBarRightBtn.setClickable(true);
+            numberProgressBar.setVisibility(View.GONE);
             return;
         }
         User user = application.getCurrentUser();
@@ -169,7 +185,8 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             @Override
             public void onSuccess() {
                 ToastUtil.showShort("发表成功！");
-                finish();
+                numberProgressBar.setProgress(100);
+                closeActivity();
             }
 
             @Override
@@ -240,7 +257,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                             }
                             Bitmap nativeBitmap = null;
                             File localFile = new File(localSelectPath);
-                            // 若此文件小于100KB，直接使用
+                            // 若此文件小于100KB，直接使用。为了减轻缓存容量
                             if (localFile.length() < 102400) {
                                 nativeBitmap = BitmapFactory.decodeFile(localSelectPath);
                                 imagePath = localSelectPath;
@@ -257,6 +274,6 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                     break;
             }
         }
-        Log.e("", "imagePath : " + imagePath);
+        Log.d("", "imagePath : " + imagePath);
     }
 }

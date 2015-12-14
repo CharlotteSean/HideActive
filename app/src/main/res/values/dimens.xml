@@ -3,4 +3,7 @@
     <dimen name="activity_padding_small">8dp</dimen>
     <dimen name="activity_padding_normal">16dp</dimen>
 
+    <dimen name="sliding_shadow">16dp</dimen>
+    <dimen name="sliding_offset_res">48dp</dimen>
+
 </resources>

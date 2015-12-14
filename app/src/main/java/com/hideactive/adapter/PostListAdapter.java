@@ -59,8 +59,8 @@ public class PostListAdapter extends BaseAdapter {
 		Button postComment = ViewHolder.get(convertView, R.id.post_comment);
 		Button postLike = ViewHolder.get(convertView, R.id.post_like);
 
-        if (!TextUtils.isEmpty(list.get(position).getAuthor().getLogo())) {
-            ImageLoader.getInstance().displayImage(list.get(position).getAuthor().getLogo(),
+        if (list.get(position).getAuthor().getLogo() != null) {
+            ImageLoader.getInstance().displayImage(list.get(position).getAuthor().getLogo().getUrl(),
                     userLogo, ImageLoaderOptions.getOptions());
         }
 		userName.setText(list.get(position).getAuthor().getUsername());
