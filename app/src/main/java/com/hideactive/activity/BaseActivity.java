@@ -24,6 +24,7 @@ public class BaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		ActivityCollector.addActivity(this);
 	    hideSoftInputView();
+		setOverflowShowingAlways();
 	    loadingDialog = new LoadingDialog(this);
 	    application = SessionApplication.getInstance();
 	}
@@ -52,7 +53,7 @@ public class BaseActivity extends Activity {
 	 */
 	protected void openActivity(Intent intent) {
 		startActivity(intent);
-		overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_left);
+		overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
 	}
 
 	/**
@@ -61,7 +62,30 @@ public class BaseActivity extends Activity {
 	 */
 	protected void closeActivity() {
 		finish();
-		overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_left);
+		overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+	}
+
+	/**
+	 * 打开Activity销毁当前activity，并附带动画
+	 * 可选则anim文件夹下任意动画，此处为其中一种案例
+	 * @param intent
+	 */
+	protected void openActivityAndClose(Intent intent) {
+		startActivity(intent);
+		overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+		finish();
+	}
+
+	private void setOverflowShowingAlways() {
+		try {
+			ViewConfiguration config = ViewConfiguration.get(this);
+			Field menuKeyField = ViewConfiguration.class
+					.getDeclaredField("sHasPermanentMenuKey");
+			menuKeyField.setAccessible(true);
+			menuKeyField.setBoolean(config, false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

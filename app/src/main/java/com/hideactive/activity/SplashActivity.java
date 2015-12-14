@@ -25,12 +25,12 @@ public class SplashActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case GO_HOME:
-                    openActivity(new Intent(SplashActivity.this, MainActivity.class));
-                    closeActivity();
+                    openActivityAndClose(new Intent(SplashActivity.this, MainActivity.class));
+//                    finish();
                     break;
                 case GO_LOGIN:
-                    openActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                    closeActivity();
+                    openActivityAndClose(new Intent(SplashActivity.this, LoginActivity.class));
+//                    finish();
                     break;
             }
         }

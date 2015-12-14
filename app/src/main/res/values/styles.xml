@@ -4,7 +4,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light.NoActionBar">
+    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -21,24 +21,29 @@
     	<!--<item name="android:windowAnimationStyle">@null</item>  -->
     	<!--<item name="android:windowDisablePreview">true</item>  -->
     	<!--<item name="android:windowNoDisplay">false</item>-->
+        <item name="android:actionBarStyle">@style/CustomActionBarStyle</item>
+        <item name="android:itemBackground">@drawable/btn_action_bar_selector</item>
+        <item name="android:actionBarItemBackground">@drawable/btn_action_bar_selector</item>
+        <item name="android:itemTextAppearance">@style/CustomActionBarOverflow</item>
+        <item name="android:actionOverflowButtonStyle">@style/CustomActionButtonOverflow</item>
     </style>
     
     <style name="CustomActionBarStyle" parent="@android:style/Widget.Holo.ActionBar">
     	<item name="android:background">@color/actionbar_bg</item>
-    	<item name="android:titleTextStyle">@style/WeChatActionBarTitleText</item>  
+    	<item name="android:titleTextStyle">@style/CustomActionBarTitleText</item>
         <item name="android:homeAsUpIndicator">@mipmap/actionbar_add</item>
     </style>
     
-    <style name="WeChatActionBarTitleText" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">  
+    <style name="CustomActionBarTitleText" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/white</item>  
         <item name="android:textSize">18sp</item>  
     </style>  
   
-    <style name="WeChatActionBarOverflow" parent="@android:style/Widget.ActionButton.Overflow">  
+    <style name="CustomActionBarOverflow" parent="@android:style/Widget.ActionButton.Overflow">
         <item name="android:textSize">16sp</item>  
     </style>  
   
-    <style name="WeChatActionButtonOverflow" parent="android:style/Widget.Holo.ActionButton.Overflow">  
+    <style name="CustomActionButtonOverflow" parent="android:style/Widget.Holo.ActionButton.Overflow">
         <item name="android:src">@mipmap/actionbar_more</item>
     </style>
 

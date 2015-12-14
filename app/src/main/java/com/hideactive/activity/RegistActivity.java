@@ -1,5 +1,6 @@
 package com.hideactive.activity;
 
+import android.app.ActionBar;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -7,10 +8,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.hideactive.R;
 import com.hideactive.model.User;
+import com.hideactive.util.ActivityCollector;
 import com.hideactive.util.ToastUtil;
 
 import cn.bmob.v3.listener.SaveListener;
@@ -38,20 +41,18 @@ public class RegistActivity extends BaseActivity {
     }
 
     public void initView() {
-		Button actionBarLeftBtn = (Button) findViewById(R.id.btn_action_bar_left);
-		Button actionBarRightBtn = (Button) findViewById(R.id.btn_action_bar_right);
-		TextView actionBarTitle = (TextView) findViewById(R.id.tv_action_bar_title);
-		Drawable img_left = getResources().getDrawable(R.mipmap.actionbar_up);
-		img_left.setBounds(0, 0, img_left.getMinimumWidth(), img_left.getMinimumHeight());
-		actionBarLeftBtn.setCompoundDrawables(img_left, null, null, null);
-		actionBarLeftBtn.setOnClickListener(new OnClickListener() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+		actionBar.setCustomView(R.layout.action_bar_custom);
+		ImageButton actionBar_img = (ImageButton) actionBar.getCustomView().findViewById(R.id.custom_actionbar_img);
+		actionBar_img.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-                closeActivity();
+				closeActivity();
 			}
 		});
-		actionBarRightBtn.setVisibility(View.GONE);
-		actionBarTitle.setText(getResources().getString(R.string.regist));
+		TextView actionBar_text = (TextView) actionBar.getCustomView().findViewById(R.id.custom_actionbar_text);
+		actionBar_text.setText(getResources().getString(R.string.regist));
 
 		usernameView = (EditText) findViewById(R.id.username);
 		passwordView = (EditText) findViewById(R.id.password);

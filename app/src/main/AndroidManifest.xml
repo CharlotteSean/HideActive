@@ -18,6 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:name="com.hideactive.activity.SplashActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,6 +30,7 @@
             android:name="com.hideactive.activity.MainActivity" >
         </activity>
         <activity
+            android:label="@string/login"
             android:name="com.hideactive.activity.LoginActivity" >
         </activity>
         <activity

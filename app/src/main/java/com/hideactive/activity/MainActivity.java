@@ -1,13 +1,18 @@
 package com.hideactive.activity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -64,29 +69,30 @@ public class MainActivity extends BaseActivity {
 	}
 
 	private void initView() {
-		Button actionBarLeftBtn = (Button) findViewById(R.id.btn_action_bar_left);
-		Button actionBarRightBtn = (Button) findViewById(R.id.btn_action_bar_right);
-		TextView actionBarTitle = (TextView) findViewById(R.id.tv_action_bar_title);
-        Drawable img_left = getResources().getDrawable(R.mipmap.actionbar_todo);
-        img_left.setBounds(0, 0, img_left.getMinimumWidth(), img_left.getMinimumHeight());
-        actionBarLeftBtn.setCompoundDrawables(img_left, null, null, null);
-        actionBarLeftBtn.setOnClickListener(new View.OnClickListener() {
+		ActionBar actionBar = getActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(R.layout.action_bar_custom);
+        final ImageButton actionBar_img = (ImageButton) actionBar.getCustomView().findViewById(R.id.custom_actionbar_img);
+        actionBar_img.setImageResource(R.mipmap.actionbar_todo);
+        actionBar_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                menu.toggle();
+                Handler h = new Handler();
+                h.postDelayed(new Runnable() {
+                    public void run() {
+                        menu.toggle();
+                    }
+                }, 50);
+//                menu.toggle();
+//                if (menu.isMenuShowing()) {
+//                    actionBar_img.setImageResource(R.mipmap.actionbar_up);
+//                } else {
+//                    actionBar_img.setImageResource(R.mipmap.actionbar_todo);
+//                }
             }
         });
-
-		Drawable img_right = getResources().getDrawable(R.mipmap.actionbar_page);
-        img_right.setBounds(0, 0, img_right.getMinimumWidth(), img_right.getMinimumHeight());
-		actionBarRightBtn.setCompoundDrawables(img_right, null, null, null);
-		actionBarRightBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openActivity(new Intent(MainActivity.this, CreatePostActivity.class));
-            }
-        });
-		actionBarTitle.setText(getResources().getString(R.string.app_name));
+        TextView actionBar_text = (TextView) actionBar.getCustomView().findViewById(R.id.custom_actionbar_text);
+        actionBar_text.setText(getResources().getString(R.string.app_name));
 
 		postListView = (ListView) findViewById(R.id.lv_post);
 		postList = new ArrayList<Post>();
@@ -148,6 +154,26 @@ public class MainActivity extends BaseActivity {
         });
 	}
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuItem menu_add = menu.add(0, 0, 0, "创建产品");
+        menu_add.setIcon(R.mipmap.actionbar_add);
+        menu_add.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                openActivity(new Intent(MainActivity.this, CreatePostActivity.class));
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
     /**
      * 初始化侧滑菜单
      */
@@ -174,31 +200,31 @@ public class MainActivity extends BaseActivity {
 
         User user = application.getCurrentUser();
 
-        ImageView topPanel = (ImageView) menu.findViewById(R.id.user_logo_bg);
-        Bitmap image = ImageLoader.getInstance()
-                .loadImageSync(user.getLogo() == null ? null : user.getLogo().getUrl(),
-                        ImageLoaderOptions.getOptions());
-        if (image == null) {
-            image = BitmapFactory.decodeResource(getResources(), R.mipmap.image_default);
-        }
-        Bitmap newImg = Blur.fastblur(this, image, 12);
-        BitmapDrawable bd = new BitmapDrawable(getResources(), newImg);
-        topPanel.setBackgroundDrawable(bd);
+//        ImageView topPanel = (ImageView) menu.findViewById(R.id.user_logo_bg);
+//        Bitmap image = ImageLoader.getInstance()
+//                .loadImageSync(user.getLogo() == null ? null : user.getLogo().getUrl(),
+//                        ImageLoaderOptions.getOptions());
+//        if (image == null) {
+//            image = BitmapFactory.decodeResource(getResources(), R.mipmap.image_default);
+//        }
+//        Bitmap newImg = Blur.fastblur(this, image, 12);
+//        BitmapDrawable bd = new BitmapDrawable(getResources(), newImg);
+//        topPanel.setBackgroundDrawable(bd);
 //        topPanel.setImageBitmap(newImg);
 
-        ImageView userLogoView = (ImageView) menu.findViewById(R.id.user_logo);
-        if (user.getLogo() != null) {
-            ImageLoader.getInstance().displayImage(user.getLogo().getUrl(),
-                    userLogoView, ImageLoaderOptions.getOptions());
-        }
-        userLogoView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openActivity(new Intent(MainActivity.this, UserInfoActivity.class));
-            }
-        });
-        TextView userNameView = (TextView) menu.findViewById(R.id.user_name);
-        userNameView.setText(user.getUsername());
+//        ImageView userLogoView = (ImageView) menu.findViewById(R.id.user_logo);
+//        if (user.getLogo() != null) {
+//            ImageLoader.getInstance().displayImage(user.getLogo().getUrl(),
+//                    userLogoView, ImageLoaderOptions.getOptions());
+//        }
+//        userLogoView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openActivity(new Intent(MainActivity.this, UserInfoActivity.class));
+//            }
+//        });
+//        TextView userNameView = (TextView) menu.findViewById(R.id.user_name);
+//        userNameView.setText(user.getUsername());
     }
 
 	/**

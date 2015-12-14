@@ -1,5 +1,6 @@
 package com.hideactive.activity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,11 +9,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hideactive.R;
 import com.hideactive.model.User;
+import com.hideactive.util.ActivityCollector;
 import com.hideactive.util.ToastUtil;
 
 import cn.bmob.v3.BmobUser;
@@ -20,7 +23,6 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
 
 public class LoginActivity extends BaseActivity implements OnClickListener {
-
 
     private EditText usernameView;
     private EditText passwordView;
@@ -41,12 +43,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     }
 
     public void initView() {
-        Button actionBarLeftBtn = (Button) findViewById(R.id.btn_action_bar_left);
-        Button actionBarRightBtn = (Button) findViewById(R.id.btn_action_bar_right);
-        TextView actionBarTitle = (TextView) findViewById(R.id.tv_action_bar_title);
-        actionBarLeftBtn.setVisibility(View.GONE);
-        actionBarRightBtn.setVisibility(View.GONE);
-        actionBarTitle.setText(getResources().getString(R.string.login));
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
 
         usernameView = (EditText) findViewById(R.id.username);
         passwordView = (EditText) findViewById(R.id.password);
@@ -70,7 +68,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			break;
 		case R.id.regist:
             openActivity(new Intent(this, RegistActivity.class));
-            closeActivity();
 			break;
 		default:
 			break;
@@ -88,8 +85,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             @Override
             public void done(User user, BmobException e) {
                 if (user != null) {
-                    openActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    closeActivity();
+                    openActivityAndClose(new Intent(LoginActivity.this, MainActivity.class));
                 } else {
                     ToastUtil.showShort("账号或密码错误！");
                 }

@@ -1,19 +1,20 @@
 package com.hideactive.activity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -40,9 +41,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     private static final int REQUEST_CODE_IMAGE_NATIVE = 0;
     private static final int REQUEST_CODE_IMAGE_CAMERA = 1;
 
-    private Button actionBarLeftBtn;
-    private Button actionBarRightBtn;
-    private TextView actionBarTitle;
+    private MenuItem menu_post;
     private NumberProgressBar numberProgressBar;
     private EditText inputView;
     private ImageButton nativeButton;
@@ -68,28 +67,18 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     }
 
     public void initView() {
-        actionBarLeftBtn = (Button) findViewById(R.id.btn_action_bar_left);
-        actionBarRightBtn = (Button) findViewById(R.id.btn_action_bar_right);
-        actionBarTitle = (TextView) findViewById(R.id.tv_action_bar_title);
-        Drawable img_left = getResources().getDrawable(R.mipmap.actionbar_cancle);
-        img_left.setBounds(0, 0, img_left.getMinimumWidth(), img_left.getMinimumHeight());
-        actionBarLeftBtn.setCompoundDrawables(img_left, null, null, null);
-        actionBarLeftBtn.setOnClickListener(new View.OnClickListener() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(R.layout.action_bar_custom);
+        ImageButton actionBar_img = (ImageButton) actionBar.getCustomView().findViewById(R.id.custom_actionbar_img);
+        actionBar_img.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 closeActivity();
             }
         });
-        Drawable img_right = getResources().getDrawable(R.mipmap.actionbar_ok);
-        img_right.setBounds(0, 0, img_right.getMinimumWidth(), img_right.getMinimumHeight());
-        actionBarRightBtn.setCompoundDrawables(img_right, null, null, null);
-        actionBarRightBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                post();
-            }
-        });
-        actionBarTitle.setText("发表");
+        TextView actionBar_text = (TextView) actionBar.getCustomView().findViewById(R.id.custom_actionbar_text);
+        actionBar_text.setText(getResources().getString(R.string.app_name));
 
         numberProgressBar = (NumberProgressBar) findViewById(R.id.number_progress_bar);
         numberProgressBar.setMax(100);
@@ -126,11 +115,31 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu_post = menu.add(0, 0, 0, "发表");
+        menu_post.setIcon(R.mipmap.actionbar_ok);
+        menu_post.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                post();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
     /**
      * 发表前上传图片
      */
     private void post() {
-        actionBarRightBtn.setClickable(false);
+        menu_post.setEnabled(false);
         numberProgressBar.setVisibility(View.VISIBLE);
         if (TextUtils.isEmpty(imagePath)) {
             // 没有图片，直接发表
@@ -172,7 +181,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         // 若没有图片，则发表内容不能为空
         if (imageFile == null && TextUtils.isEmpty(postContent)) {
             ToastUtil.showShort("请输入内容或添加图片！");
-            actionBarRightBtn.setClickable(true);
+            menu_post.setEnabled(true);
             numberProgressBar.setVisibility(View.GONE);
             return;
         }
@@ -192,6 +201,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             @Override
             public void onFailure(int i, String s) {
                 ToastUtil.showShort("发表失败：" + s);
+                menu_post.setEnabled(true);
             }
         });
     }

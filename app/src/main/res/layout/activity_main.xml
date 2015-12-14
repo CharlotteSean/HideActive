@@ -3,13 +3,8 @@
     android:layout_height="match_parent"
     android:background="@color/grey_light">
 
-    <include
-        layout="@layout/layout_top_bar">
-    </include>
-
     <com.hideactive.widget.SuperSwipeRefreshLayout
         android:id="@+id/swipe_refresh"
-        android:layout_below="@+id/action_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
