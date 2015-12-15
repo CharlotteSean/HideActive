@@ -4,12 +4,16 @@
     <item
         android:id="@+id/action_add"
         android:icon="@mipmap/actionbar_add"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:title="@string/action_add"/>
 
     <item
+        android:id="@+id/action_user_info"
+        app:showAsAction="never"
+        android:title="@string/user_logo"/>
+
+    <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
         app:showAsAction="never"
         android:title="@string/action_more"/>
 

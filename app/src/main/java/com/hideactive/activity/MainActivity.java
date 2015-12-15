@@ -2,34 +2,21 @@ package com.hideactive.activity;
 
 import android.app.ActionBar;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hideactive.R;
 import com.hideactive.adapter.PostListAdapter;
-import com.hideactive.config.ImageLoaderOptions;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
 import com.hideactive.util.ActivityCollector;
-import com.hideactive.util.Blur;
-import com.hideactive.util.PhotoUtil;
 import com.hideactive.util.ToastUtil;
 import com.hideactive.widget.RefreshViewHolder;
 import com.hideactive.widget.SuperSwipeRefreshLayout;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +26,6 @@ import cn.bmob.v3.listener.FindListener;
 
 public class MainActivity extends BaseActivity {
 
-    private SlidingMenu menu;
 	private ListView postListView;
 	private SuperSwipeRefreshLayout swipeRefreshLayout;
 	private RefreshViewHolder refreshViewHolder;
@@ -57,7 +43,6 @@ public class MainActivity extends BaseActivity {
 		setContentView(R.layout.activity_main);
 		
 		initView();
-        initSlidingMenu();
 	}
 	
 	@Override
@@ -70,29 +55,7 @@ public class MainActivity extends BaseActivity {
 
 	private void initView() {
 		ActionBar actionBar = getActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setCustomView(R.layout.action_bar_custom);
-        final ImageButton actionBar_img = (ImageButton) actionBar.getCustomView().findViewById(R.id.custom_actionbar_img);
-        actionBar_img.setImageResource(R.mipmap.actionbar_todo);
-        actionBar_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Handler h = new Handler();
-                h.postDelayed(new Runnable() {
-                    public void run() {
-                        menu.toggle();
-                    }
-                }, 50);
-//                menu.toggle();
-//                if (menu.isMenuShowing()) {
-//                    actionBar_img.setImageResource(R.mipmap.actionbar_up);
-//                } else {
-//                    actionBar_img.setImageResource(R.mipmap.actionbar_todo);
-//                }
-            }
-        });
-        TextView actionBar_text = (TextView) actionBar.getCustomView().findViewById(R.id.custom_actionbar_text);
-        actionBar_text.setText(getResources().getString(R.string.app_name));
+		actionBar.setDisplayShowHomeEnabled(false);
 
 		postListView = (ListView) findViewById(R.id.lv_post);
 		postList = new ArrayList<Post>();
@@ -128,103 +91,54 @@ public class MainActivity extends BaseActivity {
 						} else {
 							refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_CAN_NOT);
 						}
-                    }
-                });
+					}
+				});
 
         swipeRefreshLayout.setOnPushLoadMoreListener(new SuperSwipeRefreshLayout.OnPushLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
+			@Override
+			public void onLoadMore() {
 				refreshViewHolder.refreshFooterView(RefreshViewHolder.REFRESH_ING);
 				loadPost();
-            }
+			}
 
-            @Override
-            public void onPushDistance(int distance) {
+			@Override
+			public void onPushDistance(int distance) {
 
-            }
+			}
 
-            @Override
-            public void onPushEnable(boolean enable) {
+			@Override
+			public void onPushEnable(boolean enable) {
 				if (enable) {
 					refreshViewHolder.refreshFooterView(RefreshViewHolder.REFRESH_CAN);
 				} else {
 					refreshViewHolder.refreshFooterView(RefreshViewHolder.REFRESH_CAN_NOT);
 				}
-            }
+			}
         });
 	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem menu_add = menu.add(0, 0, 0, "创建产品");
-        menu_add.setIcon(R.mipmap.actionbar_add);
-        menu_add.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case 0:
+            case R.id.action_add:
                 openActivity(new Intent(MainActivity.this, CreatePostActivity.class));
                 break;
+			case R.id.action_user_info:
+				ToastUtil.showShort("action_user_info");
+				break;
+			case R.id.action_settings:
+				ToastUtil.showShort("action_settings");
+				break;
             default:
                 break;
         }
         return true;
-    }
-
-    /**
-     * 初始化侧滑菜单
-     */
-    private void initSlidingMenu() {
-        menu = new SlidingMenu(this);
-        // 设置菜单模式左滑
-        menu.setMode(SlidingMenu.LEFT);
-        // 设置触摸屏幕的模式
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        // 设置阴影宽度
-        menu.setShadowWidthRes(R.dimen.sliding_shadow);
-        // 设置阴影图片
-//        menu.setShadowDrawable(R.drawable.shadow);
-        // //设置滑出时主页面显示的剩余宽度
-        menu.setBehindOffsetRes(R.dimen.sliding_offset_res);
-        // 设置菜单是否渐变
-        menu.setFadeEnabled(true);
-        // 设置渐变效果的值
-        menu.setFadeDegree(0.35f);
-        //使SlidingMenu附加在Activity
-        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        //为侧滑菜单设置布局
-        menu.setMenu(R.layout.sliding_menu);
-
-        User user = application.getCurrentUser();
-
-//        ImageView topPanel = (ImageView) menu.findViewById(R.id.user_logo_bg);
-//        Bitmap image = ImageLoader.getInstance()
-//                .loadImageSync(user.getLogo() == null ? null : user.getLogo().getUrl(),
-//                        ImageLoaderOptions.getOptions());
-//        if (image == null) {
-//            image = BitmapFactory.decodeResource(getResources(), R.mipmap.image_default);
-//        }
-//        Bitmap newImg = Blur.fastblur(this, image, 12);
-//        BitmapDrawable bd = new BitmapDrawable(getResources(), newImg);
-//        topPanel.setBackgroundDrawable(bd);
-//        topPanel.setImageBitmap(newImg);
-
-//        ImageView userLogoView = (ImageView) menu.findViewById(R.id.user_logo);
-//        if (user.getLogo() != null) {
-//            ImageLoader.getInstance().displayImage(user.getLogo().getUrl(),
-//                    userLogoView, ImageLoaderOptions.getOptions());
-//        }
-//        userLogoView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openActivity(new Intent(MainActivity.this, UserInfoActivity.class));
-//            }
-//        });
-//        TextView userNameView = (TextView) menu.findViewById(R.id.user_name);
-//        userNameView.setText(user.getUsername());
     }
 
 	/**
@@ -244,6 +158,8 @@ public class MainActivity extends BaseActivity {
 				// 若是起始页，则删除列表
 				if (currentPageIndex == 0) {
 					postList.clear();
+					TextView isLoad = (TextView) findViewById(R.id.tv_is_loading);
+					isLoad.setVisibility(View.GONE);
 				}
 				currentPageIndex ++;
 				postList.addAll(object);

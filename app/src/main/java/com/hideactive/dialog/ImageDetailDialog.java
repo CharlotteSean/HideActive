@@ -42,18 +42,15 @@ public class ImageDetailDialog extends Dialog{
         LayoutParams params = new LayoutParams();
         params.width = width;
         params.height = height;
+		params.alpha = 0.9f;
         window.setAttributes(params);
         window.setBackgroundDrawableResource(R.color.black);
+		window.setWindowAnimations(R.style.dialogWindowAnim);
 
         photoView = (PhotoView) findViewById(R.id.photoview);
+		// 启用缩放功能
+		photoView.enable();
 		ImageLoader.getInstance().displayImage(imageSrc, photoView, ImageLoaderOptions.getOptions());
-        photoView.setEnabled(true);
-        photoView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancel();
-            }
-        });
 	}
 	
 }

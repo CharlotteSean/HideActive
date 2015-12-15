@@ -4,7 +4,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light">
+    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -55,7 +55,7 @@
 		<item name="android:background">@color/transparent</item>
 		<item name="android:windowBackground">@color/transparent</item>
 		<item name="android:backgroundDimEnabled">true</item>
-	</style> 
+    </style>
 	
     <style name="NormalListView">  
 	    <item name="android:cacheColorHint">@color/transparent</item>  
@@ -63,6 +63,11 @@
 	    <item name="android:scrollbars">none</item>
 	    <item name="android:listSelector">@null</item>
 	    <item name="android:divider">@null</item> 
-	</style> 
-    
+	</style>
+
+    <style name="dialogWindowAnim" parent="android:Animation" mce_bogus="1">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+
 </resources>
