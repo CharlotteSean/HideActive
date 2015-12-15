@@ -39,9 +39,6 @@
         <activity
             android:name="com.hideactive.activity.CreatePostActivity" >
         </activity>
-        <activity
-            android:name="com.hideactive.activity.UserInfoActivity" >
-        </activity>
 
     </application>
 </manifest>

@@ -6,14 +6,14 @@
         android:showAsAction="ifRoom"
         android:title="@string/action_add"/>
 
-    <item
-        android:id="@+id/action_user_info"
-        android:showAsAction="never"
-        android:title="@string/user_logo"/>
+    <!--<item-->
+        <!--android:id="@+id/action_user_info"-->
+        <!--android:showAsAction="never"-->
+        <!--android:title="@string/user_logo"/>-->
 
-    <item
-        android:id="@+id/action_settings"
-        android:showAsAction="never"
-        android:title="@string/action_more"/>
+    <!--<item-->
+        <!--android:id="@+id/action_settings"-->
+        <!--android:showAsAction="never"-->
+        <!--android:title="@string/action_more"/>-->
 
 </menu>

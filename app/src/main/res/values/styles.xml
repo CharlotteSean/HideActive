@@ -27,7 +27,6 @@
         <item name="android:itemTextAppearance">@style/CustomActionBarOverflow</item>
         <item name="android:actionOverflowButtonStyle">@style/CustomActionButtonOverflow</item>
 
-        <item name="indic"></item>
     </style>
     <!-- ActionBar 样式 start -->
     <style name="CustomActionBarStyle" parent="@android:style/Widget.Holo.ActionBar">

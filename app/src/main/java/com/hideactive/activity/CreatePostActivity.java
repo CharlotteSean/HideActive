@@ -41,8 +41,6 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     private static final int REQUEST_CODE_IMAGE_NATIVE = 0;
     private static final int REQUEST_CODE_IMAGE_CAMERA = 1;
 
-    private MenuItem menu_post;
-    private NumberProgressBar numberProgressBar;
     private EditText inputView;
     private ImageButton nativeButton;
     private ImageButton cameraButton;
@@ -80,10 +78,6 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         TextView actionBar_text = (TextView) actionBar.getCustomView().findViewById(R.id.custom_actionbar_text);
         actionBar_text.setText(getResources().getString(R.string.app_name));
 
-        numberProgressBar = (NumberProgressBar) findViewById(R.id.number_progress_bar);
-        numberProgressBar.setMax(100);
-        numberProgressBar.setProgress(0);
-        numberProgressBar.setVisibility(View.GONE);
         inputView = (EditText) findViewById(R.id.input_eare);
         nativeButton = (ImageButton) findViewById(R.id.image_native);
         nativeButton.setOnClickListener(this);
@@ -117,7 +111,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu_post = menu.add(0, 0, 0, "发表");
+        MenuItem menu_post = menu.add(0, 0, 0, "发表");
         menu_post.setIcon(R.mipmap.actionbar_ok);
         menu_post.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
@@ -139,8 +133,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
      * 发表前上传图片
      */
     private void post() {
-        menu_post.setEnabled(false);
-        numberProgressBar.setVisibility(View.VISIBLE);
+        loadingDialog.show();
         if (TextUtils.isEmpty(imagePath)) {
             // 没有图片，直接发表
             publishPost(null);
@@ -157,17 +150,12 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             @Override
             public void onProgress(int i) {
                 Log.d("bmob", "onProgress：" + i);
-                // 留5%进度给发送post信息
-                if (i > 95) {
-                    numberProgressBar.setProgress(95);
-                } else {
-                    numberProgressBar.setProgress(i);
-                }
             }
 
             @Override
             public void onError(int i, String s) {
-                Log.e("bmob", "文件上传失败：" + s);
+                loadingDialog.dismiss();
+                ToastUtil.showShort("发表失败：" + s);
             }
         });
     }
@@ -180,9 +168,8 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         String postContent = inputView.getText().toString();
         // 若没有图片，则发表内容不能为空
         if (imageFile == null && TextUtils.isEmpty(postContent)) {
+            loadingDialog.dismiss();
             ToastUtil.showShort("请输入内容或添加图片！");
-            menu_post.setEnabled(true);
-            numberProgressBar.setVisibility(View.GONE);
             return;
         }
         User user = application.getCurrentUser();
@@ -193,15 +180,15 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         post.save(this, new SaveListener() {
             @Override
             public void onSuccess() {
+                loadingDialog.dismiss();
                 ToastUtil.showShort("发表成功！");
-                numberProgressBar.setProgress(100);
                 closeActivity();
             }
 
             @Override
             public void onFailure(int i, String s) {
+                loadingDialog.dismiss();
                 ToastUtil.showShort("发表失败：" + s);
-                menu_post.setEnabled(true);
             }
         });
     }

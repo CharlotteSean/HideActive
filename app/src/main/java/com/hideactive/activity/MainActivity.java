@@ -1,101 +1,91 @@
 package com.hideactive.activity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 
-import com.githang.viewpagerindicator.IconPagerAdapter;
-import com.githang.viewpagerindicator.IconTabPageIndicator;
 import com.hideactive.R;
-import com.hideactive.fragment.AllPostFragment;
-import com.hideactive.fragment.BaseFragment;
+import com.hideactive.fragment.HomeFragment;
 import com.hideactive.fragment.MessageFragment;
 import com.hideactive.fragment.UserFragment;
 import com.hideactive.util.ActivityCollector;
 import com.hideactive.util.ToastUtil;
-import com.hideactive.widget.TabButtonView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends BaseFragmentActivity {
 
-    private ViewPager mViewPager;
-    private IconTabPageIndicator mIndicator;
+    private ImageButton[] mTabs;
+    private HomeFragment homeFragment;
+    private MessageFragment messageFragment;
+    private UserFragment userFragment;
+    private Fragment[] fragments;
+    private int index;
+    private int currentTabIndex;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		ActivityCollector.addActivity(this);
-		setContentView(R.layout.activity_main);
-		
-		initView();
-	}
-
-    private void initView() {
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mIndicator = (IconTabPageIndicator) findViewById(R.id.indicator);
-        List<BaseFragment> fragments = initFragments();
-        FragmentAdapter adapter = new FragmentAdapter(fragments, getSupportFragmentManager());
-        mViewPager.setAdapter(adapter);
-        mIndicator.setViewPager(mViewPager);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        initView();
+        initTab();
     }
 
-    private List<BaseFragment> initFragments() {
-        List<BaseFragment> fragments = new ArrayList<BaseFragment>();
 
-        AllPostFragment userFragment = new AllPostFragment();
-        userFragment.setTitle(getResources().getString(R.string.home));
-        userFragment.setIconId(R.drawable.tab_home_selector);
-        fragments.add(userFragment);
+    private void initView(){
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
 
-        MessageFragment noteFragment = new MessageFragment();
-        noteFragment.setTitle(getResources().getString(R.string.message));
-        noteFragment.setIconId(R.drawable.tab_message_selector);
-        fragments.add(noteFragment);
-
-        UserFragment contactFragment = new UserFragment();
-        contactFragment.setTitle(getResources().getString(R.string.me));
-        contactFragment.setIconId(R.drawable.tab_me_selector);
-        fragments.add(contactFragment);
-
-        return fragments;
+        mTabs = new ImageButton[3];
+        mTabs[0] = (ImageButton) findViewById(R.id.tab_home);
+        mTabs[1] = (ImageButton) findViewById(R.id.tab_message);
+        mTabs[2] = (ImageButton) findViewById(R.id.tab_user);
+        // 把第一个tab设为选中状态
+        mTabs[0].setSelected(true);
     }
 
-    class FragmentAdapter extends FragmentPagerAdapter implements IconPagerAdapter {
-        private List<BaseFragment> mFragments;
+    private void initTab(){
+        homeFragment = new HomeFragment();
+        messageFragment = new MessageFragment();
+        userFragment = new UserFragment();
+        fragments = new Fragment[] {homeFragment, messageFragment, userFragment };
+        // 添加显示第一个fragment
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, homeFragment).
+                add(R.id.fragment_container, messageFragment).hide(messageFragment).show(homeFragment).commit();
+    }
 
-        public FragmentAdapter(List<BaseFragment> fragments, FragmentManager fm) {
-            super(fm);
-            mFragments = fragments;
+    /**
+     * tab点击事件
+     * @param view
+     */
+    public void onTabSelect(View view) {
+        switch (view.getId()) {
+            case R.id.tab_home:
+                index = 0;
+                break;
+            case R.id.tab_message:
+                index = 1;
+                break;
+            case R.id.tab_user:
+                index = 2;
+                break;
         }
-
-        @Override
-        public Fragment getItem(int i) {
-            return mFragments.get(i);
+        if (currentTabIndex != index) {
+            FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
+            trx.hide(fragments[currentTabIndex]);
+            if (!fragments[index].isAdded()) {
+                trx.add(R.id.fragment_container, fragments[index]);
+            }
+            trx.show(fragments[index]).commit();
         }
-
-        @Override
-        public int getIconResId(int index) {
-            return mFragments.get(index).getIconId();
-        }
-
-        @Override
-        public int getCount() {
-            return mFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragments.get(position).getTitle();
-        }
+        mTabs[currentTabIndex].setSelected(false);
+        //把当前tab设为选中状态
+        mTabs[index].setSelected(true);
+        currentTabIndex = index;
     }
 
     @Override
@@ -110,12 +100,6 @@ public class MainActivity extends BaseFragmentActivity {
             case R.id.action_add:
                 openActivity(new Intent(MainActivity.this, CreatePostActivity.class));
                 break;
-			case R.id.action_user_info:
-				ToastUtil.showShort("action_user_info");
-				break;
-			case R.id.action_settings:
-				ToastUtil.showShort("action_settings");
-				break;
             default:
                 break;
         }

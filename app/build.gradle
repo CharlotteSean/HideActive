@@ -34,5 +34,4 @@ dependencies {
     compile 'com.daimajia.numberprogressbar:library:1.2@aar'
     // circleimageview
     compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile 'com.githang:iconpagerindicator:1.2'
 }

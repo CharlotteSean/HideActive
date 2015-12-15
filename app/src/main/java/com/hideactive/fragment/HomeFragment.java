@@ -21,7 +21,7 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.listener.FindListener;
 
-public class AllPostFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment {
 
 	private ListView postListView;
 	private SuperSwipeRefreshLayout swipeRefreshLayout;
@@ -35,7 +35,7 @@ public class AllPostFragment extends BaseFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_all_post, container, false);
+		return inflater.inflate(R.layout.fragment_home, container, false);
 	}
 	
 	@Override
@@ -54,7 +54,7 @@ public class AllPostFragment extends BaseFragment {
 
 	private void initView() {
 		ActionBar actionBar = getActivity().getActionBar();
-		actionBar.setDisplayShowHomeEnabled(false);
+		actionBar.setTitle(R.string.home);
 
 		postListView = (ListView) findViewById(R.id.lv_post);
 		postList = new ArrayList<Post>();
