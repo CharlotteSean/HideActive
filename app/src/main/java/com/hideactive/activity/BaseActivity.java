@@ -10,13 +10,11 @@ import com.hideactive.util.ActivityCollector;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends Activity {
 
 	protected LoadingDialog loadingDialog;
 	protected SessionApplication application;

@@ -21,7 +21,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.1.1'
+//    compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.+'
     // bmob-sdk ：Bmob的android sdk包
     compile 'cn.bmob.android:bmob-sdk:3.4.5'
@@ -34,4 +34,5 @@ dependencies {
     compile 'com.daimajia.numberprogressbar:library:1.2@aar'
     // circleimageview
     compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.githang:iconpagerindicator:1.2'
 }

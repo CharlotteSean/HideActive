@@ -19,7 +19,7 @@ import android.widget.FrameLayout.LayoutParams;
  * 
  * @author guolin
  */
-public class TodoFragment extends Fragment {
+public class UserFragment extends BaseFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

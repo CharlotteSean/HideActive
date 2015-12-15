@@ -1,40 +1,34 @@
 package com.hideactive.activity;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
-import android.widget.TextView;
 
+import com.githang.viewpagerindicator.IconPagerAdapter;
+import com.githang.viewpagerindicator.IconTabPageIndicator;
 import com.hideactive.R;
-import com.hideactive.adapter.PostListAdapter;
-import com.hideactive.model.Post;
-import com.hideactive.model.User;
+import com.hideactive.fragment.AllPostFragment;
+import com.hideactive.fragment.BaseFragment;
+import com.hideactive.fragment.MessageFragment;
+import com.hideactive.fragment.UserFragment;
 import com.hideactive.util.ActivityCollector;
 import com.hideactive.util.ToastUtil;
-import com.hideactive.widget.RefreshViewHolder;
-import com.hideactive.widget.SuperSwipeRefreshLayout;
+import com.hideactive.widget.TabButtonView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.listener.FindListener;
+public class MainActivity extends BaseFragmentActivity {
 
-public class MainActivity extends BaseActivity {
-
-	private ListView postListView;
-	private SuperSwipeRefreshLayout swipeRefreshLayout;
-	private RefreshViewHolder refreshViewHolder;
-
-	private static final int PAGE_SIZE = 10;
-
-	private List<Post>  postList;
-	private PostListAdapter postListAdapter;
-	private int currentPageIndex = 0;
+    private ViewPager mViewPager;
+    private IconTabPageIndicator mIndicator;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,78 +38,65 @@ public class MainActivity extends BaseActivity {
 		
 		initView();
 	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-		// 初始化数据
-		currentPageIndex = 0;
-		loadPost();
-	}
 
-	private void initView() {
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayShowHomeEnabled(false);
+    private void initView() {
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mIndicator = (IconTabPageIndicator) findViewById(R.id.indicator);
+        List<BaseFragment> fragments = initFragments();
+        FragmentAdapter adapter = new FragmentAdapter(fragments, getSupportFragmentManager());
+        mViewPager.setAdapter(adapter);
+        mIndicator.setViewPager(mViewPager);
+    }
 
-		postListView = (ListView) findViewById(R.id.lv_post);
-		postList = new ArrayList<Post>();
-		postListAdapter = new PostListAdapter(this, postList);
-		postListView.setAdapter(postListAdapter);
+    private List<BaseFragment> initFragments() {
+        List<BaseFragment> fragments = new ArrayList<BaseFragment>();
 
-		swipeRefreshLayout = (SuperSwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-		swipeRefreshLayout.setHeaderViewBackgroundColor(getResources().getColor(R.color.refresh_header_bg));
-		refreshViewHolder = new RefreshViewHolder(this);
-		swipeRefreshLayout.setHeaderView(refreshViewHolder.getHeaderView());
-		swipeRefreshLayout.setFooterView(refreshViewHolder.getFooterView());
-		swipeRefreshLayout.setTargetScrollWithLayout(true);
-		swipeRefreshLayout
-				.setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+        AllPostFragment userFragment = new AllPostFragment();
+        userFragment.setTitle(getResources().getString(R.string.home));
+        userFragment.setIconId(R.drawable.tab_home_selector);
+        fragments.add(userFragment);
 
-					@Override
-					public void onRefresh() {
-						refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_ING);
-						currentPageIndex = 0;
-						loadPost();
-					}
+        MessageFragment noteFragment = new MessageFragment();
+        noteFragment.setTitle(getResources().getString(R.string.message));
+        noteFragment.setIconId(R.drawable.tab_message_selector);
+        fragments.add(noteFragment);
 
-					@Override
-					public void onPullDistance(int distance) {
-						// 0 ~ 192PX, 0 ~ 64DP
-//                        Log.e("", "distance : " + ViewUtil.px2dip(getActivity(), distance));
-					}
+        UserFragment contactFragment = new UserFragment();
+        contactFragment.setTitle(getResources().getString(R.string.me));
+        contactFragment.setIconId(R.drawable.tab_me_selector);
+        fragments.add(contactFragment);
 
-					@Override
-					public void onPullEnable(boolean enable) {
-						if (enable) {
-							refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_CAN);
-						} else {
-							refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_CAN_NOT);
-						}
-					}
-				});
+        return fragments;
+    }
 
-        swipeRefreshLayout.setOnPushLoadMoreListener(new SuperSwipeRefreshLayout.OnPushLoadMoreListener() {
-			@Override
-			public void onLoadMore() {
-				refreshViewHolder.refreshFooterView(RefreshViewHolder.REFRESH_ING);
-				loadPost();
-			}
+    class FragmentAdapter extends FragmentPagerAdapter implements IconPagerAdapter {
+        private List<BaseFragment> mFragments;
 
-			@Override
-			public void onPushDistance(int distance) {
+        public FragmentAdapter(List<BaseFragment> fragments, FragmentManager fm) {
+            super(fm);
+            mFragments = fragments;
+        }
 
-			}
+        @Override
+        public Fragment getItem(int i) {
+            return mFragments.get(i);
+        }
 
-			@Override
-			public void onPushEnable(boolean enable) {
-				if (enable) {
-					refreshViewHolder.refreshFooterView(RefreshViewHolder.REFRESH_CAN);
-				} else {
-					refreshViewHolder.refreshFooterView(RefreshViewHolder.REFRESH_CAN_NOT);
-				}
-			}
-        });
-	}
+        @Override
+        public int getIconResId(int index) {
+            return mFragments.get(index).getIconId();
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragments.get(position).getTitle();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -140,43 +121,6 @@ public class MainActivity extends BaseActivity {
         }
         return true;
     }
-
-	/**
-	 * 分页加载数据
-	 */
-	private void loadPost() {
-		BmobQuery<Post> query = new BmobQuery<Post>();
-		query.order("-updatedAt");
-		query.include("author");// 希望在查询帖子信息的同时也把发布人的信息查询出来
-		query.setLimit(PAGE_SIZE);
-		query.setSkip(PAGE_SIZE * currentPageIndex);
-        // 设置先从网络获取，若没则取缓存
-        query.setCachePolicy(BmobQuery.CachePolicy.NETWORK_ELSE_CACHE);
-		query.findObjects(this, new FindListener<Post>() {
-			@Override
-			public void onSuccess(List<Post> object) {
-				// 若是起始页，则删除列表
-				if (currentPageIndex == 0) {
-					postList.clear();
-					TextView isLoad = (TextView) findViewById(R.id.tv_is_loading);
-					isLoad.setVisibility(View.GONE);
-				}
-				currentPageIndex ++;
-				postList.addAll(object);
-				postListAdapter.notifyDataSetChanged();
-
-				refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_FINISHED);
-				refreshViewHolder.refreshFooterView(RefreshViewHolder.REFRESH_FINISHED);
-				swipeRefreshLayout.setRefreshCompleted();
-				swipeRefreshLayout.setLoadMoreCompleted();
-			}
-
-			@Override
-			public void onError(int code, String msg) {
-				ToastUtil.showShort("查询失败！");
-			}
-		});
-	}
 
     private static long firstTime;
 

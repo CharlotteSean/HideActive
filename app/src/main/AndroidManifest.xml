@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"
             android:name="com.hideactive.activity.SplashActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

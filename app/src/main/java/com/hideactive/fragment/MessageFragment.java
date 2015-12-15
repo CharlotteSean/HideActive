@@ -19,7 +19,7 @@ import android.widget.FrameLayout.LayoutParams;
  * 
  * @author guolin
  */
-public class MessageFragment extends Fragment {
+public class MessageFragment extends BaseFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

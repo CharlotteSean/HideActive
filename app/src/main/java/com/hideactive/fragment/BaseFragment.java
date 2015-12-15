@@ -14,7 +14,10 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 public class BaseFragment extends Fragment{
-	
+
+	private String title;
+	private int iconId;
+
 	protected LoadingDialog loadingDialog;
 	protected SessionApplication application;
 	
@@ -25,6 +28,22 @@ public class BaseFragment extends Fragment{
 	    application = SessionApplication.getInstance();
 	    hideSoftInputView();
 	    setOverflowShowingAlways();
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public int getIconId() {
+		return iconId;
+	}
+
+	public void setIconId(int iconId) {
+		this.iconId = iconId;
 	}
 
 	public View findViewById(int paramInt) {

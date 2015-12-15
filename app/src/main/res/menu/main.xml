@@ -1,20 +1,19 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
         android:id="@+id/action_add"
         android:icon="@mipmap/actionbar_add"
-        app:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="@string/action_add"/>
 
     <item
         android:id="@+id/action_user_info"
-        app:showAsAction="never"
+        android:showAsAction="never"
         android:title="@string/user_logo"/>
 
     <item
         android:id="@+id/action_settings"
-        app:showAsAction="never"
+        android:showAsAction="never"
         android:title="@string/action_more"/>
 
 </menu>
