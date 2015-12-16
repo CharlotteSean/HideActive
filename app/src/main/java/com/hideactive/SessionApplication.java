@@ -19,7 +19,6 @@ public class SessionApplication extends Application{
 	private static Context context;
 	private static SessionApplication application;
 	private UserConfig userConfig;
-	private User currentUser;
 	private ImageLoader imageLoader;
 	
 	@Override
@@ -72,10 +71,7 @@ public class SessionApplication extends Application{
 	 * @return
 	 */
 	public User getCurrentUser() {
-		if (currentUser == null) {
-            currentUser = BmobUser.getCurrentUser(context, User.class);
-		}
-		return currentUser;
+		return BmobUser.getCurrentUser(context, User.class);
 	}
 
 }

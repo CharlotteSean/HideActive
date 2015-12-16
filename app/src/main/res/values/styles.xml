@@ -62,7 +62,6 @@
     <style name="NormalListView">  
 	    <item name="android:cacheColorHint">@color/transparent</item>  
 	    <item name="android:fadingEdge">none</item>
-	    <item name="android:scrollbars">none</item>
 	    <item name="android:listSelector">@null</item>
 	    <item name="android:divider">@null</item> 
 	</style>

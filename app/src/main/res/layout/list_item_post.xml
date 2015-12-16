@@ -63,24 +63,37 @@
             android:background="@color/white"
             android:gravity="end"
             android:orientation="horizontal">
-            <Button
+            <ImageButton
                 android:id="@+id/post_comment"
+                android:src="@mipmap/comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/comment"
-                android:background="@color/transparent"
+                android:background="@color/transparent"/>
+            <TextView
+                android:id="@+id/post_comment_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dimen_small"
+                android:layout_marginRight="@dimen/dimen_small"
                 android:text="6"
                 android:textColor="@color/text_color_1"
-                android:textSize="14sp" />
-            <Button
+                android:textSize="14sp"/>
+            <ImageButton
                 android:id="@+id/post_like"
+                android:src="@mipmap/like_default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/like_default"
-                android:background="@color/transparent"
-                android:text="5"
+                android:background="@color/transparent" />
+            <TextView
+                android:id="@+id/post_like_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dimen_small"
+                android:text="6"
                 android:textColor="@color/text_color_1"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
         </LinearLayout>
     </LinearLayout>
 

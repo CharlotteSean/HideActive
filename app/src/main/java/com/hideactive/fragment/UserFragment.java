@@ -31,6 +31,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.UpdateListener;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -189,6 +190,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 editAgeDialog.show();
                 break;
             case R.id.user_item_setting:
+
                 break;
             default:
                 break;

@@ -10,8 +10,8 @@ public class User extends BmobUser {
 
     private String nickname;// 用户昵称
 	private BmobFile logo;// 用户头像
-	private int sex;// 性别 0：男，1：女
-	private int age;// 年龄
+	private Integer sex;// 性别 0：男，1：女
+	private Integer age;// 年龄
 
     public String getNickname() {
         return nickname;
@@ -21,11 +21,11 @@ public class User extends BmobUser {
         this.nickname = nickname;
     }
 
-    public int getSex() {
+    public Integer getSex() {
         return sex;
     }
 
-    public void setSex(int sex) {
+    public void setSex(Integer sex) {
         this.sex = sex;
     }
 
@@ -37,11 +37,11 @@ public class User extends BmobUser {
         this.logo = logo;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 }

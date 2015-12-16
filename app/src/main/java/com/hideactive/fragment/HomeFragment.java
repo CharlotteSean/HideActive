@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.hideactive.R;
 import com.hideactive.adapter.PostListAdapter;
 import com.hideactive.model.Post;
+import com.hideactive.model.User;
 import com.hideactive.util.ToastUtil;
 import com.hideactive.widget.RefreshViewHolder;
 import com.hideactive.widget.SuperSwipeRefreshLayout;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
 
 public class HomeFragment extends BaseFragment {
@@ -49,6 +51,7 @@ public class HomeFragment extends BaseFragment {
 	public void onResume() {
 		super.onResume();
 		// 初始化数据
+		loadCacheData();
 		currentPageIndex = 0;
 		loadPost();
 	}
@@ -124,6 +127,28 @@ public class HomeFragment extends BaseFragment {
 				} else {
 					refreshViewHolder.refreshFooterView(RefreshViewHolder.REFRESH_CAN_NOT);
 				}
+			}
+		});
+	}
+
+	/**
+	 * 加载必要数据
+	 */
+	private void loadCacheData() {
+		// 查询喜欢这个帖子的所有用户，因此查询的是用户表
+		BmobQuery<Post> query = new BmobQuery<Post>();
+		User user = new User();
+		user.setObjectId(application.getCurrentUser().getObjectId());
+		query.addWhereRelatedTo("likes", new BmobPointer(user));
+		query.findObjects(getActivity(), new FindListener<Post>() {
+			@Override
+			public void onSuccess(List<Post> list) {
+				Log.e("list", "--list: " + list.size());
+			}
+
+			@Override
+			public void onError(int i, String s) {
+
 			}
 		});
 	}
