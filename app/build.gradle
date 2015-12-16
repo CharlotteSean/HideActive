@@ -30,8 +30,6 @@ dependencies {
     compile 'com.squareup.okio:okio:1.4.0'
     // 图片查看工具，支持放大缩小等
     compile 'com.bm.photoview:library:1.3.6'
-    // 带数字的进度条
-    compile 'com.daimajia.numberprogressbar:library:1.2@aar'
     // circleimageview
     compile 'de.hdodenhof:circleimageview:2.0.0'
 }

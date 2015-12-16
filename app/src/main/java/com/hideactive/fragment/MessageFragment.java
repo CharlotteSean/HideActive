@@ -2,11 +2,13 @@ package com.hideactive.fragment;
 
 import android.app.ActionBar;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hideactive.R;
+import com.hideactive.util.ToastUtil;
 
 public class MessageFragment extends BaseFragment {
 
@@ -21,9 +23,20 @@ public class MessageFragment extends BaseFragment {
 		initView();
 	}
 
+	/**
+	 * 监听当前fragment是否可见，第一次创建时不调用
+	 * @param hidden
+	 */
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		super.onHiddenChanged(hidden);
+		if (!hidden) {
+			getActivity().getActionBar().setTitle(R.string.message);
+		}
+	}
+
 	public void initView() {
-		ActionBar actionBar = getActivity().getActionBar();
-		actionBar.setTitle(R.string.message);
+		getActivity().getActionBar().setTitle(R.string.message);
 
 	}
 

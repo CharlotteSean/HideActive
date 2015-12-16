@@ -25,4 +25,6 @@
     <string name="male">男</string>
     <string name="female">女</string>
 
+    <string name="please_input">请输入：</string>
+
 </resources>

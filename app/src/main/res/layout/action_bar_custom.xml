@@ -10,23 +10,23 @@
         android:src="@mipmap/actionbar_up"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_padding_small"
-        android:paddingRight="@dimen/activity_padding_small"
+        android:paddingLeft="@dimen/dimen_small"
+        android:paddingRight="@dimen/dimen_small"
         android:layout_alignParentLeft="true"
         android:background="@drawable/btn_action_bar_selector"/>
     <View
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:layout_toRightOf="@+id/custom_actionbar_img"
-        android:layout_marginTop="@dimen/activity_padding_small"
-        android:layout_marginBottom="@dimen/activity_padding_small"
+        android:layout_marginTop="@dimen/dimen_small"
+        android:layout_marginBottom="@dimen/dimen_small"
         android:background="@color/actionbar_item_pressed"/>
     <TextView
         android:id="@+id/custom_actionbar_text"
         android:layout_toRightOf="@+id/custom_actionbar_img"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/activity_padding_small"
+        android:layout_marginLeft="@dimen/dimen_small"
         android:gravity="center"
         android:background="@color/transparent"
         android:text="Home"

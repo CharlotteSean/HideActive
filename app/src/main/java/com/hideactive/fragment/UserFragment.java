@@ -8,9 +8,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ import com.bmob.btp.callback.UploadListener;
 import com.hideactive.R;
 import com.hideactive.config.Constant;
 import com.hideactive.config.ImageLoaderOptions;
+import com.hideactive.dialog.EditTextDialog;
+import com.hideactive.dialog.SelectSexDialog;
 import com.hideactive.model.User;
 import com.hideactive.util.PhotoUtil;
 import com.hideactive.util.ToastUtil;
@@ -57,9 +61,20 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         initView();
     }
 
+    /**
+     * 监听当前fragment是否可见，第一次创建时不调用
+     * @param hidden
+     */
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            getActivity().getActionBar().setTitle(R.string.me);
+        }
+    }
+
     public void initView() {
-        ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setTitle(R.string.me);
+        getActivity().getActionBar().setTitle(R.string.me);
 
         userLogoView = (CircleImageView) findViewById(R.id.user_logo);
         userNameView = (TextView) findViewById(R.id.user_name);
@@ -71,7 +86,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
             ImageLoader.getInstance().displayImage(user.getLogo().getUrl(),
                     userLogoView, ImageLoaderOptions.getOptions());
         }
-        userNameView.setText(user.getUsername());
+        userNameView.setText(user.getNickname());
         userSexView.setText(user.getSex() == 0 ? "男" : "女");
         userAgeView.setText(user.getAge() + "");
 
@@ -87,7 +102,6 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         userAgeItemView.setOnClickListener(this);
         settingItemView.setOnClickListener(this);
 
-
     }
 
     @Override
@@ -97,10 +111,82 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                 selectImageFromLocal();
                 break;
             case R.id.user_item_name:
+                EditTextDialog editNameDialog = new EditTextDialog(getActivity(),
+                        "昵称", "起个绚丽的名字吧！", InputType.TYPE_CLASS_TEXT, application.getCurrentUser().getNickname(),
+                        new EditTextDialog.OnDoneListener() {
+                            @Override
+                            public void onDone(final String contentStr) {
+                                loadingDialog.show();
+                                User user = new User();
+                                user.setNickname(contentStr);
+                                updateUser(user, new UpdateListener() {
+                                    @Override
+                                    public void onSuccess() {
+                                        userNameView.setText(contentStr);
+                                        loadingDialog.dismiss();
+                                    }
+
+                                    @Override
+                                    public void onFailure(int i, String s) {
+                                        ToastUtil.showShort("更新用户信息失败:" + s);
+                                        loadingDialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
+                editNameDialog.show();
                 break;
             case R.id.user_item_sex:
+                SelectSexDialog selectSexDialog = new SelectSexDialog(getActivity(),
+                        application.getCurrentUser().getSex(), new SelectSexDialog.OnDoneListener(){
+                            @Override
+                            public void onDone(final int sex) {
+                                loadingDialog.show();
+                                User user = new User();
+                                user.setSex(sex);
+                                updateUser(user, new UpdateListener() {
+                                    @Override
+                                    public void onSuccess() {
+                                        userSexView.setText(sex == 0 ? "男" : "女");
+                                        loadingDialog.dismiss();
+                                    }
+
+                                    @Override
+                                    public void onFailure(int i, String s) {
+                                        ToastUtil.showShort("更新用户信息失败:" + s);
+                                        loadingDialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
+                selectSexDialog.show();
                 break;
             case R.id.user_item_age:
+                EditTextDialog editAgeDialog = new EditTextDialog(getActivity(),
+                        "年龄", "你还是18岁吗？", InputType.TYPE_CLASS_NUMBER,
+                        String.valueOf(application.getCurrentUser().getAge()),
+                        new EditTextDialog.OnDoneListener() {
+                            @Override
+                            public void onDone(final String contentStr) {
+                                loadingDialog.show();
+                                User user = new User();
+                                user.setAge(Integer.parseInt(contentStr));
+                                updateUser(user, new UpdateListener() {
+                                    @Override
+                                    public void onSuccess() {
+                                        userAgeView.setText(contentStr);
+                                        loadingDialog.dismiss();
+                                    }
+
+                                    @Override
+                                    public void onFailure(int i, String s) {
+                                        ToastUtil.showShort("更新用户信息失败:" + s);
+                                        loadingDialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
+                editAgeDialog.show();
                 break;
             case R.id.user_item_setting:
                 break;
@@ -121,7 +207,7 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
         BmobProFile.getInstance(getActivity()).upload(imagePath, new UploadListener() {
             @Override
             public void onSuccess(String s, String s1, BmobFile bmobFile) {
-                final User user = new User();
+                User user = new User();
                 user.setLogo(bmobFile);
                 updateUser(user, new UpdateListener() {
                     @Override

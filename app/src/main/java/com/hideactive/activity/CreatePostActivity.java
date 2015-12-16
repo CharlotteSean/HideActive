@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.bmob.BmobProFile;
 import com.bmob.btp.callback.UploadListener;
-import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.hideactive.R;
 import com.hideactive.config.Constant;
 import com.hideactive.model.Post;

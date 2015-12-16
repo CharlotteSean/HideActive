@@ -2,6 +2,7 @@ package com.hideactive.fragment;
 
 import android.app.ActionBar;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,9 +53,20 @@ public class HomeFragment extends BaseFragment {
 		loadPost();
 	}
 
+	/**
+	 * 监听当前fragment是否可见，第一次创建时不调用
+	 * @param hidden
+	 */
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		super.onHiddenChanged(hidden);
+		if (!hidden) {
+			getActivity().getActionBar().setTitle(R.string.home);
+		}
+	}
+
 	private void initView() {
-		ActionBar actionBar = getActivity().getActionBar();
-		actionBar.setTitle(R.string.home);
+		getActivity().getActionBar().setTitle(R.string.home);
 
 		postListView = (ListView) findViewById(R.id.lv_post);
 		postList = new ArrayList<Post>();

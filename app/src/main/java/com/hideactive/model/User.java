@@ -8,9 +8,18 @@ import cn.bmob.v3.datatype.BmobFile;
  */
 public class User extends BmobUser {
 
+    private String nickname;// 用户昵称
 	private BmobFile logo;// 用户头像
 	private int sex;// 性别 0：男，1：女
 	private int age;// 年龄
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
     public int getSex() {
         return sex;

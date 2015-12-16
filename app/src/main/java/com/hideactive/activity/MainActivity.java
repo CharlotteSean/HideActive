@@ -113,7 +113,6 @@ public class MainActivity extends BaseFragmentActivity {
      */
     @Override
     public void onBackPressed() {
-        // TODO Auto-generated method stub
         if (firstTime + 2000 > System.currentTimeMillis()) {
             ActivityCollector.finishAll();
             super.onBackPressed();

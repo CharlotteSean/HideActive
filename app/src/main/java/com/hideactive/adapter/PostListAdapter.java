@@ -63,7 +63,7 @@ public class PostListAdapter extends BaseAdapter {
             ImageLoader.getInstance().displayImage(list.get(position).getAuthor().getLogo().getUrl(),
                     userLogo, ImageLoaderOptions.getOptions());
         }
-		userName.setText(list.get(position).getAuthor().getUsername());
+		userName.setText(list.get(position).getAuthor().getNickname());
         if (!TextUtils.isEmpty(list.get(position).getContent())) {
             postContent.setVisibility(View.VISIBLE);
             postContent.setText(list.get(position).getContent());

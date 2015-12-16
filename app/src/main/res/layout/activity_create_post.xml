@@ -7,9 +7,9 @@
         android:id="@+id/input_eare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_padding_small"
-        android:paddingLeft="@dimen/activity_padding_small"
-        android:paddingRight="@dimen/activity_padding_small"
+        android:layout_marginTop="@dimen/dimen_small"
+        android:paddingLeft="@dimen/dimen_small"
+        android:paddingRight="@dimen/dimen_small"
         android:background="@color/white"
         android:inputType="textMultiLine"
         android:textColor="@color/text_color_1"
@@ -23,18 +23,18 @@
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
         android:layout_below="@+id/input_eare"
-        android:layout_marginTop="@dimen/activity_padding_small"
-        android:paddingLeft="@dimen/activity_padding_small"
-        android:paddingRight="@dimen/activity_padding_small"
+        android:layout_marginTop="@dimen/dimen_small"
+        android:paddingLeft="@dimen/dimen_small"
+        android:paddingRight="@dimen/dimen_small"
         android:background="@color/grey"/>
 
     <LinearLayout
         android:id="@+id/operation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_padding_small"
-        android:paddingLeft="@dimen/activity_padding_small"
-        android:paddingRight="@dimen/activity_padding_small"
+        android:layout_marginTop="@dimen/dimen_small"
+        android:paddingLeft="@dimen/dimen_small"
+        android:paddingRight="@dimen/dimen_small"
         android:layout_below="@+id/input_eare"
         android:orientation="horizontal">
         <ImageButton
@@ -54,8 +54,8 @@
     <RelativeLayout
         android:id="@+id/show_image_eare"
         android:layout_below="@+id/operation"
-        android:paddingLeft="@dimen/activity_padding_small"
-        android:paddingRight="@dimen/activity_padding_small"
+        android:paddingLeft="@dimen/dimen_small"
+        android:paddingRight="@dimen/dimen_small"
         android:visibility="gone"
         android:layout_width="150dp"
         android:layout_height="150dp">

@@ -7,12 +7,11 @@
         android:id="@+id/user_item_logo"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:paddingLeft="@dimen/activity_padding_small"
-        android:paddingRight="@dimen/activity_padding_small"
+        android:paddingLeft="@dimen/dimen_small"
+        android:paddingRight="@dimen/dimen_small"
         android:background="@drawable/item_normal_selector"
-        android:focusable="true"
         android:clickable="true"
-        android:layout_marginTop="@dimen/activity_padding_small">
+        android:layout_marginTop="@dimen/dimen_small">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,9 +42,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@+id/user_item_logo"
-        android:paddingLeft="@dimen/activity_padding_small"
-        android:paddingRight="@dimen/activity_padding_small"
-        android:focusable="true"
+        android:paddingLeft="@dimen/dimen_small"
+        android:paddingRight="@dimen/dimen_small"
         android:clickable="true"
         android:background="@drawable/item_normal_selector">
         <TextView
@@ -76,10 +74,9 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@+id/user_item_name"
-        android:layout_marginTop="@dimen/activity_padding_small"
-        android:paddingLeft="@dimen/activity_padding_small"
-        android:paddingRight="@dimen/activity_padding_small"
-        android:focusable="true"
+        android:layout_marginTop="@dimen/dimen_small"
+        android:paddingLeft="@dimen/dimen_small"
+        android:paddingRight="@dimen/dimen_small"
         android:clickable="true"
         android:background="@drawable/item_normal_selector">
         <TextView
@@ -110,9 +107,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@+id/user_item_sex"
-        android:paddingLeft="@dimen/activity_padding_small"
-        android:paddingRight="@dimen/activity_padding_small"
-        android:focusable="true"
+        android:paddingLeft="@dimen/dimen_small"
+        android:paddingRight="@dimen/dimen_small"
         android:clickable="true"
         android:background="@drawable/item_normal_selector">
         <TextView
@@ -143,10 +139,9 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@+id/user_item_age"
-        android:layout_marginTop="@dimen/activity_padding_small"
-        android:paddingLeft="@dimen/activity_padding_small"
-        android:paddingRight="@dimen/activity_padding_small"
-        android:focusable="true"
+        android:layout_marginTop="@dimen/dimen_small"
+        android:paddingLeft="@dimen/dimen_small"
+        android:paddingRight="@dimen/dimen_small"
         android:clickable="true"
         android:background="@drawable/item_normal_selector">
         <TextView
