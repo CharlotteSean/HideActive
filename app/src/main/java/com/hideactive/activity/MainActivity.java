@@ -114,7 +114,7 @@ public class MainActivity extends BaseFragmentActivity {
     @Override
     public void onBackPressed() {
         if (firstTime + 2000 > System.currentTimeMillis()) {
-            ActivityCollector.finishAll();
+            application.finishAll();
             super.onBackPressed();
         } else {
             ToastUtil.showShort("再按一次退出程序");

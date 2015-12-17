@@ -5,32 +5,32 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.hideactive.model.Like;
+
 import java.util.List;
 
-public class LikesOfUserDB {
+public class LikesDB {
 
-	public static final String TB_NAME = "LikesOfUser";
+	public static final String TB_NAME = "Likes";
 
 	private DBOpenHelper helper;
 	private SQLiteDatabase db;
+	private String tableName;
 
-	public LikesOfUserDB(Context context) {
-		helper = new DBOpenHelper(context);
+	public LikesDB(Context context, String account) {
+		helper = new DBOpenHelper(context, account);
 		db = helper.getWritableDatabase();
+		tableName = TB_NAME + "_" + account;
 	}
-
-	public static final String sql = "CREATE TABLE IF NOT EXISTS " + TB_NAME 
-			+ "(userid text, postid text)";
 
 	/**
 	 * 添加一条喜欢的帖子
-	 * @param userid
-	 * @param postid
+	 * @param like
 	 * @return
 	 */
-	public boolean addOne(String userid, String postid) {
-		ContentValues values = getValues(userid, postid);
-		Long uid = db.insert(TB_NAME, null, values);
+	public boolean addOne(Like like) {
+		ContentValues values = getValues(like);
+		Long uid = db.insert(tableName, null, values);
 		if (uid == -1) {
 			return false;
 		}
@@ -39,16 +39,15 @@ public class LikesOfUserDB {
 
 	/**
 	 * 添加多条喜欢的帖子
-	 * @param userid
-	 * @param postids
+	 * @param likes
 	 * @return
 	 */
-	public boolean addMore(String userid, List<String> postids) {
+	public boolean addMore(List<Like> likes) {
 		db.beginTransaction();
 		try {
-			for (int i = 0; i < postids.size(); i++) {
-				ContentValues values = getValues(userid, postids.get(i));
-				db.insert(TB_NAME, null, values);
+			for (int i = 0; i < likes.size(); i++) {
+				ContentValues values = getValues(likes.get(i));
+				db.insert(tableName, null, values);
 			}
 			db.setTransactionSuccessful();
 		} catch(Exception e) {
@@ -66,8 +65,8 @@ public class LikesOfUserDB {
 	 * @return
 	 */
 	public boolean isLike(String userid, String postid) {
-		Cursor cursor = db.query(TB_NAME, null,
-				"userid=? and postid=?", new String[] {userid, postid},
+		Cursor cursor = db.query(tableName, null,
+				"userId=? and postId=?", new String[] {userid, postid},
 				null, null, null);
 		if (cursor.moveToFirst()) {
 			return true;
@@ -83,7 +82,7 @@ public class LikesOfUserDB {
 	 * @return
 	 */
 	public boolean delete(String userid, String postid) {
-		int row = db.delete(TB_NAME, "userid=? and postid=?", new String[]{userid, postid});
+		int row = db.delete(tableName, "userId=? and postId=?", new String[]{userid, postid});
 		if (row > 0) {
 			return true;
 		}
@@ -96,17 +95,18 @@ public class LikesOfUserDB {
 	 * @return
 	 */
 	public boolean deleteAll(String userid) {
-		int row = db.delete(TB_NAME, "userid=?", new String[] {userid});
+		int row = db.delete(tableName, "userId=?", new String[] {userid});
 		if (row > 0) {
 			return true;
 		}
 		return false;
 	}
 
-	private ContentValues getValues(String userid, String postid) {
+	private ContentValues getValues(Like like) {
 		ContentValues values = new ContentValues();
-		values.put("userid", userid);
-		values.put("postid", postid);
+		values.put("userId", like.getuId());
+		values.put("postId", like.getPostId());
+		values.put("createTime", like.getCreatedAt());
 		return values;
 	}
 }

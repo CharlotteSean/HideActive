@@ -10,6 +10,6 @@ import com.hideactive.SessionApplication;
  */
 public class ToastUtil {
     public static void showShort(String msg) {
-        Toast.makeText(SessionApplication.getContext(), msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(SessionApplication.getInstance().getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 }

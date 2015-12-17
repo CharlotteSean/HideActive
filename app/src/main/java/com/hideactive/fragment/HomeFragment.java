@@ -81,7 +81,7 @@ public class HomeFragment extends BaseFragment {
 		refreshViewHolder = new RefreshViewHolder(getActivity());
 		swipeRefreshLayout.setHeaderView(refreshViewHolder.getHeaderView());
 		swipeRefreshLayout.setFooterView(refreshViewHolder.getFooterView());
-		swipeRefreshLayout.setTargetScrollWithLayout(true);
+		swipeRefreshLayout.setTargetScrollWithLayout(false);
 		swipeRefreshLayout
 				.setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
 
@@ -162,8 +162,6 @@ public class HomeFragment extends BaseFragment {
 		query.include("author");// 希望在查询帖子信息的同时也把发布人的信息查询出来
 		query.setLimit(PAGE_SIZE);
 		query.setSkip(PAGE_SIZE * currentPageIndex);
-		// 设置先从网络获取，若没则取缓存
-		query.setCachePolicy(BmobQuery.CachePolicy.NETWORK_ELSE_CACHE);
 		query.findObjects(getActivity(), new FindListener<Post>() {
 			@Override
 			public void onSuccess(List<Post> object) {
@@ -185,7 +183,9 @@ public class HomeFragment extends BaseFragment {
 
 			@Override
 			public void onError(int code, String msg) {
-				ToastUtil.showShort("查询失败！");
+				ToastUtil.showShort("查询失败！" + msg);
+				TextView isLoad = (TextView) findViewById(R.id.tv_is_loading);
+				isLoad.setText("还没帖子，赶紧发布吧！");
 			}
 		});
 	}
