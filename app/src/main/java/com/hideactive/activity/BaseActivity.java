@@ -22,17 +22,17 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ActivityCollector.addActivity(this);
-	    hideSoftInputView();
+		hideSoftInputView();
 		setOverflowShowingAlways();
 	    loadingDialog = new LoadingDialog(this);
 	    application = SessionApplication.getInstance();
+		application.addActivity(this);
 	}
 	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		ActivityCollector.removeActivity(this);
+		application.removeActivity(this);
 	}
 	
 	/**

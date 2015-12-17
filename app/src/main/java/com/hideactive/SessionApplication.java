@@ -1,5 +1,6 @@
 package com.hideactive;
 
+import com.hideactive.activity.LoginActivity;
 import com.hideactive.config.UserConfig;
 import com.hideactive.model.User;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -9,8 +10,13 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.bmob.v3.BmobUser;
 
@@ -20,6 +26,7 @@ public class SessionApplication extends Application{
 	private static SessionApplication application;
 	private UserConfig userConfig;
 	private ImageLoader imageLoader;
+	private static List<Activity> activities = new ArrayList<Activity>();
 	
 	@Override
 	public void onCreate() {
@@ -51,7 +58,7 @@ public class SessionApplication extends Application{
 	 * 获取全局上下文
 	 * @return
 	 */
-	public static Context getContext() {
+	public Context getContext() {
 		return context;
 	}
 
@@ -72,6 +79,35 @@ public class SessionApplication extends Application{
 	 */
 	public User getCurrentUser() {
 		return BmobUser.getCurrentUser(context, User.class);
+	}
+
+	/***** Activity管理 start ****/
+	public void addActivity(Activity activity) {
+		activities.add(activity);
+	}
+
+	public void removeActivity(Activity activity) {
+		activities.remove(activity);
+	}
+
+	public void finishAll() {
+		for (Activity activity : activities) {
+			if (!activity.isFinishing()) {
+				activity.finish();
+			}
+		}
+	}
+	/***** Activity管理 end ****/
+
+	/**
+	 * 注销
+	 */
+	public void logout() {
+		BmobUser.logOut(context);
+		finishAll();
+		Intent intent = new Intent(context, LoginActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		context.startActivity(intent);
 	}
 
 }
