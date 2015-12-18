@@ -15,12 +15,12 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- 跳转时不显示黑色 -->
-        <!--<item name="android:windowBackground">@null</item>  -->
-    	<!--<item name="android:windowContentOverlay">@null</item>  &lt;!&ndash; 去除阴影 &ndash;&gt;-->
-    	<!--<item name="android:windowIsTranslucent">false</item>  -->
-    	<!--<item name="android:windowAnimationStyle">@null</item>  -->
-    	<!--<item name="android:windowDisablePreview">true</item>  -->
-    	<!--<item name="android:windowNoDisplay">false</item>-->
+        <item name="android:windowBackground">@null</item>
+    	<item name="android:windowContentOverlay">@null</item>  <!-- 去除阴影 -->
+    	<item name="android:windowIsTranslucent">false</item>
+    	<item name="android:windowAnimationStyle">@null</item>
+    	<item name="android:windowDisablePreview">true</item>
+    	<item name="android:windowNoDisplay">false</item>
         <item name="android:actionBarStyle">@style/CustomActionBarStyle</item>
         <item name="android:itemBackground">@drawable/btn_action_bar_selector</item>
         <item name="android:actionBarItemBackground">@drawable/btn_action_bar_selector</item>

@@ -18,8 +18,8 @@
         android:layout_width="0.5dp"
         android:layout_height="match_parent"
         android:layout_toRightOf="@+id/custom_actionbar_img"
-        android:layout_marginTop="@dimen/dimen_small"
-        android:layout_marginBottom="@dimen/dimen_small"
+        android:layout_marginTop="@dimen/dimen_normal"
+        android:layout_marginBottom="@dimen/dimen_normal"
         android:background="@color/actionbar_item_pressed"/>
     <TextView
         android:id="@+id/custom_actionbar_text"

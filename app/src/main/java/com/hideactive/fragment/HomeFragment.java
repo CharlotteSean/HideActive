@@ -81,7 +81,7 @@ public class HomeFragment extends BaseFragment {
 		refreshViewHolder = new RefreshViewHolder(getActivity());
 		swipeRefreshLayout.setHeaderView(refreshViewHolder.getHeaderView());
 		swipeRefreshLayout.setFooterView(refreshViewHolder.getFooterView());
-		swipeRefreshLayout.setTargetScrollWithLayout(false);
+		swipeRefreshLayout.setTargetScrollWithLayout(true);
 		swipeRefreshLayout
 				.setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
 

@@ -19,6 +19,7 @@
     <color name="actionbar_item_pressed">#282A2B</color>
     <color name="refresh_header_bg">#828282</color>
 
+    <color name="line_color">#66616161</color>
 
     <color name="text_color_1">#868686</color>
     <color name="text_color_2">#FC6450</color>

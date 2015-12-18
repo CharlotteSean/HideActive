@@ -25,7 +25,6 @@ import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -36,11 +35,8 @@ import android.widget.AbsListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-import com.hideactive.util.ViewUtil;
-
 /**
- * @Author Zheng Haibo
- * @PersonalWebsite http://www.mobctrl.net
+ * @Author senierr
  * @Description 自定义CustomeSwipeRefreshLayout<br>
  * 支持下拉刷新和上拉加载更多<br>
  * 非侵入式，对原来的ListView、RecyclerView没有任何影响,用法和SwipeRefreshLayout类似。<br>
@@ -134,6 +130,8 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     private float density = 1.0f;
 
     private boolean isProgressEnable = true;
+
+    private boolean isInitialMotionY = false;// 是否记录开始刷新时的手指Y位置
 
     /**
      * 下拉时，超过距离之后，弹回来的动画监听器
@@ -653,6 +651,10 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
         }
 
         // 下拉刷新判断
+        /**
+         * 事实上当拉动过程中触发下拉或上拉时，mInitialMotionY的值是错误的
+         * 所以当在滚动过程中触发刷新时，mInitialMotionY不应该在ACTION_DOWN时赋值，应该在可以刷新时取
+         */
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 setTargetOffsetTopAndBottom(
@@ -664,7 +666,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
                     return false;
                 }
                 mInitialMotionY = initialMotionY;// 记录按下的位置
-
+                break;
             case MotionEvent.ACTION_MOVE:
                 if (mActivePointerId == INVALID_POINTER) {
                     Log.e(LOG_TAG,
@@ -755,7 +757,15 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
                 }
 
                 final float y = MotionEventCompat.getY(ev, pointerIndex);
+
+                // 若在滚动时触发刷新,重新计算起始Y
+                if (!isInitialMotionY) {
+                    mInitialMotionY = y;
+                    isInitialMotionY = true;
+                }
+
                 final float overscrollTop = (y - mInitialMotionY) * DRAG_RATE;
+
                 if (mIsBeingDragged) {
                     float originalDragPercent = overscrollTop / mTotalDragDistance;
                     if (originalDragPercent < 0) {
@@ -858,6 +868,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
                     animateOffsetToStartPosition(mCurrentTargetOffsetTop, listener);
                 }
                 mActivePointerId = INVALID_POINTER;
+                isInitialMotionY = false;
                 return false;
             }
         }
@@ -888,6 +899,13 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
                     return false;
                 }
                 final float y = MotionEventCompat.getY(ev, pointerIndex);
+
+                // 若在滚动时触发刷新,重新计算起始Y
+                if (!isInitialMotionY) {
+                    mInitialMotionY = y;
+                    isInitialMotionY = true;
+                }
+
                 final float overscrollBottom = (mInitialMotionY - y) * DRAG_RATE;
                 if (mIsBeingDragged) {
                     pushDistance = (int) overscrollBottom;
@@ -940,6 +958,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
                 } else {
                     animatorFooterToBottom((int) overscrollBottom, pushDistance);
                 }
+                isInitialMotionY = false;
                 return false;
             }
         }

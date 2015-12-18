@@ -88,8 +88,9 @@ public class UserFragment extends BaseFragment implements View.OnClickListener {
                     userLogoView, ImageLoaderOptions.getOptions());
         }
         userNameView.setText(user.getNickname());
-        userSexView.setText(user.getSex() == 0 ? "男" : "女");
-        userAgeView.setText(user.getAge() + "");
+        userSexView.setText(user.getSex() != null && user.getSex() == 0 ? "男" : "女");
+        Integer age = user.getAge();
+        userAgeView.setText(String.valueOf(age == null ? 0 : age) );
 
         userLogoItemView = findViewById(R.id.user_item_logo);
         userNameItemView = findViewById(R.id.user_item_name);
