@@ -43,8 +43,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     }
 
     public void initView() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowHomeEnabled(false);
+        TextView topBarTitle = (TextView) findViewById(R.id.tv_top_bar_title);
+        topBarTitle.setText(getResources().getString(R.string.login));
 
         usernameView = (EditText) findViewById(R.id.username);
         passwordView = (EditText) findViewById(R.id.password);

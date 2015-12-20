@@ -637,7 +637,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         ensureTarget();
-
         final int action = MotionEventCompat.getActionMasked(ev);
 
         if (mReturningToStart && action == MotionEvent.ACTION_DOWN) {
@@ -723,7 +722,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = MotionEventCompat.getActionMasked(ev);
-
         if (mReturningToStart && action == MotionEvent.ACTION_DOWN) {
             mReturningToStart = false;
         }

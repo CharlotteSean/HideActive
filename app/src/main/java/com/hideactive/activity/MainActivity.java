@@ -1,39 +1,36 @@
 package com.hideactive.activity;
 
-import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.hideactive.R;
 import com.hideactive.config.ImageLoaderOptions;
 import com.hideactive.fragment.HomeFragment;
 import com.hideactive.fragment.MessageFragment;
-import com.hideactive.fragment.UserFragment;
+import com.hideactive.fragment.SettingFragment;
 import com.hideactive.model.User;
-import com.hideactive.util.ActivityCollector;
 import com.hideactive.util.ToastUtil;
+import com.nineoldandroids.view.ViewHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends BaseFragmentActivity {
 
-    private ImageButton actionBar_img;
+    private CircleImageView userLogoView;
     private DrawerLayout drawer;
     private View[] mTabs;
     private HomeFragment homeFragment;
     private MessageFragment messageFragment;
-    private UserFragment userFragment;
+    private SettingFragment settingFragment;
     private Fragment[] fragments;
     private int index;
     private int currentTabIndex;
@@ -47,14 +44,21 @@ public class MainActivity extends BaseFragmentActivity {
         initTab();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshSlidingMenu();
+    }
 
     private void initView(){
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setCustomView(R.layout.action_bar_custom);
-        actionBar_img = (ImageButton) actionBar.getCustomView().findViewById(R.id.custom_actionbar_img);
-        actionBar_img.setImageResource(R.mipmap.actionbar_todo);
-        actionBar_img.setOnClickListener(new View.OnClickListener() {
+        TextView topBarTitle = (TextView) findViewById(R.id.tv_top_bar_title);
+        topBarTitle.setText(getResources().getString(R.string.app_name));
+        Button topBarLeftBtn = (Button) findViewById(R.id.btn_top_bar_left);
+        topBarLeftBtn.setVisibility(View.VISIBLE);
+        Drawable drawableLeft= getResources().getDrawable(R.mipmap.top_bar_menu);
+        drawableLeft.setBounds(0, 0, drawableLeft.getMinimumWidth(), drawableLeft.getMinimumHeight());
+        topBarLeftBtn.setCompoundDrawables(drawableLeft, null, null, null);
+        topBarLeftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -64,37 +68,58 @@ public class MainActivity extends BaseFragmentActivity {
                 }
             }
         });
-        TextView actionBar_text = (TextView) actionBar.getCustomView().findViewById(R.id.custom_actionbar_text);
-        actionBar_text.setText(getResources().getString(R.string.home));
+
+        Button topBarRightBtn = (Button) findViewById(R.id.btn_top_bar_right);
+        topBarRightBtn.setVisibility(View.VISIBLE);
+        Drawable drawableRight= getResources().getDrawable(R.drawable.top_bar_create_selector);
+        drawableRight.setBounds(0, 0, drawableRight.getMinimumWidth(), drawableRight.getMinimumHeight());
+        topBarRightBtn.setCompoundDrawables(null, null, drawableRight, null);
+        topBarRightBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openActivity(new Intent(MainActivity.this, CreatePostActivity.class));
+            }
+        });
+
+        userLogoView = (CircleImageView) findViewById(R.id.sliding_menu_avatar);
+        userLogoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openActivity(new Intent(MainActivity.this, UserInfoActivity.class));
+            }
+        });
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                actionBar_img.setImageResource(R.mipmap.actionbar_up);
-                CircleImageView userLogoView = (CircleImageView) findViewById(R.id.sliding_menu_avatar);
-                TextView userNameView = (TextView) findViewById(R.id.sliding_menu_nick);
-                User user = application.getCurrentUser();
-                if (user.getLogo() != null) {
-                    ImageLoader.getInstance().displayImage(user.getLogo().getUrl(),
-                            userLogoView, ImageLoaderOptions.getOptions());
-                }
-                userNameView.setText(user.getNickname());
+//                actionBar_img.setImageResource(R.mipmap.actionbar_up);
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                actionBar_img.setImageResource(R.mipmap.actionbar_todo);
+//                actionBar_img.setImageResource(R.mipmap.actionbar_todo);
             }
-        });
 
-        Button logoutBtn = (Button) findViewById(R.id.btn_logout);
-        logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                application.logout();
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                View mContent = drawer.getChildAt(0);
+                View mMenu = drawerView;
+                float scale = 1 - slideOffset;
+                float leftScale = 1 - 0.3f * scale;
+                float rightScale = 0.8f + scale * 0.2f;
+
+                ViewHelper.setScaleX(mMenu, leftScale);
+                ViewHelper.setScaleY(mMenu, leftScale);
+                ViewHelper.setAlpha(mMenu, 0.6f + 0.4f * (1 - scale));
+                ViewHelper.setTranslationX(mContent,
+                        mMenu.getMeasuredWidth() * (1 - scale));
+                ViewHelper.setPivotX(mContent, 0);
+                ViewHelper.setPivotY(mContent,
+                        mContent.getMeasuredHeight() / 2);
+                mContent.invalidate();
+                ViewHelper.setScaleX(mContent, rightScale);
+                ViewHelper.setScaleY(mContent, rightScale);
             }
         });
 
@@ -102,18 +127,29 @@ public class MainActivity extends BaseFragmentActivity {
         mTabs[0] = findViewById(R.id.sliding_menu_home);
         mTabs[1] = findViewById(R.id.sliding_menu_message);
         mTabs[2] = findViewById(R.id.sliding_menu_setting);
-        // 把第一个tab设为选中状态
         mTabs[0].setSelected(true);
     }
 
     private void initTab(){
         homeFragment = new HomeFragment();
         messageFragment = new MessageFragment();
-        userFragment = new UserFragment();
-        fragments = new Fragment[] {homeFragment, messageFragment, userFragment };
-        // 添加显示第一个fragment
+        settingFragment = new SettingFragment();
+        fragments = new Fragment[] {homeFragment, messageFragment, settingFragment };
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, homeFragment).
                 add(R.id.fragment_container, messageFragment).hide(messageFragment).show(homeFragment).commit();
+    }
+
+    /**
+     * 刷新SlidingMenu
+     */
+    private void refreshSlidingMenu() {
+        User user = application.getCurrentUser();
+        if (user.getLogo() != null) {
+            ImageLoader.getInstance().displayImage(user.getLogo().getUrl(),
+                    userLogoView, ImageLoaderOptions.getOptions());
+        }
+        TextView userNameView = (TextView) findViewById(R.id.sliding_menu_nick);
+        userNameView.setText(application.getCurrentUser().getNickname());
     }
 
     /**
@@ -148,24 +184,6 @@ public class MainActivity extends BaseFragmentActivity {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add:
-                openActivity(new Intent(MainActivity.this, CreatePostActivity.class));
-                break;
-            default:
-                break;
-        }
-        return true;
     }
 
     private static long firstTime;

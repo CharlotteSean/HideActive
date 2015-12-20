@@ -5,10 +5,18 @@ import cn.bmob.v3.BmobObject;
 /**
  * Created by Senierr on 2015/12/17.
  */
-public class Like extends BmobObject {
+public class Like {
 
     private String uId;
     private String postId;
+
+    public Like() {
+    }
+
+    public Like(String uId, String postId) {
+        this.uId = uId;
+        this.postId = postId;
+    }
 
     public String getuId() {
         return uId;

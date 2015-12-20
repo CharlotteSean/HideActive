@@ -1,24 +1,33 @@
 package com.hideactive;
 
 import com.hideactive.activity.LoginActivity;
+import com.hideactive.config.Constant;
 import com.hideactive.config.UserConfig;
 import com.hideactive.model.Like;
 import com.hideactive.model.User;
+import com.nostra13.universalimageloader.cache.disc.DiskCache;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.nostra13.universalimageloader.utils.IoUtils;
 
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.FindListener;
@@ -42,6 +51,7 @@ public class SessionApplication extends Application{
 				.threadPoolSize(3)
 				.threadPriority(Thread.NORM_PRIORITY - 2)
 				.denyCacheImageMultipleSizesInMemory()
+				.diskCache(new UnlimitedDiskCache(new File(Constant.IMAGE_CACHE_PATH)))
 				.diskCacheFileNameGenerator(new Md5FileNameGenerator())
 				.memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
 				.memoryCacheSize(2 * 1024 * 1024)
@@ -51,6 +61,9 @@ public class SessionApplication extends Application{
 				.build();
 		imageLoader = ImageLoader.getInstance();
 		imageLoader.init(config);
+
+		// 初始化Bmob
+		Bmob.initialize(this, Constant.BMOB_APP_ID);
 	}
 	
 	public static SessionApplication getInstance() {

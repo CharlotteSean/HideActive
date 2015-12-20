@@ -1,18 +1,13 @@
 package com.hideactive.activity;
 
-import com.hideactive.R;
-import com.hideactive.config.Constant;
-import com.hideactive.model.User;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobUser;
+import com.hideactive.R;
+import com.hideactive.model.User;
 
 public class SplashActivity extends BaseActivity {
 	
@@ -38,8 +33,6 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-		// 初始化Bmob
-		Bmob.initialize(this, Constant.BMOB_APP_ID);
 		// 自动登录
 		User user = application.getCurrentUser();
 		if (user != null) {

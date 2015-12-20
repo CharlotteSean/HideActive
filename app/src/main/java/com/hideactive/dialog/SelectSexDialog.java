@@ -15,10 +15,10 @@ public class SelectSexDialog extends Dialog{
 	private ImageView maleImageView;
 	private ImageView femaleImageView;
 
-	private int sex;
+	private Integer sex;
 	private OnDoneListener onDoneListener;
 
-	public SelectSexDialog(Context context, int sex, OnDoneListener onDoneListener) {
+	public SelectSexDialog(Context context, Integer sex, OnDoneListener onDoneListener) {
 		super(context, R.style.NormalDialog);
 		this.sex = sex;
 		this.onDoneListener = onDoneListener;
@@ -78,7 +78,7 @@ public class SelectSexDialog extends Dialog{
 	 * 修改完，回调接口
 	 */
 	public interface OnDoneListener {
-		void onDone(int sex);
+		void onDone(Integer sex);
 	}
 
 }

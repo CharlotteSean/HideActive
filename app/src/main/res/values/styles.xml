@@ -4,7 +4,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light">
+    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light.NoActionBar">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -21,11 +21,11 @@
     	<item name="android:windowAnimationStyle">@null</item>
     	<item name="android:windowDisablePreview">true</item>
     	<item name="android:windowNoDisplay">false</item>
-        <item name="android:actionBarStyle">@style/CustomActionBarStyle</item>
-        <item name="android:itemBackground">@drawable/btn_action_bar_selector</item>
-        <item name="android:actionBarItemBackground">@drawable/btn_action_bar_selector</item>
-        <item name="android:itemTextAppearance">@style/CustomActionBarOverflow</item>
-        <item name="android:actionOverflowButtonStyle">@style/CustomActionButtonOverflow</item>
+        <!--<item name="android:actionBarStyle">@style/CustomActionBarStyle</item>-->
+        <!--<item name="android:itemBackground">@drawable/btn_action_bar_selector</item>-->
+        <!--<item name="android:actionBarItemBackground">@drawable/btn_action_bar_selector</item>-->
+        <!--<item name="android:itemTextAppearance">@style/CustomActionBarOverflow</item>-->
+        <!--<item name="android:actionOverflowButtonStyle">@style/CustomActionButtonOverflow</item>-->
 
     </style>
     <!-- ActionBar 样式 start -->

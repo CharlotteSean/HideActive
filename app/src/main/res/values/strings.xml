@@ -5,6 +5,13 @@
     <string name="action_more">更多</string>
     <string name="action_add">添加</string>
 
+    <string name="cancle">取消</string>
+    <string name="back">返回</string>
+    <string name="done">确认</string>
+    <string name="post">发表</string>
+    <string name="edit">编辑</string>
+    <string name="detail">详情</string>
+
     <string name="account">账号</string>
     <string name="password">密码</string>
     <string name="repassword">确认密码</string>
@@ -14,7 +21,7 @@
 
     <string name="home">首页</string>
     <string name="message">消息</string>
-    <string name="me">我</string>
+    <string name="user_info">个人资料</string>
     <string name="setting">设置</string>
 
     <string name="user_logo">头像</string>
@@ -25,6 +32,8 @@
     <string name="male">男</string>
     <string name="female">女</string>
 
-    <string name="please_input">请输入：</string>
+    <string name="say_something">说点什么吧</string>
+    <string name="comment">评论</string>
+    <string name="like">赞</string>
 
 </resources>

@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/sliding_top_height"
-            android:background="@color/actionbar_bg"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/top_bar_height"
+            android:gravity="center">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/sliding_menu_avatar"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:layout_centerInParent="true"
                 android:src="@mipmap/image_default"
                 app:civ_border_width="2dp"
                 app:civ_border_color="@color/white"/>
@@ -30,12 +28,14 @@
                 android:id="@+id/sliding_menu_nick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/sliding_menu_avatar"
                 android:layout_marginTop="@dimen/dimen_small"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:text="@string/user_name"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,11 +47,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dimen_normal"
+                android:paddingLeft="@dimen/dimen_large"
                 android:onClick="onTabSelect"
                 android:clickable="true"
-                android:orientation="horizontal"
-                android:background="@drawable/item_normal_selector">
+                android:orientation="horizontal">
                 <ImageView
                     android:src="@mipmap/tab_home_normal"
                     android:layout_width="wrap_content"
@@ -60,26 +59,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_small"
-                    android:textColor="@color/text_color_1"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
                     android:text="@string/home"/>
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/line_height"
-                android:background="@color/line_color"/>
 
             <LinearLayout
                 android:id="@+id/sliding_menu_message"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dimen_normal"
+                android:paddingLeft="@dimen/dimen_large"
                 android:onClick="onTabSelect"
                 android:clickable="true"
-                android:orientation="horizontal"
-                android:background="@drawable/item_normal_selector">
+                android:orientation="horizontal">
                 <ImageView
                     android:src="@mipmap/tab_message_normal"
                     android:layout_width="wrap_content"
@@ -88,26 +81,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_small"
-                    android:textColor="@color/text_color_1"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
                     android:text="@string/message"/>
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/line_height"
-                android:background="@color/line_color"/>
 
             <LinearLayout
                 android:id="@+id/sliding_menu_setting"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dimen_normal"
+                android:paddingLeft="@dimen/dimen_large"
                 android:onClick="onTabSelect"
                 android:clickable="true"
-                android:orientation="horizontal"
-                android:background="@drawable/item_normal_selector">
+                android:orientation="horizontal">
                 <ImageView
                     android:src="@mipmap/tab_user_normal"
                     android:layout_width="wrap_content"
@@ -116,27 +103,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_small"
-                    android:textColor="@color/text_color_1"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
                     android:text="@string/setting"/>
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/line_height"
-                android:background="@color/line_color"/>
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_logout"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="@dimen/dimen_large"
-            android:layout_marginLeft="@dimen/dimen_normal"
-            android:layout_marginRight="@dimen/dimen_normal"
-            android:background="@drawable/btn_bg_red_selector"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:text="@string/login_out"/>
     </LinearLayout>
 </ScrollView>

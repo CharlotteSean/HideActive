@@ -1,15 +1,18 @@
 package com.hideactive.fragment;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hideactive.R;
+import com.hideactive.activity.PostDetailActivity;
 import com.hideactive.adapter.PostListAdapter;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
@@ -51,7 +54,6 @@ public class HomeFragment extends BaseFragment {
 	public void onResume() {
 		super.onResume();
 		// 初始化数据
-		loadCacheData();
 		currentPageIndex = 0;
 		loadPost();
 	}
@@ -64,17 +66,21 @@ public class HomeFragment extends BaseFragment {
 	public void onHiddenChanged(boolean hidden) {
 		super.onHiddenChanged(hidden);
 		if (!hidden) {
-			getActivity().getActionBar().setTitle(R.string.home);
+
 		}
 	}
 
 	private void initView() {
-		getActivity().getActionBar().setTitle(R.string.home);
-
 		postListView = (ListView) findViewById(R.id.lv_post);
 		postList = new ArrayList<Post>();
 		postListAdapter = new PostListAdapter(getActivity(), postList);
 		postListView.setAdapter(postListAdapter);
+		postListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				PostDetailActivity.start(getActivity(), postList.get(position).getObjectId());
+			}
+		});
 
 		swipeRefreshLayout = (SuperSwipeRefreshLayout) findViewById(R.id.swipe_refresh);
 		swipeRefreshLayout.setHeaderViewBackgroundColor(getResources().getColor(R.color.refresh_header_bg));
@@ -132,33 +138,11 @@ public class HomeFragment extends BaseFragment {
 	}
 
 	/**
-	 * 加载必要数据
-	 */
-	private void loadCacheData() {
-		// 查询喜欢这个帖子的所有用户，因此查询的是用户表
-		BmobQuery<Post> query = new BmobQuery<Post>();
-		User user = new User();
-		user.setObjectId(application.getCurrentUser().getObjectId());
-		query.addWhereRelatedTo("likes", new BmobPointer(user));
-		query.findObjects(getActivity(), new FindListener<Post>() {
-			@Override
-			public void onSuccess(List<Post> list) {
-				Log.e("list", "--list: " + list.size());
-			}
-
-			@Override
-			public void onError(int i, String s) {
-
-			}
-		});
-	}
-
-	/**
 	 * 分页加载数据
 	 */
 	private void loadPost() {
 		BmobQuery<Post> query = new BmobQuery<Post>();
-		query.order("-updatedAt");
+		query.order("-createdAt");
 		query.include("author");// 希望在查询帖子信息的同时也把发布人的信息查询出来
 		query.setLimit(PAGE_SIZE);
 		query.setSkip(PAGE_SIZE * currentPageIndex);

@@ -41,18 +41,17 @@ public class RegistActivity extends BaseActivity {
     }
 
     public void initView() {
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-		actionBar.setCustomView(R.layout.action_bar_custom);
-		ImageButton actionBar_img = (ImageButton) actionBar.getCustomView().findViewById(R.id.custom_actionbar_img);
-		actionBar_img.setOnClickListener(new OnClickListener() {
+		TextView topBarTitle = (TextView) findViewById(R.id.tv_top_bar_title);
+		topBarTitle.setText(getResources().getString(R.string.regist));
+		Button topBarLeftBtn = (Button) findViewById(R.id.btn_top_bar_left);
+		topBarLeftBtn.setVisibility(View.VISIBLE);
+		topBarLeftBtn.setText(getResources().getString(R.string.cancle));
+		topBarLeftBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				closeActivity();
 			}
 		});
-		TextView actionBar_text = (TextView) actionBar.getCustomView().findViewById(R.id.custom_actionbar_text);
-		actionBar_text.setText(getResources().getString(R.string.regist));
 
 		usernameView = (EditText) findViewById(R.id.username);
 		passwordView = (EditText) findViewById(R.id.password);
@@ -88,6 +87,8 @@ public class RegistActivity extends BaseActivity {
 		User user = new User();
 		user.setUsername(username);
 		user.setPassword(password);
+		user.setAge(0);
+		user.setSex(0);
 		user.signUp(this, new SaveListener() {
 			@Override
 			public void onSuccess() {

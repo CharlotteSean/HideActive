@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -64,18 +65,27 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     }
 
     public void initView() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setCustomView(R.layout.action_bar_custom);
-        ImageButton actionBar_img = (ImageButton) actionBar.getCustomView().findViewById(R.id.custom_actionbar_img);
-        actionBar_img.setOnClickListener(new OnClickListener() {
+        TextView topBarTitle = (TextView) findViewById(R.id.tv_top_bar_title);
+        topBarTitle.setText(getResources().getString(R.string.edit));
+        Button topBarLeftBtn = (Button) findViewById(R.id.btn_top_bar_left);
+        topBarLeftBtn.setVisibility(View.VISIBLE);
+        topBarLeftBtn.setText(getResources().getString(R.string.cancle));
+        topBarLeftBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 closeActivity();
             }
         });
-        TextView actionBar_text = (TextView) actionBar.getCustomView().findViewById(R.id.custom_actionbar_text);
-        actionBar_text.setText(getResources().getString(R.string.app_name));
+        Button topBarRightBtn = (Button) findViewById(R.id.btn_top_bar_right);
+        topBarRightBtn.setVisibility(View.VISIBLE);
+        topBarRightBtn.setText(getResources().getString(R.string.post));
+        topBarRightBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                post();
+            }
+        });
+
 
         inputView = (EditText) findViewById(R.id.input_eare);
         nativeButton = (ImageButton) findViewById(R.id.image_native);
@@ -106,26 +116,6 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             default:
                 break;
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem menu_post = menu.add(0, 0, 0, "发表");
-        menu_post.setIcon(R.mipmap.actionbar_ok);
-        menu_post.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case 0:
-                post();
-                break;
-            default:
-                break;
-        }
-        return true;
     }
 
     /**
@@ -176,6 +166,8 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         post.setAuthor(user);
         post.setContent(postContent);
         post.setImage(imageFile);
+        post.setCommentNum(0);
+        post.setLikeNum(0);
         post.save(this, new SaveListener() {
             @Override
             public void onSuccess() {
@@ -196,11 +188,11 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
      * 启动相机拍照
      */
     public void selectImageFromCamera() {
-        File dir = new File(Constant.IMAGE_CACHE_PATH);
+        File dir = new File(Constant.IMAGE_CACHE_PATH + File.separator);
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        File file = new File(dir, String.valueOf(System.currentTimeMillis()) + ".jpg");
+        File file = new File(dir, String.valueOf(System.currentTimeMillis()));
         localCameraPath = file.getPath();
         Uri imageUri = Uri.fromFile(file);
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -230,7 +222,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             switch (requestCode) {
                 case REQUEST_CODE_IMAGE_CAMERA:
                     // 获取拍照的压缩图片
-                    String cameraPath = Constant.IMAGE_CACHE_PATH + String.valueOf(System.currentTimeMillis()) + ".jpg";
+                    String cameraPath = Constant.IMAGE_CACHE_PATH + File.separator + String.valueOf(System.currentTimeMillis());
                     Bitmap cameraBitmap = PhotoUtil.compressImage(localCameraPath, cameraPath, true);
                     // 界面显示
                     showImageEare.setVisibility(View.VISIBLE);
@@ -258,7 +250,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                                 nativeBitmap = BitmapFactory.decodeFile(localSelectPath);
                                 imagePath = localSelectPath;
                             } else {
-                                String nativePath = Constant.IMAGE_CACHE_PATH + String.valueOf(System.currentTimeMillis()) + ".jpg";
+                                String nativePath = Constant.IMAGE_CACHE_PATH  + File.separator + String.valueOf(System.currentTimeMillis());
                                 nativeBitmap = PhotoUtil.compressImage(localSelectPath, nativePath, false);
                                 imagePath = nativePath;
                             }

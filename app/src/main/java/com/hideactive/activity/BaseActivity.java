@@ -23,7 +23,6 @@ public class BaseActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		hideSoftInputView();
-		setOverflowShowingAlways();
 	    loadingDialog = new LoadingDialog(this);
 	    application = SessionApplication.getInstance();
 		application.addActivity(this);
@@ -74,18 +73,6 @@ public class BaseActivity extends Activity {
 		startActivity(intent);
 		overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
 		finish();
-	}
-
-	private void setOverflowShowingAlways() {
-		try {
-			ViewConfiguration config = ViewConfiguration.get(this);
-			Field menuKeyField = ViewConfiguration.class
-					.getDeclaredField("sHasPermanentMenuKey");
-			menuKeyField.setAccessible(true);
-			menuKeyField.setBoolean(config, false);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 }

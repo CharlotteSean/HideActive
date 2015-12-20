@@ -42,7 +42,7 @@ public class ImageDetailDialog extends Dialog{
         LayoutParams params = new LayoutParams();
         params.width = width;
         params.height = height;
-		params.alpha = 0.9f;
+		params.alpha = 1f;
         window.setAttributes(params);
         window.setBackgroundDrawableResource(R.color.black);
 		window.setWindowAnimations(R.style.dialogWindowAnim);

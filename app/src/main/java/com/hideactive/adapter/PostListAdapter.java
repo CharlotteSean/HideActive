@@ -2,10 +2,15 @@ package com.hideactive.adapter;
 
 import java.util.List;
 
+import com.hideactive.SessionApplication;
 import com.hideactive.config.ImageLoaderOptions;
+import com.hideactive.db.LikesDB;
 import com.hideactive.dialog.ImageDetailDialog;
+import com.hideactive.model.Like;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
+import com.hideactive.util.DateUtil;
+import com.hideactive.util.ToastUtil;
 import com.hideactive.util.ViewHolder;
 import com.hideactive.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -61,18 +66,23 @@ public class PostListAdapter extends BaseAdapter {
 		}
 		ImageView userLogo = ViewHolder.get(convertView, R.id.user_logo);
 		TextView userName = ViewHolder.get(convertView, R.id.user_name);
+		TextView postDate = ViewHolder.get(convertView, R.id.post_date);
 		TextView postContent = ViewHolder.get(convertView, R.id.post_content);
 		ImageView postImage = ViewHolder.get(convertView, R.id.post_image);
-		ImageButton postComment = ViewHolder.get(convertView, R.id.post_comment);
-		final ImageButton postLike = ViewHolder.get(convertView, R.id.post_like);
+		ImageView postComment = ViewHolder.get(convertView, R.id.post_comment);
+		final ImageView postLike = ViewHolder.get(convertView, R.id.post_like);
 		TextView postCommentNum = ViewHolder.get(convertView, R.id.post_comment_num);
 		final TextView postLikeNum = ViewHolder.get(convertView, R.id.post_like_num);
 
         if (list.get(position).getAuthor().getLogo() != null) {
             ImageLoader.getInstance().displayImage(list.get(position).getAuthor().getLogo().getUrl(),
                     userLogo, ImageLoaderOptions.getOptions());
-        }
+        } else {
+			userLogo.setImageResource(R.mipmap.user_logo_default);
+		}
 		userName.setText(list.get(position).getAuthor().getNickname());
+		String createAt = list.get(position).getCreatedAt();
+		postDate.setText(DateUtil.getDiffTime(DateUtil.string2Date(createAt)));
         if (!TextUtils.isEmpty(list.get(position).getContent())) {
             postContent.setVisibility(View.VISIBLE);
             postContent.setText(list.get(position).getContent());
@@ -94,44 +104,66 @@ public class PostListAdapter extends BaseAdapter {
 		} else {
 			postImage.setVisibility(View.GONE);
 		}
-		postCommentNum.setText(String.valueOf(list.get(position).getCommentNum()));
-		postLikeNum.setText(String.valueOf(list.get(position).getLikeNum()));
+		postCommentNum.setText(list.get(position).getCommentNum().toString());
+		postLikeNum.setText(list.get(position).getLikeNum().toString());
+
+		String uId = SessionApplication.getInstance().getCurrentUser().getObjectId();
+		Like like = new Like(uId, list.get(position).getObjectId());
+		LikesDB likesDB = new LikesDB(context, uId);
+		postLike.setSelected(likesDB.isLike(like));
 
 		postLike.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				User user = BmobUser.getCurrentUser(context, User.class);
-				// 若是自己发布，则不可点赞
+				// 若是自己发布，则不可点
 				if (user.getObjectId().equals(list.get(position).getAuthor().getObjectId())) {
 					return;
 				}
 				Post post = new Post();
 				post.setObjectId(list.get(position).getObjectId());
-				// 将当前用户添加到Post表中的likes字段值中，表明当前用户喜欢该帖子
 				BmobRelation relation = new BmobRelation();
-				// 将当前用户添加到多对多关联中
-				relation.add(user);
-				// 多对多关联指向`post`的`likes`字段
-				post.setLikes(relation);
-				// 同时将喜欢人数+1
-				post.increment("likeNum", 1);
-				post.update(context, new UpdateListener() {
-					@Override
-					public void onSuccess() {
-						Log.e("postLike", "onSuccess");
-						postLike.setImageResource(R.mipmap.like_selected);
-						postLikeNum.setText(String.valueOf(list.get(position).getLikeNum() + 1));
-					}
-
-					@Override
-					public void onFailure(int i, String s) {
-
-					}
-				});
+				String uId = SessionApplication.getInstance().getCurrentUser().getObjectId();
+				final Like like = new Like(uId, list.get(position).getObjectId());
+				final LikesDB likesDB = new LikesDB(context, uId);
+				if (postLike.isSelected()) {
+					// 取消点赞
+					relation.remove(user);
+					post.setLikes(relation);
+					post.increment("likeNum", -1);
+					post.update(context, new UpdateListener() {
+						@Override
+						public void onSuccess() {
+							postLike.setSelected(false);
+							postLikeNum.setText(String.valueOf(Integer.parseInt(postLikeNum.getText().toString()) - 1));
+							likesDB.delete(like);
+						}
+						@Override
+						public void onFailure(int arg0, String arg1) {
+						}
+					});
+					return;
+				} else {
+					// 点赞
+					relation.add(user);
+					post.setLikes(relation);
+					post.increment("likeNum", 1);
+					post.update(context, new UpdateListener() {
+						@Override
+						public void onSuccess() {
+							postLike.setSelected(true);
+							postLikeNum.setText(String.valueOf(Integer.parseInt(postLikeNum.getText().toString()) + 1));
+							likesDB.addOne(like);
+						}
+						@Override
+						public void onFailure(int i, String s) {
+						}
+					});
+				}
 			}
 		});
 
 		return convertView;
 	}
-	
+
 }

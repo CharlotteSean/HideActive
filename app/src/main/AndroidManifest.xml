@@ -15,7 +15,6 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"
@@ -29,7 +28,6 @@
             android:name="com.hideactive.activity.MainActivity" >
         </activity>
         <activity
-            android:label="@string/login"
             android:name="com.hideactive.activity.LoginActivity" >
         </activity>
         <activity
@@ -38,6 +36,14 @@
         <activity
             android:name="com.hideactive.activity.CreatePostActivity" >
         </activity>
+        <activity
+            android:name="com.hideactive.activity.UserInfoActivity" >
+        </activity>
+        <activity
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:name="com.hideactive.activity.PostDetailActivity" >
+        </activity>
+
 
     </application>
 </manifest>

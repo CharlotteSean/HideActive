@@ -16,7 +16,7 @@
             android:paddingLeft="@dimen/dimen_normal"
             android:gravity="center"
             android:text="Loading"
-            android:textColor="@color/white"/>
+            android:textColor="@color/text_color_1"/>
 
         <ProgressBar
             android:id="@+id/pb_view"

@@ -27,7 +27,6 @@ public class BaseFragment extends Fragment{
 		loadingDialog = new LoadingDialog(getActivity());
 	    application = SessionApplication.getInstance();
 	    hideSoftInputView();
-	    setOverflowShowingAlways();
 	}
 
 	public View findViewById(int paramInt) {
@@ -45,18 +44,4 @@ public class BaseFragment extends Fragment{
 		}
 	}
 	
-	/**
-	 * 始终显示ActionBar中的overflow
-	 */
-	private void setOverflowShowingAlways() {  
-        try {  
-            ViewConfiguration config = ViewConfiguration.get(getActivity());  
-            Field menuKeyField = ViewConfiguration.class  
-                    .getDeclaredField("sHasPermanentMenuKey");  
-            menuKeyField.setAccessible(true);  
-            menuKeyField.setBoolean(config, false);  
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        }  
-    }
 }

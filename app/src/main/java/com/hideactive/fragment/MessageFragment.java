@@ -31,12 +31,11 @@ public class MessageFragment extends BaseFragment {
 	public void onHiddenChanged(boolean hidden) {
 		super.onHiddenChanged(hidden);
 		if (!hidden) {
-			getActivity().getActionBar().setTitle(R.string.message);
 		}
 	}
 
 	public void initView() {
-		getActivity().getActionBar().setTitle(R.string.message);
+
 
 	}
 

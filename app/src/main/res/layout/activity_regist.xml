@@ -3,10 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <include
+        layout="@layout/layout_top_bar"/>
+
     <LinearLayout 
         android:id="@+id/inputEare"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_below="@+id/top_bar"
         android:paddingLeft="@dimen/dimen_small"
         android:paddingRight="@dimen/dimen_small"
         android:layout_marginTop="@dimen/dimen_small"

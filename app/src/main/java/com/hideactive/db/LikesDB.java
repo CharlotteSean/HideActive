@@ -15,12 +15,14 @@ public class LikesDB {
 
 	private DBOpenHelper helper;
 	private SQLiteDatabase db;
-	private String tableName;
+
+	public static String SQL_CREATE = "CREATE TABLE IF NOT EXISTS "
+			+ LikesDB.TB_NAME
+			+ "(userId text, postId text)";
 
 	public LikesDB(Context context, String account) {
 		helper = new DBOpenHelper(context, account);
 		db = helper.getWritableDatabase();
-		tableName = TB_NAME + "_" + account;
 	}
 
 	/**
@@ -30,7 +32,7 @@ public class LikesDB {
 	 */
 	public boolean addOne(Like like) {
 		ContentValues values = getValues(like);
-		Long uid = db.insert(tableName, null, values);
+		Long uid = db.insert(TB_NAME, null, values);
 		if (uid == -1) {
 			return false;
 		}
@@ -47,7 +49,7 @@ public class LikesDB {
 		try {
 			for (int i = 0; i < likes.size(); i++) {
 				ContentValues values = getValues(likes.get(i));
-				db.insert(tableName, null, values);
+				db.insert(TB_NAME, null, values);
 			}
 			db.setTransactionSuccessful();
 		} catch(Exception e) {
@@ -60,13 +62,11 @@ public class LikesDB {
 
 	/**
 	 * 判断用户是否喜欢此帖子
-	 * @param userid
-	 * @param postid
 	 * @return
 	 */
-	public boolean isLike(String userid, String postid) {
-		Cursor cursor = db.query(tableName, null,
-				"userId=? and postId=?", new String[] {userid, postid},
+	public boolean isLike(Like like) {
+		Cursor cursor = db.query(TB_NAME, null,
+				"userId=? and postId=?", new String[] {like.getuId(), like.getPostId()},
 				null, null, null);
 		if (cursor.moveToFirst()) {
 			return true;
@@ -77,12 +77,10 @@ public class LikesDB {
 
 	/**
 	 * 删除一条喜欢的帖子
-	 * @param userid
-	 * @param postid
 	 * @return
 	 */
-	public boolean delete(String userid, String postid) {
-		int row = db.delete(tableName, "userId=? and postId=?", new String[]{userid, postid});
+	public boolean delete(Like like) {
+		int row = db.delete(TB_NAME, "userId=? and postId=?", new String[]{like.getuId(), like.getPostId()});
 		if (row > 0) {
 			return true;
 		}
@@ -90,12 +88,11 @@ public class LikesDB {
 	}
 
 	/**
-	 * 清楚用户数据
-	 * @param userid
+	 * 清除用户数据
 	 * @return
 	 */
-	public boolean deleteAll(String userid) {
-		int row = db.delete(tableName, "userId=?", new String[] {userid});
+	public boolean deleteAll() {
+		int row = db.delete(TB_NAME, null, null);
 		if (row > 0) {
 			return true;
 		}
@@ -106,7 +103,6 @@ public class LikesDB {
 		ContentValues values = new ContentValues();
 		values.put("userId", like.getuId());
 		values.put("postId", like.getPostId());
-		values.put("createTime", like.getCreatedAt());
 		return values;
 	}
 }

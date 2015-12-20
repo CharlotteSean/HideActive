@@ -11,7 +11,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 	// 数据库版本号
 	private static final int DATABASE_VERSION = 1;
 	// 数据库名
-	public static final String DATABASE_NAME = "HideActive.db";
+	public static final String DATABASE_NAME = "_HideActive.db";
 
     private String account;
     
@@ -20,18 +20,12 @@ public class DBOpenHelper extends SQLiteOpenHelper{
     }
     
     public DBOpenHelper(Context context, String account) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.account = account;
+        super(context, account + DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql_create_like = "CREATE TABLE IF NOT EXISTS "
-                + LikesDB.TB_NAME + "_" + account
-                + "(userId text, postId text, createTime text)";
-
-
-        db.execSQL(sql_create_like);
+        db.execSQL(LikesDB.SQL_CREATE);
         Log. d("Database" ,"Database_Create" );
     }
 
