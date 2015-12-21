@@ -23,6 +23,7 @@ import com.hideactive.db.LikesDB;
 import com.hideactive.dialog.ImageDetailDialog;
 import com.hideactive.model.Comment;
 import com.hideactive.model.Like;
+import com.hideactive.model.Message;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
 import com.hideactive.util.DateUtil;
@@ -324,7 +325,7 @@ public class PostDetailActivity extends BaseActivity {
                 // 若是起始页，则删除列表
                 if (currentPageIndex == 0) {
                     commentList.clear();
-                    if (object != null && object.size() == 0) {
+                    if (object == null || object.size() == 0) {
                         tipsBtn.setText("暂无评论");
                         tipsBtn.setClickable(false);
                         return;
@@ -385,6 +386,8 @@ public class PostDetailActivity extends BaseActivity {
                         } else {
                             loadComments();
                         }
+                        // 发送消息
+                        sendMessage(comment.getContent());
                     }
 
                     @Override
@@ -418,7 +421,7 @@ public class PostDetailActivity extends BaseActivity {
                 // 若是起始页，则删除列表
                 if (currentPageIndex == 0) {
                     likeList.clear();
-                    if (object != null && object.size() == 0) {
+                    if (object == null || object.size() == 0) {
                         tipsBtn.setText("暂无点赞");
                         tipsBtn.setClickable(false);
                         return;
@@ -516,6 +519,28 @@ public class PostDetailActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    /**
+     * 发送一条消息
+     * @param content
+     */
+    private void sendMessage(String content) {
+        Message message = new Message();
+        message.setContent(content);
+        message.setFromUser(application.getCurrentUser());
+        message.setToUser(mPost.getAuthor());
+        message.setPost(mPost);
+        message.save(this, new SaveListener() {
+            @Override
+            public void onSuccess() {
+                // TODO: 12/21/2015
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+            }
+        });
     }
 
 }

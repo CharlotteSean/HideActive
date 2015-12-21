@@ -14,8 +14,8 @@ import com.hideactive.SessionApplication;
 import com.hideactive.config.ImageLoaderOptions;
 import com.hideactive.db.LikesDB;
 import com.hideactive.dialog.ImageDetailDialog;
-import com.hideactive.model.Comment;
 import com.hideactive.model.Like;
+import com.hideactive.model.Message;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
 import com.hideactive.util.DateUtil;
@@ -28,13 +28,13 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.UpdateListener;
 
-public class CommentListAdapter extends BaseAdapter {
+public class MessageListAdapter extends BaseAdapter {
 
 	private Context context;
-	private List<Comment> list;
+	private List<Message> list;
 	private LayoutInflater inflater;
 
-	public CommentListAdapter(Context context, List<Comment> list) {
+	public MessageListAdapter(Context context, List<Message> list) {
 		super();
 		this.context = context;
 		this.list = list;
@@ -59,28 +59,35 @@ public class CommentListAdapter extends BaseAdapter {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.list_item_post_comment, null);
+			convertView = inflater.inflate(R.layout.list_item_message, null);
 		}
 		ImageView userLogo = ViewHolder.get(convertView, R.id.user_logo);
 		TextView userName = ViewHolder.get(convertView, R.id.user_name);
-		TextView postDate = ViewHolder.get(convertView, R.id.comment_date);
-		TextView postContent = ViewHolder.get(convertView, R.id.comment_content);
+		TextView messageDate = ViewHolder.get(convertView, R.id.message_date);
+		TextView messageContent = ViewHolder.get(convertView, R.id.message_content);
+		ImageView postImage = ViewHolder.get(convertView, R.id.post_image);
+		TextView postUserName = ViewHolder.get(convertView, R.id.post_user_name);
+		TextView postContent = ViewHolder.get(convertView, R.id.post_content);
 
-        if (list.get(position).getUser().getLogo() != null) {
-            ImageLoader.getInstance().displayImage(list.get(position).getUser().getLogo().getUrl(),
+        if (list.get(position).getFromUser().getLogo() != null) {
+            ImageLoader.getInstance().displayImage(list.get(position).getFromUser().getLogo().getUrl(),
                     userLogo, ImageLoaderOptions.getOptions());
         } else {
 			userLogo.setImageResource(R.mipmap.user_logo_default);
 		}
-		userName.setText(list.get(position).getUser().getNickname());
+		userName.setText(list.get(position).getFromUser().getNickname());
 		String createAt = list.get(position).getCreatedAt();
-		postDate.setText(DateUtil.getNormalTime(DateUtil.string2Date(createAt)));
-        if (!TextUtils.isEmpty(list.get(position).getContent())) {
-            postContent.setVisibility(View.VISIBLE);
-            postContent.setText(list.get(position).getContent());
-        } else {
-            postContent.setVisibility(View.GONE);
-        }
+		messageDate.setText(DateUtil.getNormalTime(DateUtil.string2Date(createAt)));
+		messageContent.setText(list.get(position).getContent());
+		if (list.get(position).getPost().getImage() != null) {
+			ImageLoader.getInstance().displayImage(list.get(position).getPost().getImage().getUrl(),
+					postImage, ImageLoaderOptions.getOptions());
+		} else {
+			ImageLoader.getInstance().displayImage(list.get(position).getPost().getAuthor().getLogo().getUrl(),
+					postImage, ImageLoaderOptions.getOptions());
+		}
+		postUserName.setText("@" + list.get(position).getPost().getAuthor().getNickname());
+		postContent.setText(list.get(position).getPost().getContent());
 
 		return convertView;
 	}

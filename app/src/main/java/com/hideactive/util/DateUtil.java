@@ -52,4 +52,12 @@ public class DateUtil {
             return date2String(lastDate, "MM-dd");
         }
     }
+
+    public static String getNormalTime(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return date2String(date, "MM-dd HH:mm");
+    }
+
 }

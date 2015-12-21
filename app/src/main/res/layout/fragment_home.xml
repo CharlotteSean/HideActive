@@ -16,7 +16,7 @@
     </com.hideactive.widget.SuperSwipeRefreshLayout>
 
     <TextView
-        android:id="@+id/tv_is_loading"
+        android:id="@+id/tv_tips"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"

@@ -1,9 +1,6 @@
 package com.hideactive.fragment;
 
-import android.app.ActionBar;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +12,6 @@ import com.hideactive.R;
 import com.hideactive.activity.PostDetailActivity;
 import com.hideactive.adapter.PostListAdapter;
 import com.hideactive.model.Post;
-import com.hideactive.model.User;
 import com.hideactive.util.ToastUtil;
 import com.hideactive.widget.RefreshViewHolder;
 import com.hideactive.widget.SuperSwipeRefreshLayout;
@@ -24,11 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.listener.FindListener;
 
 public class HomeFragment extends BaseFragment {
 
+	private TextView tipsView;
 	private ListView postListView;
 	private SuperSwipeRefreshLayout swipeRefreshLayout;
 	private RefreshViewHolder refreshViewHolder;
@@ -48,29 +44,14 @@ public class HomeFragment extends BaseFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		initView();
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
 		// 初始化数据
 		currentPageIndex = 0;
 		loadPost();
 	}
 
-	/**
-	 * 监听当前fragment是否可见，第一次创建时不调用
-	 * @param hidden
-	 */
-	@Override
-	public void onHiddenChanged(boolean hidden) {
-		super.onHiddenChanged(hidden);
-		if (!hidden) {
-
-		}
-	}
-
 	private void initView() {
+		tipsView = (TextView) findViewById(R.id.tv_tips);
+
 		postListView = (ListView) findViewById(R.id.lv_post);
 		postList = new ArrayList<Post>();
 		postListAdapter = new PostListAdapter(getActivity(), postList);
@@ -152,13 +133,18 @@ public class HomeFragment extends BaseFragment {
 				// 若是起始页，则删除列表
 				if (currentPageIndex == 0) {
 					postList.clear();
-					TextView isLoad = (TextView) findViewById(R.id.tv_is_loading);
-					isLoad.setVisibility(View.GONE);
+					if (object == null || object.size() == 0) {
+						tipsView.setText("还没帖子，赶紧发布吧！");
+						return;
+					} else {
+						tipsView.setVisibility(View.GONE);
+					}
 				}
-				currentPageIndex++;
-				postList.addAll(object);
-				postListAdapter.notifyDataSetChanged();
-
+				if (object != null && object.size() != 0) {
+					currentPageIndex++;
+					postList.addAll(object);
+					postListAdapter.notifyDataSetChanged();
+				}
 				refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_FINISHED);
 				refreshViewHolder.refreshFooterView(RefreshViewHolder.REFRESH_FINISHED);
 				swipeRefreshLayout.setRefreshCompleted();
@@ -168,8 +154,7 @@ public class HomeFragment extends BaseFragment {
 			@Override
 			public void onError(int code, String msg) {
 				ToastUtil.showShort("查询失败！" + msg);
-				TextView isLoad = (TextView) findViewById(R.id.tv_is_loading);
-				isLoad.setText("还没帖子，赶紧发布吧！");
+				tipsView.setText("还没帖子，赶紧发布吧！");
 			}
 		});
 	}
