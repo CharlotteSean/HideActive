@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.hideactive.R;
+import com.hideactive.util.PushUtil;
 
 public class SettingFragment extends BaseFragment {
 
@@ -25,6 +26,8 @@ public class SettingFragment extends BaseFragment {
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 注销登录设备
+                PushUtil.logoutInstallation(getActivity());
                 application.logout();
             }
         });

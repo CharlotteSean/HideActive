@@ -135,7 +135,6 @@ public class MessageFragment extends BaseFragment {
 		query.findObjects(getActivity(), new FindListener<Message>() {
 			@Override
 			public void onSuccess(List<Message> object) {
-				Log.e("loadMessage", "object: " + object.size());
 				// 若是起始页，则删除列表
 				if (currentPageIndex == 0) {
 					messageList.clear();

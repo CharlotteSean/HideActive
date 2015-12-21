@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.hideactive.R;
 import com.hideactive.model.User;
 import com.hideactive.util.ActivityCollector;
+import com.hideactive.util.PushUtil;
 import com.hideactive.util.ToastUtil;
 
 import cn.bmob.v3.BmobUser;
@@ -85,6 +86,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
             @Override
             public void done(User user, BmobException e) {
                 if (user != null) {
+                    // 更新登录信息
+                    PushUtil.updateInstallation(LoginActivity.this,user.getObjectId());
+                    // 跳转
                     openActivityAndClose(new Intent(LoginActivity.this, MainActivity.class));
                 } else {
                     ToastUtil.showShort("账号或密码错误！");

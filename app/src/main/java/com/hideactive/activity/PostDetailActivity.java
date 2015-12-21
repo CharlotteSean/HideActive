@@ -27,9 +27,13 @@ import com.hideactive.model.Message;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
 import com.hideactive.util.DateUtil;
+import com.hideactive.util.PushUtil;
 import com.hideactive.util.ToastUtil;
 import com.hideactive.util.ViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -525,7 +529,7 @@ public class PostDetailActivity extends BaseActivity {
      * 发送一条消息
      * @param content
      */
-    private void sendMessage(String content) {
+    private void sendMessage(final String content) {
         Message message = new Message();
         message.setContent(content);
         message.setFromUser(application.getCurrentUser());
@@ -534,7 +538,15 @@ public class PostDetailActivity extends BaseActivity {
         message.save(this, new SaveListener() {
             @Override
             public void onSuccess() {
-                // TODO: 12/21/2015
+                // 发送推送
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("username", application.getCurrentUser().getNickname());
+                    jsonObject.put("content", content);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                PushUtil.push2User(PostDetailActivity.this, mPost.getAuthor().getObjectId(), jsonObject.toString());
             }
 
             @Override
