@@ -111,7 +111,7 @@ public class PostListAdapter extends BaseAdapter {
 		Like like = new Like(uId, list.get(position).getObjectId());
 		LikesDB likesDB = new LikesDB(context, uId);
 		postLike.setSelected(likesDB.isLike(like));
-
+		likesDB.closedDB();
 		postLike.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -120,12 +120,12 @@ public class PostListAdapter extends BaseAdapter {
 				if (user.getObjectId().equals(list.get(position).getAuthor().getObjectId())) {
 					return;
 				}
+				postLike.setClickable(false);
 				Post post = new Post();
 				post.setObjectId(list.get(position).getObjectId());
 				BmobRelation relation = new BmobRelation();
-				String uId = SessionApplication.getInstance().getCurrentUser().getObjectId();
-				final Like like = new Like(uId, list.get(position).getObjectId());
-				final LikesDB likesDB = new LikesDB(context, uId);
+				final Like like = new Like(user.getObjectId(), list.get(position).getObjectId());
+				final LikesDB likesDB = new LikesDB(context, user.getObjectId());
 				if (postLike.isSelected()) {
 					// 取消点赞
 					relation.remove(user);
@@ -137,7 +137,9 @@ public class PostListAdapter extends BaseAdapter {
 							postLike.setSelected(false);
 							postLikeNum.setText(String.valueOf(Integer.parseInt(postLikeNum.getText().toString()) - 1));
 							likesDB.delete(like);
+							postLike.setClickable(true);
 						}
+
 						@Override
 						public void onFailure(int arg0, String arg1) {
 						}
@@ -154,11 +156,14 @@ public class PostListAdapter extends BaseAdapter {
 							postLike.setSelected(true);
 							postLikeNum.setText(String.valueOf(Integer.parseInt(postLikeNum.getText().toString()) + 1));
 							likesDB.addOne(like);
+							postLike.setClickable(true);
 						}
+
 						@Override
 						public void onFailure(int i, String s) {
 						}
 					});
+					likesDB.closedDB();
 				}
 			}
 		});

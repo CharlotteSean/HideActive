@@ -185,13 +185,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+            <ListView
+                android:id="@+id/lv_post_like"
+                style="@style/NormalListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
             <Button
                 android:id="@+id/post_detail_tips"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/bg_grey2white_selector"
                 android:gravity="center"
-                android:text="aaa"
                 android:textColor="@color/text_color_1"
                 android:textSize="16sp" />
         </LinearLayout>

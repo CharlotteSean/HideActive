@@ -15,10 +15,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hideactive.R;
+import com.hideactive.SessionApplication;
 import com.hideactive.adapter.CommentListAdapter;
+import com.hideactive.adapter.LikeListAdapter;
 import com.hideactive.config.ImageLoaderOptions;
+import com.hideactive.db.LikesDB;
 import com.hideactive.dialog.ImageDetailDialog;
 import com.hideactive.model.Comment;
+import com.hideactive.model.Like;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
 import com.hideactive.util.DateUtil;
@@ -30,7 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobPointer;
+import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
 import cn.bmob.v3.listener.SaveListener;
@@ -48,10 +54,15 @@ public class PostDetailActivity extends BaseActivity {
     private Button commentNumBtn;
     private Button likeNumBtn;
     private ListView commentListView;
+    private ListView likeListView;
     private Button tipsBtn;
 
+    private View commentEare;
     private EditText commentContentView;
     private Button commentSendBtn;
+    private Button sendLikeBTn;
+
+    private LikesDB likesDB;
 
     private int currentCommentNum;
     private int currentLikeNum;
@@ -59,6 +70,8 @@ public class PostDetailActivity extends BaseActivity {
     private Post mPost;
     private List<Comment> commentList;
     private CommentListAdapter commentListAdapter;
+    private List<User> likeList;
+    private LikeListAdapter likeListAdapter;
 
     private int currentPageIndex;
 
@@ -66,6 +79,7 @@ public class PostDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
+        likesDB = new LikesDB(this, application.getCurrentUser().getObjectId());
         initView();
         initPost();
     }
@@ -85,6 +99,7 @@ public class PostDetailActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
     	super.onDestroy();
+        likesDB.closedDB();
     	loadingDialog.dismiss();
     }
 
@@ -109,20 +124,69 @@ public class PostDetailActivity extends BaseActivity {
 
         commentNumBtn = (Button) findViewById(R.id.post_comment_num);
         likeNumBtn = (Button) findViewById(R.id.post_like_num);
+        commentNumBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!commentNumBtn.isSelected()) {
+                    // 切换选中状态
+                    commentNumBtn.setSelected(true);
+                    likeNumBtn.setSelected(false);
+                    // 显示
+                    commentListView.setVisibility(View.VISIBLE);
+                    likeListView.setVisibility(View.GONE);
+                    tipsBtn.setText("正在加载...");
+                    commentEare.setVisibility(View.VISIBLE);
+                    sendLikeBTn.setVisibility(View.GONE);
+                    // 加载数据
+                    currentPageIndex = 0;
+                    loadComments();
+                }
+            }
+        });
+        likeNumBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!likeNumBtn.isSelected()) {
+                    // 切换选中状态
+                    commentNumBtn.setSelected(false);
+                    likeNumBtn.setSelected(true);
+                    // 显示
+                    commentListView.setVisibility(View.GONE);
+                    likeListView.setVisibility(View.VISIBLE);
+                    tipsBtn.setText("正在加载...");
+                    commentEare.setVisibility(View.GONE);
+                    sendLikeBTn.setVisibility(View.VISIBLE);
+                    // 加载数据
+                    currentPageIndex = 0;
+                    loadLikes();
+                }
+            }
+        });
 
         commentListView = (ListView) findViewById(R.id.lv_post_comment);
         commentList = new ArrayList<Comment>();
         commentListAdapter = new CommentListAdapter(this, commentList);
         commentListView.setAdapter(commentListAdapter);
 
+        likeListView = (ListView) findViewById(R.id.lv_post_like);
+        likeList = new ArrayList<User>();
+        likeListAdapter = new LikeListAdapter(this, likeList);
+        likeListView.setAdapter(likeListAdapter);
+
         tipsBtn = (Button) findViewById(R.id.post_detail_tips);
+        tipsBtn.setText("正在加载");
         tipsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadComments();
+                if (commentNumBtn.isSelected()) {
+                    loadComments();
+                } else {
+                    loadLikes();
+                }
             }
         });
 
+        commentEare = findViewById(R.id.post_detail_comment);
         commentContentView = (EditText) findViewById(R.id.post_detail_comment_content);
         commentSendBtn = (Button) findViewById(R.id.post_detail_comment_send);
         commentSendBtn.setOnClickListener(new View.OnClickListener() {
@@ -136,8 +200,18 @@ public class PostDetailActivity extends BaseActivity {
                 sendComment(content);
             }
         });
+        sendLikeBTn = (Button) findViewById(R.id.post_detail_like);
+        sendLikeBTn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendLike();
+            }
+        });
     }
 
+    /**
+     * 刷新界面数据
+     */
     private void refreshView() {
         if (mPost.getAuthor().getLogo() != null) {
             ImageLoader.getInstance().displayImage(mPost.getAuthor().getLogo().getUrl(),
@@ -172,6 +246,15 @@ public class PostDetailActivity extends BaseActivity {
         commentNumBtn.setText(getString(R.string.comment) + " " + mPost.getCommentNum().toString());
         commentNumBtn.setSelected(true);
         likeNumBtn.setText(getString(R.string.like) + " " + mPost.getLikeNum().toString());
+
+        Like like = new Like(application.getCurrentUser().getObjectId(), mPost.getObjectId());
+        if (likesDB.isLike(like)) {
+            sendLikeBTn.setSelected(true);
+            sendLikeBTn.setText(getString(R.string.unlike));
+        } else {
+            sendLikeBTn.setSelected(false);
+            sendLikeBTn.setText(getString(R.string.like));
+        }
     }
 
     /***
@@ -260,6 +343,7 @@ public class PostDetailActivity extends BaseActivity {
                     tipsBtn.setClickable(true);
                 }
             }
+
             @Override
             public void onError(int code, String msg) {
                 tipsBtn.setText("暂无评论");
@@ -272,10 +356,11 @@ public class PostDetailActivity extends BaseActivity {
      * @param content
      */
     private void sendComment(String content) {
+        // 还原输入栏
         hideSoftInputView();
         commentContentView.setText("");
         commentContentView.clearFocus();
-
+        // 发送
         User user = application.getCurrentUser();
         Post post = new Post();
         post.setObjectId(mPost.getObjectId());
@@ -301,17 +386,136 @@ public class PostDetailActivity extends BaseActivity {
                             loadComments();
                         }
                     }
+
                     @Override
                     public void onFailure(int code, String msg) {
                         ToastUtil.showShort("评论失败：" + msg);
                     }
                 });
             }
+
             @Override
             public void onFailure(int code, String msg) {
                 ToastUtil.showShort("评论失败：" + msg);
             }
         });
+    }
+
+    /**
+     * 加载点赞
+     */
+    private void loadLikes() {
+        BmobQuery<User> query = new BmobQuery<User>();
+        Post post = new Post();
+        post.setObjectId(mPost.getObjectId());
+        query.addWhereRelatedTo("likes", new BmobPointer(post));
+        query.order("createdAt");
+        query.setLimit(PAGE_SIZE);
+        query.setSkip(PAGE_SIZE * currentPageIndex);
+        query.findObjects(this, new FindListener<User>() {
+            @Override
+            public void onSuccess(List<User> object) {
+                // 若是起始页，则删除列表
+                if (currentPageIndex == 0) {
+                    likeList.clear();
+                    if (object != null && object.size() == 0) {
+                        tipsBtn.setText("暂无点赞");
+                        tipsBtn.setClickable(false);
+                        return;
+                    }
+                }
+                currentPageIndex++;
+                likeList.addAll(object);
+                likeListAdapter.notifyDataSetChanged();
+                setListViewHeightBasedOnChildren(likeListView);
+
+                if (likeList.size() < PAGE_SIZE * currentPageIndex) {
+                    tipsBtn.setText("无更多点赞");
+                    tipsBtn.setClickable(false);
+                } else {
+                    tipsBtn.setText("加载更多");
+                    tipsBtn.setClickable(true);
+                }
+            }
+
+            @Override
+            public void onError(int code, String msg) {
+                tipsBtn.setText("暂无点赞");
+            }
+        });
+    }
+
+    /**
+     * 点赞/取消点赞
+     */
+    private void sendLike() {
+        final User user = application.getCurrentUser();
+        // 若是自己发布，则不可点
+        if (user.getObjectId().equals(mPost.getAuthor().getObjectId())) {
+            return;
+        }
+        sendLikeBTn.setClickable(false);
+        Post post = new Post();
+        post.setObjectId(mPost.getObjectId());
+        BmobRelation relation = new BmobRelation();
+        final Like like = new Like(user.getObjectId(), mPost.getObjectId());
+        if (sendLikeBTn.isSelected()) {
+            // 取消点赞
+            relation.remove(user);
+            post.setLikes(relation);
+            post.increment("likeNum", -1);
+            post.update(this, new UpdateListener() {
+                @Override
+                public void onSuccess() {
+                    currentLikeNum--;
+                    sendLikeBTn.setSelected(false);
+                    sendLikeBTn.setText(getString(R.string.like));
+                    likesDB.delete(like);
+                    likeNumBtn.setText(getString(R.string.like) + " " + currentLikeNum);
+                    if (likeList.size() < PAGE_SIZE * currentPageIndex) {
+                        for (int i = 0; i < likeList.size(); i++) {
+                            if (likeList.get(i).getObjectId().equalsIgnoreCase(user.getObjectId())) {
+                                likeList.remove(i);
+                                break;
+                            }
+                        }
+                        likeListAdapter.notifyDataSetChanged();
+                        setListViewHeightBasedOnChildren(likeListView);
+                    }
+                    sendLikeBTn.setClickable(true);
+                }
+                @Override
+                public void onFailure(int arg0, String arg1) {
+                }
+            });
+            return;
+        } else {
+            // 点赞
+            relation.add(user);
+            post.setLikes(relation);
+            post.increment("likeNum", 1);
+            post.update(this, new UpdateListener() {
+                @Override
+                public void onSuccess() {
+                    currentLikeNum++;
+                    sendLikeBTn.setSelected(true);
+                    sendLikeBTn.setText(getString(R.string.unlike));
+                    likesDB.addOne(like);
+                    likeNumBtn.setText(getString(R.string.like) + " " + currentLikeNum);
+                    if (likeList.size() < PAGE_SIZE * currentPageIndex) {
+                        likeList.add(user);
+                        likeListAdapter.notifyDataSetChanged();
+                        setListViewHeightBasedOnChildren(likeListView);
+                    } else {
+                        loadLikes();
+                    }
+                    sendLikeBTn.setClickable(true);
+                }
+                @Override
+                public void onFailure(int i, String s) {
+                }
+            });
+        }
     }
 
 }

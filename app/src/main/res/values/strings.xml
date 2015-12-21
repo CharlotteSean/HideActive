@@ -35,5 +35,6 @@
     <string name="say_something">说点什么吧</string>
     <string name="comment">评论</string>
     <string name="like">赞</string>
+    <string name="unlike">取消赞</string>
 
 </resources>

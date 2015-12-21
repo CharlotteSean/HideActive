@@ -26,6 +26,15 @@ public class LikesDB {
 	}
 
 	/**
+	 * 关闭数据库
+	 */
+	public void closedDB() {
+		if (db != null && db.isOpen()) {
+			db.close();
+		}
+	}
+
+	/**
 	 * 添加一条喜欢的帖子
 	 * @param like
 	 * @return

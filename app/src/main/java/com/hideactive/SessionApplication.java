@@ -126,38 +126,4 @@ public class SessionApplication extends Application{
 		context.startActivity(intent);
 	}
 
-	/**
-	 * 初始化用户数据
-	 */
-	private void initDateForUser() {
-		User user = getCurrentUser();
-		// 将用户喜欢的帖子列表存至缓存
-		BmobQuery<Like> query = new BmobQuery<Like>();
-		//查询playerName叫“比目”的数据
-		query.addWhereEqualTo("playerName", "比目");
-		//返回50条数据，如果不加上这条语句，默认返回10条数据
-		query.setLimit(50);
-		//执行查询方法
-//		query.findObjects(this, new FindListener<Like>() {
-//			@Override
-//			public void onSuccess(List<Like> object) {
-//				toast("查询成功：共"+object.size()+"条数据。");
-//				for (GameScore gameScore : object) {
-//					//获得playerName的信息
-//					gameScore.getPlayerName();
-//					//获得数据的objectId信息
-//					gameScore.getObjectId();
-//					//获得createdAt数据创建时间（注意是：createdAt，不是createAt）
-//					gameScore.getCreatedAt();
-//				}
-//			}
-//			@Override
-//			public void onError(int code, String msg) {
-//				// TODO Auto-generated method stub
-//				toast("查询失败："+msg);
-//			}
-//		});
-
-	}
-
 }

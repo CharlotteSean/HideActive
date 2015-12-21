@@ -17,6 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -26,31 +27,14 @@
                 android:src="@mipmap/user_logo_default"
                 app:civ_border_width="0dp"
                 app:civ_border_color="@color/white"/>
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_small"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/user_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_color_1"
-                    android:textSize="14sp" />
-                <TextView
-                    android:id="@+id/comment_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_color_2"
-                    android:textSize="12sp" />
-                <TextView
-                    android:id="@+id/comment_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/text_color_1"
-                    android:textSize="14sp" />
-            </LinearLayout>
+                android:text="sda"
+                android:textColor="@color/text_color_1"
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
     <View
