@@ -90,7 +90,7 @@ public class SessionApplication extends Application{
 	 */
 	public UserConfig getUserConfig() {
         if (userConfig == null) {
-			userConfig = new UserConfig(this);
+			userConfig = new UserConfig(this, getCurrentUser().getObjectId());
         }
         return userConfig;
     }
@@ -126,6 +126,7 @@ public class SessionApplication extends Application{
 	 */
 	public void logout() {
 		BmobUser.logOut(context);
+		userConfig = null;
 		finishAll();
 		Intent intent = new Intent(context, LoginActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -13,6 +13,7 @@
     <color name="grey_dark_transparent">#66616161</color>
     <color name="blue">#7DBFF3</color>
     <color name="blue_dark">#65ade7</color>
+    <color name="green_light">#5AEB97</color>
 
     <color name="actionbar_bg">#303537</color>
     <color name="actionbar_item_normal">#303537</color>

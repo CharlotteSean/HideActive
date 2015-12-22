@@ -32,9 +32,18 @@
     <string name="male">男</string>
     <string name="female">女</string>
 
+    <string name="photo_camera">拍照</string>
+    <string name="photo_native">从相册选择</string>
+
     <string name="say_something">说点什么吧</string>
     <string name="comment">评论</string>
     <string name="like">赞</string>
     <string name="unlike">取消赞</string>
+
+    <string name="is_notify">接收新评论通知</string>
+    <string name="is_notify_detail">通知显示评论详情</string>
+    <string name="is_notify_voice">声音</string>
+    <string name="is_notify_virbate">振动</string>
+    <string name="about">关于</string>
 
 </resources>

@@ -77,11 +77,8 @@ public class NotifyUtil {
     }
 
     /** 取消指定通知栏
-     * @Title: cancelNotify
-     * @Description: TODO
      * @param
      * @return
-     * @throws
      */
     public void cancelNotify(){
         if(mNotificationManager!=null){
@@ -90,11 +87,8 @@ public class NotifyUtil {
     }
 
     /** 取消所有通知栏
-     * @Title: cancelAll
-     * @Description: TODO
      * @param
      * @return
-     * @throws
      */
     public void cancelAll(){
         if(mNotificationManager!=null){

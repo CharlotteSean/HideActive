@@ -51,7 +51,9 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:name="com.hideactive.activity.PostDetailActivity" >
         </activity>
-
+        <activity
+            android:name="com.hideactive.activity.AboutActivity" >
+        </activity>
 
 
         <service

@@ -1,6 +1,5 @@
 package com.hideactive.activity;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -8,13 +7,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bmob.BmobProFile;
@@ -22,9 +20,9 @@ import com.bmob.btp.callback.UploadListener;
 import com.hideactive.R;
 import com.hideactive.config.Constant;
 import com.hideactive.config.ImageLoaderOptions;
+import com.hideactive.dialog.CameraOrNativeDialog;
 import com.hideactive.dialog.EditTextDialog;
 import com.hideactive.dialog.SelectSexDialog;
-import com.hideactive.fragment.BaseFragment;
 import com.hideactive.model.User;
 import com.hideactive.util.PhotoUtil;
 import com.hideactive.util.ToastUtil;
@@ -39,6 +37,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UserInfoActivity extends BaseActivity implements View.OnClickListener {
 
     private static final int REQUEST_CODE_IMAGE_NATIVE = 0;
+    private static final int REQUEST_CODE_IMAGE_CAMERA = 1;
 
     private CircleImageView userLogoView;
     private TextView userNameView;
@@ -49,6 +48,9 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     private View userNameItemView;
     private View userSexItemView;
     private View userAgeItemView;
+
+    private String localCameraPath;// 拍照后得到的图片地址
+    private String imagePath;// 上传的图片地址
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +103,20 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.user_item_logo:
-                selectImageFromLocal();
+                CameraOrNativeDialog cameraOrNativeDialog = new CameraOrNativeDialog(this, new CameraOrNativeDialog.OnSelectedListener() {
+                    @Override
+                    public void onSelected(int type) {
+                        switch (type) {
+                            case CameraOrNativeDialog.CAMERA:
+                                selectImageFromCamera();
+                                break;
+                            case CameraOrNativeDialog.NATIVE:
+                                selectImageFromLocal();
+                                break;
+                        }
+                    }
+                });
+                cameraOrNativeDialog.show();
                 break;
             case R.id.user_item_name:
                 EditTextDialog editNameDialog = new EditTextDialog(this,
@@ -212,9 +227,11 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                     }
                 });
             }
+
             @Override
             public void onProgress(int i) {
             }
+
             @Override
             public void onError(int i, String s) {
             }
@@ -235,6 +252,22 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     }
 
     /**
+     * 启动相机拍照
+     */
+    public void selectImageFromCamera() {
+        File dir = new File(Constant.IMAGE_CACHE_PATH + File.separator);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File file = new File(dir, String.valueOf(System.currentTimeMillis()));
+        localCameraPath = file.getPath();
+        Uri imageUri = Uri.fromFile(file);
+        Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(openCameraIntent, REQUEST_CODE_IMAGE_CAMERA);
+    }
+
+    /**
      * 获取本地图片
      */
     public void selectImageFromLocal() {
@@ -251,34 +284,49 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CODE_IMAGE_NATIVE && data != null) {
-                Uri selectedImage = data.getData();
-                if (selectedImage != null) {
-                    Cursor cursor = this.getContentResolver().query(
-                            selectedImage, null, null, null, null);
-                    cursor.moveToFirst();
-                    int columnIndex = cursor.getColumnIndex("_data");
-                    String localSelectPath = cursor.getString(columnIndex);
-                    cursor.close();
-                    if (localSelectPath == null || localSelectPath.equals("null")) {
-                        ToastUtil.showShort("未取到图片！");
-                        return;
+            switch (requestCode) {
+                case REQUEST_CODE_IMAGE_CAMERA:
+                    // 获取拍照的压缩图片
+                    String cameraPath = Constant.IMAGE_CACHE_PATH + File.separator + String.valueOf(System.currentTimeMillis());
+                    Bitmap cameraBitmap = PhotoUtil.compressImage(localCameraPath, cameraPath, true);
+                    imagePath = cameraPath;
+                    // 更新头像
+                    uploadLogo(imagePath, cameraBitmap);
+                    break;
+                case REQUEST_CODE_IMAGE_NATIVE:
+                    if (data != null) {
+                        Uri selectedImage = data.getData();
+                        if (selectedImage != null) {
+                            Cursor cursor = getContentResolver().query(
+                                    selectedImage, null, null, null, null);
+                            cursor.moveToFirst();
+                            int columnIndex = cursor.getColumnIndex("_data");
+                            String localSelectPath = cursor.getString(columnIndex);
+                            cursor.close();
+                            if (localSelectPath == null || localSelectPath.equals("null")) {
+                                ToastUtil.showShort("未取到图片！");
+                                return;
+                            }
+                            Bitmap nativeBitmap = null;
+                            File localFile = new File(localSelectPath);
+                            // 若此文件小于100KB，直接使用。为了减轻缓存容量
+                            if (localFile.length() < 102400) {
+                                nativeBitmap = BitmapFactory.decodeFile(localSelectPath);
+                                imagePath = localSelectPath;
+                            } else {
+                                String nativePath = Constant.IMAGE_CACHE_PATH  + File.separator + String.valueOf(System.currentTimeMillis());
+                                nativeBitmap = PhotoUtil.compressImage(localSelectPath, nativePath, false);
+                                imagePath = nativePath;
+                            }
+                            // 更新头像
+                            uploadLogo(imagePath, nativeBitmap);
+                        }
                     }
-                    Bitmap nativeBitmap = null;
-                    File localFile = new File(localSelectPath);
-                    // 若此文件小于100KB，直接使用。为了减轻缓存容量
-                    if (localFile.length() < 102400) {
-                        nativeBitmap = BitmapFactory.decodeFile(localSelectPath);
-                    } else {
-                        String nativePath = Constant.IMAGE_CACHE_PATH  + File.separator + String.valueOf(System.currentTimeMillis());
-                        nativeBitmap = PhotoUtil.compressImage(localSelectPath, nativePath, false);
-                        localSelectPath = nativePath;
-                    }
-                    uploadLogo(localSelectPath, nativeBitmap);
-                }
+                    break;
             }
         }
     }
+
 }

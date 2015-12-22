@@ -13,6 +13,7 @@ import com.hideactive.R;
 import com.hideactive.SessionApplication;
 import com.hideactive.activity.LoginActivity;
 import com.hideactive.activity.SplashActivity;
+import com.hideactive.config.UserConfig;
 import com.hideactive.util.NotifyUtil;
 
 import org.json.JSONException;
@@ -33,6 +34,24 @@ public class MessageReceiver extends BroadcastReceiver {
             try {
                 String message = new JSONObject(intent.getStringExtra(PushConstants.EXTRA_PUSH_MESSAGE_STRING)).optString("alert");
                 JSONObject jsonObject = new JSONObject(message);
+
+                UserConfig userConfig = SessionApplication.getInstance().getUserConfig();
+                boolean isNotify = userConfig.isAllowNotify();
+                if (!isNotify) {
+                    return;
+                }
+                boolean isNotifyDetail = userConfig.isAllowNotifyDetail();
+                String content = null;
+                if (isNotifyDetail) {
+                    content = jsonObject.optString("username")
+                            + ": "
+                            + jsonObject.optString("content");
+                } else {
+                    content = "您有新的评论";
+                }
+                boolean isAllowVoice = userConfig.isAllowVoice();
+                boolean isAllowVirbate = userConfig.isAllowVibrate();
+
                 Intent targetIntent = null;
                 if (isRunning(context)) {
                     targetIntent = null;
@@ -40,8 +59,9 @@ public class MessageReceiver extends BroadcastReceiver {
                     targetIntent = new Intent(context, SplashActivity.class);
                 }
                 NotifyUtil.getInstance(context).showNotifyWithExtras(
-                        true, true,
-                        R.mipmap.tab_home_selected, "您有新的评论", jsonObject.optString("username"), jsonObject.optString("content"),
+                        isAllowVoice, isAllowVirbate,
+                        R.mipmap.tab_home_normal, "您有新的评论",
+                        context.getString(R.string.app_name), content,
                         targetIntent
                 );
             } catch (JSONException e) {

@@ -10,6 +10,7 @@ import com.hideactive.util.ActivityCollector;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -26,6 +27,10 @@ public class BaseActivity extends Activity {
 	    loadingDialog = new LoadingDialog(this);
 	    application = SessionApplication.getInstance();
 		application.addActivity(this);
+		if (android.os.Build.VERSION.SDK_INT >= 14) {
+			getWindow().getDecorView().setSystemUiVisibility(
+					View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+		}
 	}
 	
 	@Override

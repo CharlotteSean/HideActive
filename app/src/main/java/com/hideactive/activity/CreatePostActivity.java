@@ -262,6 +262,5 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                     break;
             }
         }
-        Log.d("", "imagePath : " + imagePath);
     }
 }
