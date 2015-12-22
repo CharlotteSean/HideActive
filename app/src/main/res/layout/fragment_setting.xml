@@ -64,7 +64,7 @@
                 toggle:offColor="@color/white"
                 toggle:spotColor="@color/white"
                 toggle:offBorderColor="@color/grey_light"
-                toggle:borderWidth="@dimen/line_width"
+                toggle:borderWidth="1dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"/>
             <View
@@ -100,7 +100,7 @@
                 toggle:offColor="@color/white"
                 toggle:spotColor="@color/white"
                 toggle:offBorderColor="@color/grey_light"
-                toggle:borderWidth="@dimen/line_width"
+                toggle:borderWidth="1dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"/>
             <View
@@ -136,7 +136,7 @@
                 toggle:offColor="@color/white"
                 toggle:spotColor="@color/white"
                 toggle:offBorderColor="@color/grey_light"
-                toggle:borderWidth="@dimen/line_width"
+                toggle:borderWidth="1dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"/>
             <View
@@ -172,7 +172,7 @@
                 toggle:offColor="@color/white"
                 toggle:spotColor="@color/white"
                 toggle:offBorderColor="@color/grey_light"
-                toggle:borderWidth="@dimen/line_width"
+                toggle:borderWidth="1dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"/>
             <View

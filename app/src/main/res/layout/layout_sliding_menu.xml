@@ -52,7 +52,7 @@
                 android:clickable="true"
                 android:orientation="horizontal">
                 <ImageView
-                    android:src="@mipmap/tab_home_normal"
+                    android:src="@mipmap/tab_home_selected"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <TextView
@@ -74,7 +74,7 @@
                 android:clickable="true"
                 android:orientation="horizontal">
                 <ImageView
-                    android:src="@mipmap/tab_message_normal"
+                    android:src="@mipmap/tab_message_selected"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <TextView
@@ -96,7 +96,7 @@
                 android:clickable="true"
                 android:orientation="horizontal">
                 <ImageView
-                    android:src="@mipmap/tab_user_normal"
+                    android:src="@mipmap/tab_user_selected"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <TextView

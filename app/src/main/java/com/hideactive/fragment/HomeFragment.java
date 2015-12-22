@@ -1,6 +1,7 @@
 package com.hideactive.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.hideactive.activity.PostDetailActivity;
 import com.hideactive.adapter.PostListAdapter;
 import com.hideactive.model.Post;
 import com.hideactive.util.ToastUtil;
+import com.hideactive.util.ViewUtil;
 import com.hideactive.widget.RefreshViewHolder;
 import com.hideactive.widget.SuperSwipeRefreshLayout;
 
@@ -64,7 +66,7 @@ public class HomeFragment extends BaseFragment {
 		});
 
 		swipeRefreshLayout = (SuperSwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-		swipeRefreshLayout.setHeaderViewBackgroundColor(getResources().getColor(R.color.refresh_header_bg));
+//		swipeRefreshLayout.setHeaderViewBackgroundColor(getResources().getColor(R.color.refresh_header_bg));
 		refreshViewHolder = new RefreshViewHolder(getActivity());
 		swipeRefreshLayout.setHeaderView(refreshViewHolder.getHeaderView());
 		swipeRefreshLayout.setFooterView(refreshViewHolder.getFooterView());
@@ -82,12 +84,13 @@ public class HomeFragment extends BaseFragment {
 					@Override
 					public void onPullDistance(int distance) {
 						// 0 ~ 192PX, 0 ~ 64DP
-//                        Log.e("", "distance : " + ViewUtil.px2dip(getActivity(), distance));
+                        Log.e("", "distance : " + ViewUtil.px2dip(getActivity(), distance));
 					}
 
 					@Override
 					public void onPullEnable(boolean enable) {
 						if (enable) {
+							Log.e("", "enable : " + enable);
 							refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_CAN);
 						} else {
 							refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_CAN_NOT);

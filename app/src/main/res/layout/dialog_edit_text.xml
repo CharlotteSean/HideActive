@@ -7,8 +7,7 @@
 
 	<RelativeLayout
 		android:layout_width="300dp"
-		android:layout_height="48dp"
-		android:background="@color/actionbar_bg">
+		android:layout_height="48dp">
 		<TextView
 			android:id="@+id/title"
 			android:layout_width="wrap_content"
@@ -17,7 +16,7 @@
 			android:layout_alignParentLeft="true"
 			android:layout_centerVertical="true"
 			android:text="title"
-			android:textColor="@color/white"
+			android:textColor="@color/text_color_1"
 			android:textSize="16sp"
 			android:background="@color/transparent"/>
 		<ImageButton
@@ -29,6 +28,11 @@
 			android:layout_centerVertical="true"
 			android:background="@color/transparent"/>
 	</RelativeLayout>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/line_height"
+		android:background="@color/line_color"/>
 
    	<EditText
 		android:id="@+id/edit_text"

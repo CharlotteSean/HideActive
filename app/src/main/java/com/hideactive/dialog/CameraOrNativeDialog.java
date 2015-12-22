@@ -39,12 +39,14 @@ public class CameraOrNativeDialog extends Dialog{
 			@Override
 			public void onClick(View v) {
 				listener.onSelected(CAMERA);
+				cancel();
 			}
 		});
 		nativeBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				listener.onSelected(NATIVE);
+				cancel();
 			}
 		});
 	}
