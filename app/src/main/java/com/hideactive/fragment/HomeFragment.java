@@ -84,13 +84,13 @@ public class HomeFragment extends BaseFragment {
 					@Override
 					public void onPullDistance(int distance) {
 						// 0 ~ 192PX, 0 ~ 64DP
-                        Log.e("", "distance : " + ViewUtil.px2dip(getActivity(), distance));
+//                        Log.e("", "distance : " + ViewUtil.px2dip(getActivity(), distance));
 					}
 
 					@Override
 					public void onPullEnable(boolean enable) {
 						if (enable) {
-							Log.e("", "enable : " + enable);
+//							Log.e("", "enable : " + enable);
 							refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_CAN);
 						} else {
 							refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_CAN_NOT);

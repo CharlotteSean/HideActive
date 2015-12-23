@@ -55,6 +55,9 @@
         <activity
             android:name="com.hideactive.activity.AboutActivity" >
         </activity>
+        <activity
+            android:name="com.hideactive.activity.UserInfoActivity" >
+        </activity>
 
 
         <service

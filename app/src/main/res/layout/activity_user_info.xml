@@ -6,36 +6,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <include
-            layout="@layout/layout_top_bar"/>
-
         <RelativeLayout
             android:id="@+id/user_item_logo"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_below="@+id/top_bar"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
-            android:background="@drawable/item_normal_selector"
-            android:layout_marginTop="@dimen/dimen_small">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/text_color_1"
-                android:textSize="16sp"
-                android:text="@string/user_logo"/>
+            android:layout_height="240dp"
+            android:background="@color/grey_light">
+            <ImageView
+                android:id="@+id/user_logo_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/user_logo"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_centerInParent="true"
                 android:src="@mipmap/user_logo_default"
-                app:civ_border_width="0dp"
+                app:civ_border_width="2dp"
                 app:civ_border_color="@color/white"/>
+            <Button
+                android:id="@+id/btn_close"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:layout_margin="@dimen/dimen_small"
+                android:layout_width="56dp"
+                android:layout_height="48dp"
+                android:background="@color/transparent"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.3dp"
@@ -50,8 +49,7 @@
             android:layout_below="@+id/user_item_logo"
             android:paddingLeft="@dimen/dimen_small"
             android:paddingRight="@dimen/dimen_small"
-            android:clickable="true"
-            android:background="@drawable/item_normal_selector">
+            android:background="@color/white">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -80,11 +78,9 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@+id/user_item_name"
-            android:layout_marginTop="@dimen/dimen_small"
             android:paddingLeft="@dimen/dimen_small"
             android:paddingRight="@dimen/dimen_small"
-            android:clickable="true"
-            android:background="@drawable/item_normal_selector">
+            android:background="@color/white">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -115,8 +111,7 @@
             android:layout_below="@+id/user_item_sex"
             android:paddingLeft="@dimen/dimen_small"
             android:paddingRight="@dimen/dimen_small"
-            android:clickable="true"
-            android:background="@drawable/item_normal_selector">
+            android:background="@color/white">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -143,12 +138,11 @@
         <RelativeLayout
             android:id="@+id/user_item_signature"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/user_item_age"
             android:paddingLeft="@dimen/dimen_small"
             android:paddingRight="@dimen/dimen_small"
-            android:clickable="true"
-            android:background="@drawable/item_normal_selector">
+            android:background="@color/white">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

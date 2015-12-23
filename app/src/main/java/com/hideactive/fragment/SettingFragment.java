@@ -1,18 +1,30 @@
 package com.hideactive.fragment;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.hideactive.R;
 import com.hideactive.activity.AboutActivity;
+import com.hideactive.activity.LoginActivity;
+import com.hideactive.activity.MainActivity;
 import com.hideactive.activity.PersonalInfoActivity;
+import com.hideactive.config.Constant;
 import com.hideactive.config.UserConfig;
+import com.hideactive.util.FileUtil;
 import com.hideactive.util.PushUtil;
+import com.hideactive.util.ToastUtil;
 import com.zcw.togglebutton.ToggleButton;
+
+import java.io.File;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 public class SettingFragment extends BaseFragment implements View.OnClickListener {
 
@@ -21,13 +33,14 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     private View isNotifyDetailView;
     private View isNotifyVoiceView;
     private View isNotifyVirbateView;
+    private View clearCacheView;
     private View isAboutView;
 
     private ToggleButton isNotifyTb;
     private ToggleButton isNotifyDetailTb;
     private ToggleButton isNotifyVoiceTb;
     private ToggleButton isNotifyVirbateTb;
-
+    private TextView cacheSizeTv;
     private Button logoutBtn;
 
     private UserConfig userConfig;
@@ -75,9 +88,11 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         isNotifyDetailView = findViewById(R.id.setting_item_is_notify_detail);
         isNotifyVoiceView = findViewById(R.id.setting_item_is_notify_voice);
         isNotifyVirbateView = findViewById(R.id.setting_item_is_notify_virbate);
+        clearCacheView = findViewById(R.id.setting_item_clear_cache);
         isAboutView = findViewById(R.id.setting_item_about);
 
         userInfoItemView.setOnClickListener(this);
+        clearCacheView.setOnClickListener(this);
         isAboutView.setOnClickListener(this);
 
         isNotifyTb = (ToggleButton) findViewById(R.id.tb_is_notify);
@@ -124,6 +139,9 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
             }
         });
 
+        cacheSizeTv = (TextView) findViewById(R.id.tv_cache_size);
+        cacheSizeTv.setText(FileUtil.getFormatSize(FileUtil.getFolderSize(new File(Constant.IMAGE_CACHE_PATH))));
+
         logoutBtn = (Button) findViewById(R.id.btn_logout);
         logoutBtn.setOnClickListener(this);
     }
@@ -134,6 +152,9 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
             case R.id.setting_item_user_info:
                 startActivity(new Intent(getActivity(), PersonalInfoActivity.class));
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+                break;
+            case R.id.setting_item_clear_cache:
+                clearCacheTask.execute();
                 break;
             case R.id.setting_item_about:
                 startActivity(new Intent(getActivity(), AboutActivity.class));
@@ -146,5 +167,24 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 break;
         }
     }
+
+    /**
+     * 清除缓存异步任务
+     */
+    AsyncTask clearCacheTask = new AsyncTask() {
+        @Override
+        protected Object doInBackground(Object[] params) {
+            File file = new File(Constant.IMAGE_CACHE_PATH);
+            FileUtil.clearCache(file);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            ToastUtil.showShort("缓存清除完毕");
+            cacheSizeTv.setText(null);
+        }
+
+    };
 
 }

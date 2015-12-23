@@ -1,4 +1,4 @@
-<com.hideactive.widget.CustomRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/white"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
@@ -15,7 +15,6 @@
         android:padding="@dimen/dimen_small"
         android:background="@color/white"
         android:inputType="textMultiLine"
-        android:text="测试表情"
         android:textColor="@color/text_color_1"
         android:textSize="16sp"
         android:gravity="left|top"
@@ -59,7 +58,6 @@
             android:id="@+id/operation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_small"
             android:paddingLeft="@dimen/dimen_small"
             android:paddingRight="@dimen/dimen_small"
             android:layout_below="@+id/input_eare"
@@ -75,12 +73,14 @@
                 android:src="@drawable/add_native_selector"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_marginLeft="@dimen/dimen_small"
                 android:background="@color/transparent"/>
             <ImageButton
                 android:id="@+id/image_emoj"
                 android:src="@drawable/add_emoj_selector"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_marginLeft="@dimen/dimen_small"
                 android:background="@color/transparent"/>
         </LinearLayout>
         <View
@@ -94,4 +94,4 @@
             android:layout_height="120dp" />
     </LinearLayout>
 
-</com.hideactive.widget.CustomRelativeLayout>
+</RelativeLayout>

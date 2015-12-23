@@ -3,6 +3,7 @@ package com.hideactive.adapter;
 import java.util.List;
 
 import com.hideactive.SessionApplication;
+import com.hideactive.activity.UserInfoActivity;
 import com.hideactive.config.ImageLoaderOptions;
 import com.hideactive.db.LikesDB;
 import com.hideactive.dialog.ImageDetailDialog;
@@ -81,6 +82,12 @@ public class PostListAdapter extends BaseAdapter {
         } else {
 			userLogo.setImageResource(R.mipmap.user_logo_default);
 		}
+		userLogo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				UserInfoActivity.start(context, list.get(position).getAuthor().getObjectId());
+			}
+		});
 		userName.setText(list.get(position).getAuthor().getNickname());
 		String createAt = list.get(position).getCreatedAt();
 		postDate.setText(DateUtil.getDiffTime(DateUtil.string2Date(createAt)));

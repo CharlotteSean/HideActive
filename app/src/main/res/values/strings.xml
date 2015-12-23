@@ -30,6 +30,7 @@
     <string name="user_age">年龄</string>
     <string name="user_signature">个性签名</string>
     <string name="click_to_edit">点击填写</string>
+    <string name="wu">无</string>
 
     <string name="male">男</string>
     <string name="female">女</string>
@@ -46,6 +47,8 @@
     <string name="is_notify_detail">通知显示评论详情</string>
     <string name="is_notify_voice">声音</string>
     <string name="is_notify_virbate">振动</string>
+
+    <string name="clear_cache">清除缓存</string>
     <string name="about">关于</string>
 
 </resources>

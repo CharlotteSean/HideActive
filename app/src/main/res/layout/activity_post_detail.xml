@@ -120,7 +120,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/line_height"
                     android:background="@color/line_color"/>
-                <TextView
+                <com.hideactive.widget.EmoticonsTextView
                     android:id="@+id/post_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

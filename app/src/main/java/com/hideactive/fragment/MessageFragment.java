@@ -129,7 +129,7 @@ public class MessageFragment extends BaseFragment {
 		user.setObjectId(application.getCurrentUser().getObjectId());
 		query.addWhereEqualTo("toUser", new BmobPointer(user));
 		query.include("fromUser,post.author");
-		query.order("createdAt");
+		query.order("-createdAt");
 		query.setLimit(PAGE_SIZE);
 		query.setSkip(PAGE_SIZE * currentPageIndex);
 		query.findObjects(getActivity(), new FindListener<Message>() {

@@ -30,6 +30,7 @@ import com.hideactive.util.DateUtil;
 import com.hideactive.util.PushUtil;
 import com.hideactive.util.ToastUtil;
 import com.hideactive.util.ViewHolder;
+import com.hideactive.widget.EmoticonsTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
@@ -54,7 +55,7 @@ public class PostDetailActivity extends BaseActivity {
     private ImageView userLogo;
     private TextView userName;
     private TextView postDate;
-    private TextView postContent;
+    private EmoticonsTextView postContent;
     private ImageView postImage;
     private Button commentNumBtn;
     private Button likeNumBtn;
@@ -124,7 +125,7 @@ public class PostDetailActivity extends BaseActivity {
         userLogo = (ImageView) findViewById(R.id.user_logo);
         userName = (TextView) findViewById(R.id.user_name);
         postDate = (TextView) findViewById(R.id.post_date);
-        postContent = (TextView) findViewById(R.id.post_content);
+        postContent = (EmoticonsTextView) findViewById(R.id.post_content);
         postImage = (ImageView) findViewById(R.id.post_image);
 
         commentNumBtn = (Button) findViewById(R.id.post_comment_num);
@@ -227,7 +228,7 @@ public class PostDetailActivity extends BaseActivity {
         postDate.setText(DateUtil.getDiffTime(DateUtil.string2Date(createAt)));
         if (!TextUtils.isEmpty(mPost.getContent())) {
             postContent.setVisibility(View.VISIBLE);
-            postContent.setText(mPost.getContent());
+            postContent.setMText(mPost.getContent());
         } else {
             postContent.setVisibility(View.GONE);
         }

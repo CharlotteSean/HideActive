@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.hideactive.util.ViewUtil;
 
-public class EmoticonsEditText extends MTextView {
+public class EmoticonsEditText extends EditText {
 
 	public EmoticonsEditText(Context context) {
 		super(context);
@@ -34,16 +34,12 @@ public class EmoticonsEditText extends MTextView {
 	}
 
 	@Override
-	public void setMText(CharSequence cs) {
-		if (!TextUtils.isEmpty(cs)) {
-			super.setMText(replace(cs.toString()));
+	public void setText(CharSequence text, BufferType type) {
+		if (!TextUtils.isEmpty(text)) {
+			super.setText(replace(text.toString()), type);
 		} else {
-			super.setMText(cs);
+			super.setText(text, type);
 		}
-	}
-
-	public Editable getMText() {
-		return (Editable) super.getText();
 	}
 
 	private Pattern buildPattern() {
@@ -69,7 +65,6 @@ public class EmoticonsEditText extends MTextView {
 					spannableString.setSpan(imageSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 				start = (endIndex - 1);
 			}
-			Log.e("", "spannableString: " + spannableString);
 			return spannableString;
 		} catch (Exception e) {
 			return text;

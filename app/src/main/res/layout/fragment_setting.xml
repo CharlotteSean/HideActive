@@ -183,10 +183,41 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/setting_item_about"
+            android:id="@+id/setting_item_clear_cache"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_small"
+            android:paddingRight="@dimen/dimen_small"
+            android:clickable="true"
+            android:background="@drawable/item_normal_selector">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/text_color_1"
+                android:textSize="16sp"
+                android:text="@string/clear_cache"/>
+            <TextView
+                android:id="@+id/tv_cache_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/text_color_3"
+                android:textSize="16sp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/grey_dark_transparent"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/setting_item_about"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
             android:paddingLeft="@dimen/dimen_small"
             android:paddingRight="@dimen/dimen_small"
             android:clickable="true"

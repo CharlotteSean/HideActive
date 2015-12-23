@@ -37,7 +37,6 @@ import com.hideactive.model.User;
 import com.hideactive.util.FaceTextUtils;
 import com.hideactive.util.PhotoUtil;
 import com.hideactive.util.ToastUtil;
-import com.hideactive.widget.CustomRelativeLayout;
 import com.hideactive.widget.EmoticonsEditText;
 
 import java.io.File;
@@ -134,7 +133,12 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                     pager_emo.setVisibility(View.GONE);
                 } else {
                     hideSoftInputView();
-                    pager_emo.setVisibility(View.VISIBLE);
+                    pager_emo.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            pager_emo.setVisibility(View.VISIBLE);
+                        }
+                    }, 200);
                 }
                 break;
             case R.id.show_image_delete:
@@ -312,15 +316,6 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         }
         pager_emo.setAdapter(new EmoViewPagerAdapter(views));
 
-
-        CustomRelativeLayout mainView = (CustomRelativeLayout) findViewById(R.id.main_layout);
-        mainView.setOnSizeChangedListener(new CustomRelativeLayout.OnSizeChangedListener() {
-            @Override
-            public void onSizeChanged(int w, int h, int oldw, int oldh) {
-                Log.e("", "h: " + h + ", oldh: " + oldh);
-            }
-        });
-
     }
 
     private View getGridView(final int i) {
@@ -344,7 +339,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                 try {
                     if (inputView != null && !TextUtils.isEmpty(key)) {
                         int start = inputView.getSelectionStart();
-                        CharSequence content = inputView.getMText()
+                        CharSequence content = inputView.getText()
                                 .insert(start, key);
                         inputView.setText(content);
                         // 定位光标位置
