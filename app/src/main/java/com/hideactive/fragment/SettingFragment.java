@@ -1,6 +1,5 @@
 package com.hideactive.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,8 +9,7 @@ import android.widget.Button;
 
 import com.hideactive.R;
 import com.hideactive.activity.AboutActivity;
-import com.hideactive.activity.BaseFragmentActivity;
-import com.hideactive.activity.UserInfoActivity;
+import com.hideactive.activity.PersonalInfoActivity;
 import com.hideactive.config.UserConfig;
 import com.hideactive.util.PushUtil;
 import com.zcw.togglebutton.ToggleButton;
@@ -134,7 +132,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.setting_item_user_info:
-                startActivity(new Intent(getActivity(), UserInfoActivity.class));
+                startActivity(new Intent(getActivity(), PersonalInfoActivity.class));
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
                 break;
             case R.id.setting_item_about:

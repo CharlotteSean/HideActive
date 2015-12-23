@@ -85,7 +85,7 @@ public class MainActivity extends BaseFragmentActivity {
         userLogoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openActivity(new Intent(MainActivity.this, UserInfoActivity.class));
+                openActivity(new Intent(MainActivity.this, PersonalInfoActivity.class));
             }
         });
 

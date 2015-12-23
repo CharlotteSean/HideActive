@@ -1,6 +1,5 @@
 package com.hideactive.activity;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -9,14 +8,18 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.view.ViewPager;
+import android.text.Selection;
+import android.text.Spannable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -25,13 +28,21 @@ import android.widget.TextView;
 import com.bmob.BmobProFile;
 import com.bmob.btp.callback.UploadListener;
 import com.hideactive.R;
+import com.hideactive.adapter.EmoViewPagerAdapter;
+import com.hideactive.adapter.EmoteAdapter;
 import com.hideactive.config.Constant;
+import com.hideactive.model.FaceText;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
+import com.hideactive.util.FaceTextUtils;
 import com.hideactive.util.PhotoUtil;
 import com.hideactive.util.ToastUtil;
+import com.hideactive.widget.CustomRelativeLayout;
+import com.hideactive.widget.EmoticonsEditText;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.SaveListener;
@@ -41,9 +52,10 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     private static final int REQUEST_CODE_IMAGE_NATIVE = 0;
     private static final int REQUEST_CODE_IMAGE_CAMERA = 1;
 
-    private EditText inputView;
+    private EmoticonsEditText inputView;
     private ImageButton nativeButton;
     private ImageButton cameraButton;
+    private ImageButton emojButton;
     private ImageView showImage;
     private ImageButton showImageDeleteBtn;
     private RelativeLayout showImageEare;
@@ -86,26 +98,44 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             }
         });
 
-
-        inputView = (EditText) findViewById(R.id.input_eare);
+        inputView = (EmoticonsEditText) findViewById(R.id.input_eare);
+        inputView.setOnClickListener(this);
         nativeButton = (ImageButton) findViewById(R.id.image_native);
         nativeButton.setOnClickListener(this);
         cameraButton = (ImageButton) findViewById(R.id.image_camera);
         cameraButton.setOnClickListener(this);
+        emojButton = (ImageButton) findViewById(R.id.image_emoj);
+        emojButton.setOnClickListener(this);
+
         showImage = (ImageView) findViewById(R.id.show_image);
         showImageDeleteBtn = (ImageButton) findViewById(R.id.show_image_delete);
         showImageDeleteBtn.setOnClickListener(this);
         showImageEare = (RelativeLayout) findViewById(R.id.show_image_eare);
+
+        initEmoView();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.input_eare:
+                // 点击输入区域，隐藏表情输入区
+                pager_emo.setVisibility(View.GONE);
+                showSoftInputView();
+                break;
             case R.id.image_native:
                 selectImageFromLocal();
                 break;
             case R.id.image_camera:
                 selectImageFromCamera();
+                break;
+            case R.id.image_emoj:
+                if (pager_emo.isShown()) {
+                    pager_emo.setVisibility(View.GONE);
+                } else {
+                    hideSoftInputView();
+                    pager_emo.setVisibility(View.VISIBLE);
+                }
                 break;
             case R.id.show_image_delete:
                 localCameraPath = "";
@@ -263,4 +293,82 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             }
         }
     }
+
+    /******************************************* 表情部分 ******************************************************/
+
+    private ViewPager pager_emo;
+    private List<FaceText> emos;
+
+    /**
+     * 初始化表情布局
+     */
+    private void initEmoView() {
+        pager_emo = (ViewPager) findViewById(R.id.pager_emo);
+        emos = FaceTextUtils.faceTexts;
+
+        List<View> views = new ArrayList<View>();
+        for (int i = 0; i < 2; ++i) {
+            views.add(getGridView(i));
+        }
+        pager_emo.setAdapter(new EmoViewPagerAdapter(views));
+
+
+        CustomRelativeLayout mainView = (CustomRelativeLayout) findViewById(R.id.main_layout);
+        mainView.setOnSizeChangedListener(new CustomRelativeLayout.OnSizeChangedListener() {
+            @Override
+            public void onSizeChanged(int w, int h, int oldw, int oldh) {
+                Log.e("", "h: " + h + ", oldh: " + oldh);
+            }
+        });
+
+    }
+
+    private View getGridView(final int i) {
+        View view = View.inflate(this, R.layout.layout_emo_gridview, null);
+        GridView gridview = (GridView) view.findViewById(R.id.gridview);
+        List<FaceText> list = new ArrayList<FaceText>();
+        if (i == 0) {
+            list.addAll(emos.subList(0, 21));
+        } else if (i == 1) {
+            list.addAll(emos.subList(21, emos.size()));
+        }
+        final EmoteAdapter gridAdapter = new EmoteAdapter(CreatePostActivity.this,
+                list);
+        gridview.setAdapter(gridAdapter);
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1,
+                                    int position, long arg3) {
+                FaceText name = (FaceText) gridAdapter.getItem(position);
+                String key = name.text.toString();
+                try {
+                    if (inputView != null && !TextUtils.isEmpty(key)) {
+                        int start = inputView.getSelectionStart();
+                        CharSequence content = inputView.getMText()
+                                .insert(start, key);
+                        inputView.setText(content);
+                        // 定位光标位置
+                        CharSequence info = inputView.getText();
+                        if (info instanceof Spannable) {
+                            Spannable spanText = (Spannable) info;
+                            Selection.setSelection(spanText,
+                                    start + key.length());
+                        }
+                    }
+                } catch (Exception e) {
+                }
+            }
+        });
+        return view;
+    }
+
+    // 显示软键盘
+    public void showSoftInputView() {
+        if (getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+            if (getCurrentFocus() != null)
+                ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                        .showSoftInput(inputView, 0);
+        }
+    }
+
 }

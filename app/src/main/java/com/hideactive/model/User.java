@@ -12,6 +12,15 @@ public class User extends BmobUser {
 	private BmobFile logo;// 用户头像
 	private Integer sex;// 性别 0：男，1：女
 	private Integer age;// 年龄
+    private String signature;// 个性签名
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
 
     public String getNickname() {
         return nickname;

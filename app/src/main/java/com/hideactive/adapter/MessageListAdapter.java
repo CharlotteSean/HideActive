@@ -20,6 +20,7 @@ import com.hideactive.model.Post;
 import com.hideactive.model.User;
 import com.hideactive.util.DateUtil;
 import com.hideactive.util.ViewHolder;
+import com.hideactive.widget.EmoticonsTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -67,7 +68,7 @@ public class MessageListAdapter extends BaseAdapter {
 		TextView messageContent = ViewHolder.get(convertView, R.id.message_content);
 		ImageView postImage = ViewHolder.get(convertView, R.id.post_image);
 		TextView postUserName = ViewHolder.get(convertView, R.id.post_user_name);
-		TextView postContent = ViewHolder.get(convertView, R.id.post_content);
+		EmoticonsTextView postContent = ViewHolder.get(convertView, R.id.post_content);
 
         if (list.get(position).getFromUser().getLogo() != null) {
             ImageLoader.getInstance().displayImage(list.get(position).getFromUser().getLogo().getUrl(),
@@ -87,7 +88,7 @@ public class MessageListAdapter extends BaseAdapter {
 					postImage, ImageLoaderOptions.getOptions());
 		}
 		postUserName.setText("@" + list.get(position).getPost().getAuthor().getNickname());
-		postContent.setText(list.get(position).getPost().getContent());
+		postContent.setMText(list.get(position).getPost().getContent());
 
 		return convertView;
 	}

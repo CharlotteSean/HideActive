@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,7 +33,7 @@ import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.UpdateListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserInfoActivity extends BaseActivity implements View.OnClickListener {
+public class PersonalInfoActivity extends BaseActivity implements View.OnClickListener {
 
     private static final int REQUEST_CODE_IMAGE_NATIVE = 0;
     private static final int REQUEST_CODE_IMAGE_CAMERA = 1;
@@ -43,11 +42,13 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     private TextView userNameView;
     private TextView userSexView;
     private TextView userAgeView;
+    private TextView userSignatureView;
 
     private View userLogoItemView;
     private View userNameItemView;
     private View userSexItemView;
     private View userAgeItemView;
+    private View userSignatureItemView;
 
     private String localCameraPath;// 拍照后得到的图片地址
     private String imagePath;// 上传的图片地址
@@ -55,7 +56,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_userinfo);
+        setContentView(R.layout.activity_personal_info);
         initView();
     }
 
@@ -76,6 +77,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         userNameView = (TextView) findViewById(R.id.user_name);
         userSexView = (TextView) findViewById(R.id.user_sex);
         userAgeView = (TextView) findViewById(R.id.user_age);
+        userSignatureView = (TextView) findViewById(R.id.user_signature);
 
         User user = application.getCurrentUser();
         if (user.getLogo() != null) {
@@ -84,19 +86,24 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         } else {
             userLogoView.setImageResource(R.mipmap.user_logo_default);
         }
-        userNameView.setText(user.getNickname());
+        userNameView.setText(TextUtils.isEmpty(user.getNickname()) ?
+                getString(R.string.click_to_edit) : user.getNickname().toString());
         userSexView.setText(user.getSex().intValue() == 0 ? "男" : "女");
         userAgeView.setText(user.getAge().toString());
+        userSignatureView.setText(TextUtils.isEmpty(user.getSignature()) ?
+                getString(R.string.click_to_edit) : user.getSignature().toString());
 
         userLogoItemView = findViewById(R.id.user_item_logo);
         userNameItemView = findViewById(R.id.user_item_name);
         userSexItemView = findViewById(R.id.user_item_sex);
         userAgeItemView = findViewById(R.id.user_item_age);
+        userSignatureItemView = findViewById(R.id.user_item_signature);
 
         userLogoItemView.setOnClickListener(this);
         userNameItemView.setOnClickListener(this);
         userSexItemView.setOnClickListener(this);
         userAgeItemView.setOnClickListener(this);
+        userSignatureItemView.setOnClickListener(this);
     }
 
     @Override
@@ -120,7 +127,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.user_item_name:
                 EditTextDialog editNameDialog = new EditTextDialog(this,
-                        "昵称", "起个绚丽的名字吧！", InputType.TYPE_CLASS_TEXT, application.getCurrentUser().getNickname(),
+                        getString(R.string.user_name), "起个绚丽的名字吧！", InputType.TYPE_CLASS_TEXT, application.getCurrentUser().getNickname(),
                         new EditTextDialog.OnDoneListener() {
                             @Override
                             public void onDone(final String contentStr) {
@@ -170,7 +177,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.user_item_age:
                 EditTextDialog editAgeDialog = new EditTextDialog(this,
-                        "年龄", "你还是18岁吗？", InputType.TYPE_CLASS_NUMBER,
+                        getString(R.string.user_age), "你还是18岁吗？", InputType.TYPE_CLASS_NUMBER,
                         String.valueOf(application.getCurrentUser().getAge()),
                         new EditTextDialog.OnDoneListener() {
                             @Override
@@ -193,6 +200,32 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                             }
                         });
                 editAgeDialog.show();
+                break;
+            case R.id.user_item_signature:
+                EditTextDialog editSignatureDialog = new EditTextDialog(this,
+                        getString(R.string.user_signature), "你是个随意的人吗？", InputType.TYPE_CLASS_TEXT,
+                        application.getCurrentUser().getSignature(),
+                        new EditTextDialog.OnDoneListener() {
+                            @Override
+                            public void onDone(final String contentStr) {
+                                loadingDialog.show();
+                                User user = new User();
+                                user.setSignature(contentStr);
+                                updateUser(user, new UpdateListener() {
+                                    @Override
+                                    public void onSuccess() {
+                                        userSignatureView.setText(contentStr);
+                                        loadingDialog.dismiss();
+                                    }
+                                    @Override
+                                    public void onFailure(int i, String s) {
+                                        ToastUtil.showShort("更新用户信息失败:" + s);
+                                        loadingDialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
+                editSignatureDialog.show();
                 break;
             default:
                 break;

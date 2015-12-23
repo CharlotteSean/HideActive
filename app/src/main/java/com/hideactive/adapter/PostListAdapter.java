@@ -13,6 +13,7 @@ import com.hideactive.util.DateUtil;
 import com.hideactive.util.ToastUtil;
 import com.hideactive.util.ViewHolder;
 import com.hideactive.R;
+import com.hideactive.widget.EmoticonsTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.content.Context;
@@ -67,7 +68,7 @@ public class PostListAdapter extends BaseAdapter {
 		ImageView userLogo = ViewHolder.get(convertView, R.id.user_logo);
 		TextView userName = ViewHolder.get(convertView, R.id.user_name);
 		TextView postDate = ViewHolder.get(convertView, R.id.post_date);
-		TextView postContent = ViewHolder.get(convertView, R.id.post_content);
+		EmoticonsTextView postContent = ViewHolder.get(convertView, R.id.post_content);
 		ImageView postImage = ViewHolder.get(convertView, R.id.post_image);
 		ImageView postComment = ViewHolder.get(convertView, R.id.post_comment);
 		final ImageView postLike = ViewHolder.get(convertView, R.id.post_like);
@@ -85,7 +86,8 @@ public class PostListAdapter extends BaseAdapter {
 		postDate.setText(DateUtil.getDiffTime(DateUtil.string2Date(createAt)));
         if (!TextUtils.isEmpty(list.get(position).getContent())) {
             postContent.setVisibility(View.VISIBLE);
-            postContent.setText(list.get(position).getContent());
+//            postContent.setText(list.get(position).getContent());
+			postContent.setMText(list.get(position).getContent());
         } else {
             postContent.setVisibility(View.GONE);
         }

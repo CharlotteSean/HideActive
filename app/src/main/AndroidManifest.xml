@@ -42,10 +42,11 @@
             android:name="com.hideactive.activity.RegistActivity" >
         </activity>
         <activity
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:name="com.hideactive.activity.CreatePostActivity" >
         </activity>
         <activity
-            android:name="com.hideactive.activity.UserInfoActivity" >
+            android:name=".activity.PersonalInfoActivity" >
         </activity>
         <activity
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"

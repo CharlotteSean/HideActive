@@ -54,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.3dp"
             android:background="@color/grey"/>
-        <TextView
+        <com.hideactive.widget.EmoticonsTextView
             android:id="@+id/post_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
