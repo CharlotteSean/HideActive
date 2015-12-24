@@ -15,7 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hideactive.R;
-import com.hideactive.SessionApplication;
 import com.hideactive.adapter.CommentListAdapter;
 import com.hideactive.adapter.LikeListAdapter;
 import com.hideactive.config.ImageLoaderOptions;
@@ -26,10 +25,9 @@ import com.hideactive.model.Like;
 import com.hideactive.model.Message;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
-import com.hideactive.util.DateUtil;
 import com.hideactive.util.PushUtil;
+import com.hideactive.util.TimeUtil;
 import com.hideactive.util.ToastUtil;
-import com.hideactive.util.ViewHolder;
 import com.hideactive.widget.EmoticonsTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -40,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.listener.FindListener;
@@ -223,9 +220,12 @@ public class PostDetailActivity extends BaseActivity {
             ImageLoader.getInstance().displayImage(mPost.getAuthor().getLogo().getUrl(),
                     userLogo, ImageLoaderOptions.getOptions());
         }
-        userName.setText(mPost.getAuthor().getNickname());
+        String nickname = TextUtils.isEmpty(mPost.getAuthor().getNickname())
+                ? mPost.getAuthor().getUsername()
+                : mPost.getAuthor().getNickname();
+        userName.setText(nickname);
         String createAt = mPost.getCreatedAt();
-        postDate.setText(DateUtil.getDiffTime(DateUtil.string2Date(createAt)));
+        postDate.setText(TimeUtil.getDescriptionTimeFromTimestamp(TimeUtil.stringToLong(createAt, TimeUtil.FORMAT_DATE_TIME_SECOND)));
         if (!TextUtils.isEmpty(mPost.getContent())) {
             postContent.setVisibility(View.VISIBLE);
             postContent.setMText(mPost.getContent());

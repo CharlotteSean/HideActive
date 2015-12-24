@@ -10,23 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hideactive.R;
-import com.hideactive.SessionApplication;
 import com.hideactive.config.ImageLoaderOptions;
-import com.hideactive.db.LikesDB;
-import com.hideactive.dialog.ImageDetailDialog;
 import com.hideactive.model.Comment;
-import com.hideactive.model.Like;
-import com.hideactive.model.Post;
-import com.hideactive.model.User;
-import com.hideactive.util.DateUtil;
+import com.hideactive.util.TimeUtil;
 import com.hideactive.util.ViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
-
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobRelation;
-import cn.bmob.v3.listener.UpdateListener;
 
 public class CommentListAdapter extends BaseAdapter {
 
@@ -72,10 +62,13 @@ public class CommentListAdapter extends BaseAdapter {
         } else {
 			userLogo.setImageResource(R.mipmap.user_logo_default);
 		}
-		userName.setText(list.get(position).getUser().getNickname());
+		String nickname = TextUtils.isEmpty(list.get(position).getUser().getNickname())
+				? list.get(position).getUser().getUsername()
+				: list.get(position).getUser().getNickname();
+		userName.setText(nickname);
 		String createAt = list.get(position).getCreatedAt();
-		postDate.setText(DateUtil.getNormalTime(DateUtil.string2Date(createAt)));
-        if (!TextUtils.isEmpty(list.get(position).getContent())) {
+		postDate.setText(TimeUtil.getMessageTime(TimeUtil.stringToLong(createAt, TimeUtil.FORMAT_DATE_TIME_SECOND)));
+		if (!TextUtils.isEmpty(list.get(position).getContent())) {
             postContent.setVisibility(View.VISIBLE);
             postContent.setText(list.get(position).getContent());
         } else {

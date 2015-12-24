@@ -10,8 +10,7 @@ import com.hideactive.dialog.ImageDetailDialog;
 import com.hideactive.model.Like;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
-import com.hideactive.util.DateUtil;
-import com.hideactive.util.ToastUtil;
+import com.hideactive.util.TimeUtil;
 import com.hideactive.util.ViewHolder;
 import com.hideactive.R;
 import com.hideactive.widget.EmoticonsTextView;
@@ -19,13 +18,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -88,12 +84,14 @@ public class PostListAdapter extends BaseAdapter {
 				UserInfoActivity.start(context, list.get(position).getAuthor().getObjectId());
 			}
 		});
-		userName.setText(list.get(position).getAuthor().getNickname());
+		String nickname = TextUtils.isEmpty(list.get(position).getAuthor().getNickname())
+				? list.get(position).getAuthor().getUsername()
+				: list.get(position).getAuthor().getNickname();
+		userName.setText(nickname);
 		String createAt = list.get(position).getCreatedAt();
-		postDate.setText(DateUtil.getDiffTime(DateUtil.string2Date(createAt)));
+		postDate.setText(TimeUtil.getDescriptionTimeFromTimestamp(TimeUtil.stringToLong(createAt, TimeUtil.FORMAT_DATE_TIME_SECOND)));
         if (!TextUtils.isEmpty(list.get(position).getContent())) {
             postContent.setVisibility(View.VISIBLE);
-//            postContent.setText(list.get(position).getContent());
 			postContent.setMText(list.get(position).getContent());
         } else {
             postContent.setVisibility(View.GONE);
