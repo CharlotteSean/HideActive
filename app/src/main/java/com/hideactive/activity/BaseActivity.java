@@ -1,17 +1,12 @@
 package com.hideactive.activity;
 
-import java.lang.reflect.Field;
-
 import com.hideactive.R;
 import com.hideactive.SessionApplication;
 import com.hideactive.dialog.LoadingDialog;
-import com.hideactive.util.ActivityCollector;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 

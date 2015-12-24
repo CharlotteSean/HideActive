@@ -139,6 +139,7 @@
             android:id="@+id/user_item_signature"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
             android:layout_below="@+id/user_item_age"
             android:paddingLeft="@dimen/dimen_small"
             android:paddingRight="@dimen/dimen_small"

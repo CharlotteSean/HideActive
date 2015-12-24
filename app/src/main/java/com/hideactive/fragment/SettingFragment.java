@@ -40,6 +40,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     private ToggleButton isNotifyDetailTb;
     private ToggleButton isNotifyVoiceTb;
     private ToggleButton isNotifyVirbateTb;
+    private ToggleButton isOffsiteNotifyTb;
     private TextView cacheSizeTv;
     private Button logoutBtn;
 
@@ -80,6 +81,11 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         } else {
             isNotifyVirbateTb.setToggleOff();
         }
+        if (userConfig.isOffsiteNotify()) {
+            isOffsiteNotifyTb.setToggleOn();
+        } else {
+            isOffsiteNotifyTb.setToggleOff();
+        }
     }
 
     private void initView() {
@@ -99,6 +105,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         isNotifyDetailTb = (ToggleButton) findViewById(R.id.tb_is_notify_detail);
         isNotifyVoiceTb = (ToggleButton) findViewById(R.id.tb_is_notify_voice);
         isNotifyVirbateTb = (ToggleButton) findViewById(R.id.tb_is_notify_virbate);
+        isOffsiteNotifyTb = (ToggleButton) findViewById(R.id.tb_is_offsite_notify);
 
         // 设置是否允许推送
         isNotifyTb.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
@@ -139,6 +146,13 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
             }
         });
 
+        isOffsiteNotifyTb.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
+            @Override
+            public void onToggle(boolean on) {
+                userConfig.setOffsiteNotify(on);
+            }
+        });
+
         cacheSizeTv = (TextView) findViewById(R.id.tv_cache_size);
         cacheSizeTv.setText(FileUtil.getFormatSize(FileUtil.getFolderSize(new File(Constant.IMAGE_CACHE_PATH))));
 
@@ -161,9 +175,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
                 break;
             case R.id.btn_logout:
-                // 注销登录设备
-                PushUtil.logoutInstallation(getActivity());
-                application.logout();
+                application.logout(false);
                 break;
         }
     }
@@ -184,7 +196,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
             ToastUtil.showShort("缓存清除完毕");
             cacheSizeTv.setText(null);
         }
-
     };
 
 }

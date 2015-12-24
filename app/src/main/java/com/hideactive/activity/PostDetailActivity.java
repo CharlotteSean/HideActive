@@ -24,6 +24,7 @@ import com.hideactive.model.Comment;
 import com.hideactive.model.Like;
 import com.hideactive.model.Message;
 import com.hideactive.model.Post;
+import com.hideactive.model.PushMessage;
 import com.hideactive.model.User;
 import com.hideactive.util.PushUtil;
 import com.hideactive.util.TimeUtil;
@@ -540,14 +541,11 @@ public class PostDetailActivity extends BaseActivity {
             @Override
             public void onSuccess() {
                 // 发送推送
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("username", application.getCurrentUser().getNickname());
-                    jsonObject.put("content", content);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                PushUtil.push2User(PostDetailActivity.this, mPost.getAuthor().getObjectId(), jsonObject.toString());
+                PushMessage pushMessage = new PushMessage();
+                pushMessage.setType(PushMessage.TYPE_TEXT);
+                pushMessage.setUsername(application.getCurrentUser().getNickname());
+                pushMessage.setContent(content);
+                PushUtil.push2User(PostDetailActivity.this, mPost.getAuthor().getObjectId(), PushMessage.pase2Json(pushMessage).toString());
             }
 
             @Override

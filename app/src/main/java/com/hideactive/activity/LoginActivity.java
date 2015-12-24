@@ -1,21 +1,19 @@
 package com.hideactive.activity;
 
-import android.app.ActionBar;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hideactive.R;
+import com.hideactive.dialog.OffsiteNotifyDialog;
 import com.hideactive.model.User;
-import com.hideactive.util.ActivityCollector;
 import com.hideactive.util.PushUtil;
 import com.hideactive.util.ToastUtil;
 
@@ -41,6 +39,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     protected void onDestroy() {
     	super.onDestroy();
     	loadingDialog.dismiss();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        boolean isOffsite = getIntent().getBooleanExtra("isOffsite", false);
+        if (isOffsite) {
+            // 异地登录提示
+            OffsiteNotifyDialog offsiteNotifyDialog = new OffsiteNotifyDialog(this);
+            offsiteNotifyDialog.show();
+        }
     }
 
     public void initView() {
@@ -81,13 +90,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	 * @param password
 	 */
 	private void login(final String account, String password) {
-		loadingDialog.show();
+        hideSoftInputView();
+        loginButton.setEnabled(false);
+        loginButton.setText(getString(R.string.logining));
         BmobUser.loginByAccount(this, account, password, new LogInListener<User>() {
             @Override
             public void done(User user, BmobException e) {
                 if (user != null) {
-                    // 更新登录信息
-                    PushUtil.updateInstallation(LoginActivity.this,user.getObjectId());
+                    // 检查异地登录，并更新登录信息
+                    PushUtil.notifyOffsite(LoginActivity.this, user.getObjectId());
                     // 跳转
                     openActivityAndClose(new Intent(LoginActivity.this, MainActivity.class));
                 } else {

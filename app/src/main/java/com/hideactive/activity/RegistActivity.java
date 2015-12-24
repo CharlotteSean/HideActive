@@ -1,19 +1,15 @@
 package com.hideactive.activity;
 
-import android.app.ActionBar;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.hideactive.R;
 import com.hideactive.model.User;
-import com.hideactive.util.ActivityCollector;
 import com.hideactive.util.ToastUtil;
 
 import cn.bmob.v3.listener.SaveListener;

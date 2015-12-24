@@ -20,6 +20,7 @@ public class UserConfig {
 	private String SHARED_KEY_NOTIFY_DETAIL = "shared_key_notify_detail";
 	private String SHARED_KEY_VOICE = "shared_key_sound";
 	private String SHARED_KEY_VIBRATE = "shared_key_vibrate";
+	private String SHARED_KEY_OFFSITE = "shared_key_offsite";
 
 	public UserConfig(Context context, String uId) {
 		mSharedPreferences = context.getSharedPreferences(
@@ -71,6 +72,16 @@ public class UserConfig {
 
 	public void setAllowVibrateEnable(boolean isChecked) {
 		editor.putBoolean(SHARED_KEY_VIBRATE, isChecked);
+		editor.commit();
+	}
+
+	// 是否开启异地登录提示
+	public boolean isOffsiteNotify() {
+		return mSharedPreferences.getBoolean(SHARED_KEY_OFFSITE, true);
+	}
+
+	public void setOffsiteNotify(boolean isNotify) {
+		editor.putBoolean(SHARED_KEY_OFFSITE, isNotify);
 		editor.commit();
 	}
 }

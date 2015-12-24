@@ -5,6 +5,7 @@ import com.hideactive.config.Constant;
 import com.hideactive.config.UserConfig;
 import com.hideactive.model.Like;
 import com.hideactive.model.User;
+import com.hideactive.util.PushUtil;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -89,7 +90,7 @@ public class SessionApplication extends Application{
 	 * @return
 	 */
 	public UserConfig getUserConfig() {
-        if (userConfig == null) {
+        if (userConfig == null && getCurrentUser() != null) {
 			userConfig = new UserConfig(this, getCurrentUser().getObjectId());
         }
         return userConfig;
@@ -123,12 +124,16 @@ public class SessionApplication extends Application{
 
 	/**
 	 * 注销
+	 * @param isOffsite 是否显示异地登录
 	 */
-	public void logout() {
+	public void logout(boolean isOffsite) {
+		// 注销登录设备
+		PushUtil.logoutInstallation(context);
 		BmobUser.logOut(context);
 		userConfig = null;
 		finishAll();
 		Intent intent = new Intent(context, LoginActivity.class);
+		intent.putExtra("isOffsite", isOffsite);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 	}

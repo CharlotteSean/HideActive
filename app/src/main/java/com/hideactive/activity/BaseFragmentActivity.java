@@ -11,7 +11,6 @@ import android.view.inputmethod.InputMethodManager;
 import com.hideactive.R;
 import com.hideactive.SessionApplication;
 import com.hideactive.dialog.LoadingDialog;
-import com.hideactive.util.ActivityCollector;
 
 import java.lang.reflect.Field;
 

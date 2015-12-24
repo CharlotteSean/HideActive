@@ -14,6 +14,8 @@ import com.hideactive.SessionApplication;
 import com.hideactive.activity.LoginActivity;
 import com.hideactive.activity.SplashActivity;
 import com.hideactive.config.UserConfig;
+import com.hideactive.dialog.OffsiteNotifyDialog;
+import com.hideactive.model.PushMessage;
 import com.hideactive.util.NotifyUtil;
 
 import org.json.JSONException;
@@ -22,6 +24,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import cn.bmob.push.PushConstants;
+import cn.bmob.v3.BmobInstallation;
 
 /**
  * Created by Senierr on 2015/12/21.
@@ -31,41 +34,55 @@ public class MessageReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction().equals(PushConstants.ACTION_MESSAGE)){
             Log.d("bmob", "客户端收到推送内容：" + intent.getStringExtra(PushConstants.EXTRA_PUSH_MESSAGE_STRING));
-            try {
-                String message = new JSONObject(intent.getStringExtra(PushConstants.EXTRA_PUSH_MESSAGE_STRING)).optString("alert");
-                JSONObject jsonObject = new JSONObject(message);
+            PushMessage pushMessage = PushMessage.pase2Message(intent.getStringExtra(PushConstants.EXTRA_PUSH_MESSAGE_STRING));
 
-                UserConfig userConfig = SessionApplication.getInstance().getUserConfig();
-                boolean isNotify = userConfig.isAllowNotify();
-                if (!isNotify) {
-                    return;
-                }
-                boolean isNotifyDetail = userConfig.isAllowNotifyDetail();
-                String content = null;
-                if (isNotifyDetail) {
-                    content = jsonObject.optString("username")
-                            + ": "
-                            + jsonObject.optString("content");
-                } else {
-                    content = "您有新的评论";
-                }
-                boolean isAllowVoice = userConfig.isAllowVoice();
-                boolean isAllowVirbate = userConfig.isAllowVibrate();
-
-                Intent targetIntent = null;
-                if (isRunning(context)) {
-                    targetIntent = null;
-                } else {
-                    targetIntent = new Intent(context, SplashActivity.class);
-                }
-                NotifyUtil.getInstance(context).showNotifyWithExtras(
-                        isAllowVoice, isAllowVirbate,
-                        R.mipmap.tab_home_normal, "您有新的评论",
-                        context.getString(R.string.app_name), content,
-                        targetIntent
-                );
-            } catch (JSONException e) {
-                e.printStackTrace();
+            UserConfig userConfig = SessionApplication.getInstance().getUserConfig();
+            // 若当前没用户登录，则不提示
+            if (userConfig == null) {
+                return;
+            }
+            switch (pushMessage.getType()) {
+                case PushMessage.TYPE_TEXT:
+                    boolean isNotify = userConfig.isAllowNotify();
+                    if (!isNotify) {
+                        return;
+                    }
+                    boolean isNotifyDetail = userConfig.isAllowNotifyDetail();
+                    String content = null;
+                    if (isNotifyDetail) {
+                        content = pushMessage.getUsername()
+                                + ": "
+                                + pushMessage.getContent();
+                    } else {
+                        content = context.getString(R.string.new_comment);
+                    }
+                    Intent targetIntent = null;
+                    if (isRunning(context)) {
+                        targetIntent = null;
+                    } else {
+                        targetIntent = new Intent(context, SplashActivity.class);
+                    }
+                    boolean isAllowVirbate = userConfig.isAllowVibrate();
+                    boolean isAllowVoice = userConfig.isAllowVoice();
+                    NotifyUtil.getInstance(context).showNotifyWithExtras(
+                            isAllowVoice, isAllowVirbate,
+                            R.mipmap.tab_home_normal, context.getString(R.string.new_comment),
+                            context.getString(R.string.app_name), content,
+                            targetIntent
+                    );
+                    break;
+                case PushMessage.TYPE_OFFSITE:
+                    // 若是通知的是当前登录的设备，则不提醒
+                    if (BmobInstallation.getInstallationId(context).equalsIgnoreCase(pushMessage.getUsername())) {
+                        return;
+                    }
+                    // 是否显示异地通知
+                    if (!userConfig.isOffsiteNotify()) {
+                        return;
+                    }
+                    // 注销退出,并提示
+                    SessionApplication.getInstance().logout(true);
+                    break;
             }
         }
     }
