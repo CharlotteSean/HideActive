@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -25,16 +26,18 @@ public class EditTextDialog extends Dialog{
 	private String desStr;
 	private int inputType;
 	private String contentStr;
+	private int limitedLength;
 	private OnDoneListener onDoneListener;
 
 	public EditTextDialog(Context context, @NonNull String titleStr,
 						  String desStr, int inputType,
-						  String contentStr, OnDoneListener onDoneListener) {
+						  String contentStr, int limitedLength, OnDoneListener onDoneListener) {
 		super(context, R.style.NormalDialog);
 		this.titleStr = titleStr;
 		this.desStr = desStr;
 		this.inputType = inputType;
 		this.contentStr = contentStr;
+		this.limitedLength = limitedLength;
 		this.onDoneListener = onDoneListener;
 	}
 
@@ -53,8 +56,12 @@ public class EditTextDialog extends Dialog{
 		titleView.setText(titleStr);
 		desView.setText(desStr);
 		editTextView.setText(contentStr);
+		// 移动光标至末尾
 		editTextView.setSelection(editTextView.getText().length());
+		// 设置输入类型
 		editTextView.setInputType(inputType);
+		// 设置限定长度
+		editTextView.setFilters(new InputFilter[]{new InputFilter.LengthFilter(limitedLength)});
 		doneButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

@@ -127,7 +127,8 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
                 break;
             case R.id.user_item_name:
                 EditTextDialog editNameDialog = new EditTextDialog(this,
-                        getString(R.string.user_name), "起个绚丽的名字吧！", InputType.TYPE_CLASS_TEXT, application.getCurrentUser().getNickname(),
+                        getString(R.string.user_name), "起个绚丽的名字吧！", InputType.TYPE_CLASS_TEXT,
+                        application.getCurrentUser().getNickname(), 16,
                         new EditTextDialog.OnDoneListener() {
                             @Override
                             public void onDone(final String contentStr) {
@@ -178,7 +179,7 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
             case R.id.user_item_age:
                 EditTextDialog editAgeDialog = new EditTextDialog(this,
                         getString(R.string.user_age), "你还是18岁吗？", InputType.TYPE_CLASS_NUMBER,
-                        String.valueOf(application.getCurrentUser().getAge()),
+                        String.valueOf(application.getCurrentUser().getAge()), 3,
                         new EditTextDialog.OnDoneListener() {
                             @Override
                             public void onDone(final String contentStr) {
@@ -204,7 +205,7 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
             case R.id.user_item_signature:
                 EditTextDialog editSignatureDialog = new EditTextDialog(this,
                         getString(R.string.user_signature), "你是个随意的人吗？", InputType.TYPE_CLASS_TEXT,
-                        application.getCurrentUser().getSignature(),
+                        application.getCurrentUser().getSignature(), 50,
                         new EditTextDialog.OnDoneListener() {
                             @Override
                             public void onDone(final String contentStr) {

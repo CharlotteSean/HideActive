@@ -13,11 +13,10 @@
     <color name="grey_dark_transparent">#66616161</color>
     <color name="blue">#7DBFF3</color>
     <color name="blue_dark">#65ade7</color>
-    <color name="green_light">#5AEB97</color>
+    <color name="green_light">#04BF01</color>
+    <color name="green_dark">#078614</color>
 
-    <color name="actionbar_bg">#303537</color>
-    <color name="actionbar_item_normal">#303537</color>
-    <color name="actionbar_item_pressed">#282A2B</color>
+    <color name="top_bar_bg">#303537</color>
     <color name="refresh_header_bg">#828282</color>
 
     <color name="btn_login_normal">#04BF01</color>

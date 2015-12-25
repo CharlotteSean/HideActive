@@ -3,7 +3,7 @@
     android:id="@+id/top_bar"
     android:layout_width="match_parent"
     android:layout_height="@dimen/top_bar_height"
-    android:background="@color/white" >
+    android:background="@color/top_bar_bg" >
 
     <Button
         android:id="@+id/btn_top_bar_left"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="title"
-        android:textColor="@color/text_color_1"
+        android:textColor="@color/white"
         android:textSize="18sp" />
 
     <Button

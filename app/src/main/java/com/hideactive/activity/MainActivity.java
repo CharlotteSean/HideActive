@@ -5,8 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,15 +16,16 @@ import com.hideactive.fragment.MessageFragment;
 import com.hideactive.fragment.SettingFragment;
 import com.hideactive.model.User;
 import com.hideactive.util.ToastUtil;
-import com.nineoldandroids.view.ViewHelper;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends BaseFragmentActivity {
 
+    private SlidingMenu menu;
     private CircleImageView userLogoView;
-    private DrawerLayout drawer;
+    private TextView userNameView;
     private View[] mTabs;
     private HomeFragment homeFragment;
     private MessageFragment messageFragment;
@@ -41,7 +40,7 @@ public class MainActivity extends BaseFragmentActivity {
         setContentView(R.layout.activity_main);
 
         initView();
-        initTab();
+        initSlidingMenu();
     }
 
     @Override
@@ -53,6 +52,7 @@ public class MainActivity extends BaseFragmentActivity {
     private void initView(){
         TextView topBarTitle = (TextView) findViewById(R.id.tv_top_bar_title);
         topBarTitle.setText(getResources().getString(R.string.app_name));
+
         Button topBarLeftBtn = (Button) findViewById(R.id.btn_top_bar_left);
         topBarLeftBtn.setVisibility(View.VISIBLE);
         Drawable drawableLeft= getResources().getDrawable(R.mipmap.top_bar_menu);
@@ -61,17 +61,13 @@ public class MainActivity extends BaseFragmentActivity {
         topBarLeftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (drawer.isDrawerOpen(GravityCompat.START)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                } else {
-                    drawer.openDrawer(GravityCompat.START);
-                }
+                menu.toggle();
             }
         });
 
         Button topBarRightBtn = (Button) findViewById(R.id.btn_top_bar_right);
         topBarRightBtn.setVisibility(View.VISIBLE);
-        Drawable drawableRight= getResources().getDrawable(R.drawable.top_bar_create_selector);
+        Drawable drawableRight= getResources().getDrawable(R.mipmap.top_bar_edit);
         drawableRight.setBounds(0, 0, drawableRight.getMinimumWidth(), drawableRight.getMinimumHeight());
         topBarRightBtn.setCompoundDrawables(null, null, drawableRight, null);
         topBarRightBtn.setOnClickListener(new View.OnClickListener() {
@@ -81,62 +77,15 @@ public class MainActivity extends BaseFragmentActivity {
             }
         });
 
-        userLogoView = (CircleImageView) findViewById(R.id.sliding_menu_avatar);
-        userLogoView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openActivity(new Intent(MainActivity.this, PersonalInfoActivity.class));
-            }
-        });
-
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-//                actionBar_img.setImageResource(R.mipmap.actionbar_up);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-//                actionBar_img.setImageResource(R.mipmap.actionbar_todo);
-            }
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                View mContent = drawer.getChildAt(0);
-                View mMenu = drawerView;
-                float scale = 1 - slideOffset;
-                float leftScale = 1 - 0.3f * scale;
-                float rightScale = 0.8f + scale * 0.2f;
-
-                ViewHelper.setScaleX(mMenu, leftScale);
-                ViewHelper.setScaleY(mMenu, leftScale);
-                ViewHelper.setAlpha(mMenu, 0.6f + 0.4f * (1 - scale));
-                ViewHelper.setTranslationX(mContent,
-                        mMenu.getMeasuredWidth() * (1 - scale));
-                ViewHelper.setPivotX(mContent, 0);
-                ViewHelper.setPivotY(mContent,
-                        mContent.getMeasuredHeight() / 2);
-                mContent.invalidate();
-                ViewHelper.setScaleX(mContent, rightScale);
-                ViewHelper.setScaleY(mContent, rightScale);
-            }
-        });
-
-        mTabs = new View[3];
-        mTabs[0] = findViewById(R.id.sliding_menu_home);
-        mTabs[1] = findViewById(R.id.sliding_menu_message);
-        mTabs[2] = findViewById(R.id.sliding_menu_setting);
-        mTabs[0].setSelected(true);
-    }
-
-    private void initTab(){
+        // 展现首页
         homeFragment = new HomeFragment();
         messageFragment = new MessageFragment();
         settingFragment = new SettingFragment();
         fragments = new Fragment[] {homeFragment, messageFragment, settingFragment };
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, homeFragment).
-                add(R.id.fragment_container, messageFragment).hide(messageFragment).show(homeFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, homeFragment)
+                .show(homeFragment)
+                .commit();
     }
 
     /**
@@ -148,43 +97,84 @@ public class MainActivity extends BaseFragmentActivity {
             ImageLoader.getInstance().displayImage(user.getLogo().getUrl(),
                     userLogoView, ImageLoaderOptions.getOptions());
         }
-        TextView userNameView = (TextView) findViewById(R.id.sliding_menu_nick);
-        userNameView.setText(application.getCurrentUser().getNickname());
+        userNameView.setText(user.getNickname());
     }
 
     /**
-     * tab点击事件
-     * @param view
+     * 初始化侧滑菜单
      */
-    public void onTabSelect(View view) {
-        switch (view.getId()) {
-            case R.id.sliding_menu_home:
-                index = 0;
-                break;
-            case R.id.sliding_menu_message:
-                index = 1;
-                break;
-            case R.id.sliding_menu_setting:
-                index = 2;
-                break;
-        }
-        if (currentTabIndex != index) {
-            FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
-            trx.hide(fragments[currentTabIndex]);
-            if (!fragments[index].isAdded()) {
-                trx.add(R.id.fragment_container, fragments[index]);
+    private void initSlidingMenu() {
+        menu = new SlidingMenu(this);
+        // 设置菜单模式左滑
+        menu.setMode(SlidingMenu.LEFT);
+        // 设置触摸屏幕的模式
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        // 设置阴影宽度
+        menu.setShadowWidthRes(R.dimen.sliding_shadow);
+        // 设置阴影图片
+//        menu.setShadowDrawable(R.drawable.shadow);
+        // 设置滑出时主页面显示的剩余宽度
+        menu.setBehindOffsetRes(R.dimen.sliding_offset_res);
+        // 设置菜单是否渐变
+        menu.setFadeEnabled(true);
+        // 设置渐变效果的值
+        menu.setFadeDegree(0.35f);
+        // 使SlidingMenu附加在Activity
+        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        // 为侧滑菜单设置布局
+        menu.setMenu(R.layout.layout_sliding_menu);
+
+        // 用户信息初始化
+        userLogoView = (CircleImageView) menu.findViewById(R.id.sliding_menu_avatar);
+        userLogoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openActivity(new Intent(MainActivity.this, PersonalInfoActivity.class));
             }
-            trx.show(fragments[index]).commit();
-        }
-        mTabs[currentTabIndex].setSelected(false);
-        // 把当前tab设为选中状态
-        mTabs[index].setSelected(true);
-        currentTabIndex = index;
-        // 关闭菜单
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
+        });
+        userNameView = (TextView) findViewById(R.id.sliding_menu_nick);
+
+        // tab选项初始化
+        mTabs = new View[3];
+        mTabs[0] = menu.findViewById(R.id.sliding_menu_home);
+        mTabs[1] = menu.findViewById(R.id.sliding_menu_message);
+        mTabs[2] = menu.findViewById(R.id.sliding_menu_setting);
+        mTabs[0].setOnClickListener(tabClickListener);
+        mTabs[1].setOnClickListener(tabClickListener);
+        mTabs[2].setOnClickListener(tabClickListener);
+        mTabs[0].setSelected(true);
     }
+
+    private View.OnClickListener tabClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.sliding_menu_home:
+                    index = 0;
+                    break;
+                case R.id.sliding_menu_message:
+                    index = 1;
+                    break;
+                case R.id.sliding_menu_setting:
+                    index = 2;
+                    break;
+            }
+            if (currentTabIndex != index) {
+                FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
+                trx.hide(fragments[currentTabIndex]);
+                if (!fragments[index].isAdded()) {
+                    trx.add(R.id.fragment_container, fragments[index]);
+                }
+                trx.show(fragments[index]).commit();
+            }
+            mTabs[currentTabIndex].setSelected(false);
+            // 把当前tab设为选中状态
+            mTabs[index].setSelected(true);
+            currentTabIndex = index;
+            // 关闭菜单
+            menu.toggle();
+        }
+    };
 
     private static long firstTime;
 
@@ -193,8 +183,8 @@ public class MainActivity extends BaseFragmentActivity {
      */
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (menu.isMenuShowing()) {
+            menu.toggle();
             return;
         }
         if (firstTime + 2000 > System.currentTimeMillis()) {

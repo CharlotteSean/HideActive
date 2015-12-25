@@ -33,23 +33,19 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
+
+        // 异地登录提示
+        boolean isOffsite = getIntent().getBooleanExtra("isOffsite", false);
+        if (isOffsite) {
+            OffsiteNotifyDialog offsiteNotifyDialog = new OffsiteNotifyDialog(this);
+            offsiteNotifyDialog.show();
+        }
     }
 
     @Override
     protected void onDestroy() {
     	super.onDestroy();
     	loadingDialog.dismiss();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        boolean isOffsite = getIntent().getBooleanExtra("isOffsite", false);
-        if (isOffsite) {
-            // 异地登录提示
-            OffsiteNotifyDialog offsiteNotifyDialog = new OffsiteNotifyDialog(this);
-            offsiteNotifyDialog.show();
-        }
     }
 
     public void initView() {

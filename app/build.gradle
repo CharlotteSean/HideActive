@@ -34,5 +34,8 @@ dependencies {
     compile 'com.bm.photoview:library:1.3.6'
     // circleimageview
     compile 'de.hdodenhof:circleimageview:2.0.0'
+    // 切换按钮
     compile project(':togglebuttonlib')
+    // 侧滑菜单slidingmenu
+    compile 'com.jeremyfeinstein.slidingmenu:library:1.3@aar'
 }

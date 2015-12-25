@@ -9,9 +9,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
 import android.text.Selection;
 import android.text.Spannable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -51,7 +53,10 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     private static final int REQUEST_CODE_IMAGE_NATIVE = 0;
     private static final int REQUEST_CODE_IMAGE_CAMERA = 1;
 
+    private static final int INPUT_LIMITED_LENGTH = 200;
+
     private EmoticonsEditText inputView;
+    private TextView inputLenthTv;
     private ImageButton nativeButton;
     private ImageButton cameraButton;
     private ImageButton emojButton;
@@ -67,6 +72,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
         initView();
+        initEmoView();
     }
 
     @Override
@@ -99,6 +105,24 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
 
         inputView = (EmoticonsEditText) findViewById(R.id.input_eare);
         inputView.setOnClickListener(this);
+        // 监听内容输入区，动态显示剩余字数
+        inputView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int length = INPUT_LIMITED_LENGTH - inputView.getText().toString().length();
+                inputLenthTv.setText(String.valueOf(length));
+            }
+        });
+        inputLenthTv = (TextView) findViewById(R.id.tv_input_length);
+
         nativeButton = (ImageButton) findViewById(R.id.image_native);
         nativeButton.setOnClickListener(this);
         cameraButton = (ImageButton) findViewById(R.id.image_camera);
@@ -110,8 +134,6 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         showImageDeleteBtn = (ImageButton) findViewById(R.id.show_image_delete);
         showImageDeleteBtn.setOnClickListener(this);
         showImageEare = (RelativeLayout) findViewById(R.id.show_image_eare);
-
-        initEmoView();
     }
 
     @Override

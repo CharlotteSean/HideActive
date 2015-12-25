@@ -102,13 +102,16 @@ public class PushUtil {
             @Override
             public void onSuccess(List<CustomInstallation> object) {
                 if(object.size() > 0){
-                    CustomInstallation customInstallation = object.get(0);
-                    String installationId = customInstallation.getInstallationId();
-                    BmobPushManager bmobPush = new BmobPushManager(context);
-                    BmobQuery<BmobInstallation> query = BmobInstallation.getQuery();
-                    query.addWhereEqualTo("installationId", installationId);
-                    bmobPush.setQuery(query);
-                    bmobPush.pushMessage(message);
+                    // 给查到的每个设备发送(多设备登录)
+                    for (int i = 0; i < object.size(); i++) {
+                        CustomInstallation customInstallation = object.get(i);
+                        String installationId = customInstallation.getInstallationId();
+                        BmobPushManager bmobPush = new BmobPushManager(context);
+                        BmobQuery<BmobInstallation> query = BmobInstallation.getQuery();
+                        query.addWhereEqualTo("installationId", installationId);
+                        bmobPush.setQuery(query);
+                        bmobPush.pushMessage(message);
+                    }
                 }
             }
 
