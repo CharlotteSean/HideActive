@@ -1,6 +1,7 @@
 package com.hideactive.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,9 +47,14 @@ public class MessageFragment extends BaseFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		initView();
-		// 初始化数据
-		currentPageIndex = 0;
-		loadMessage();
+		// 延迟初始化数据
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				currentPageIndex = 0;
+				loadMessage();
+			}
+		}, 500);
 	}
 
 	private void initView() {
@@ -66,7 +72,7 @@ public class MessageFragment extends BaseFragment {
 		});
 
 		swipeRefreshLayout = (SuperSwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-		swipeRefreshLayout.setHeaderViewBackgroundColor(getResources().getColor(R.color.refresh_header_bg));
+		swipeRefreshLayout.setHeaderViewBackgroundColor(getResources().getColor(R.color.white));
 		refreshViewHolder = new RefreshViewHolder(getActivity());
 		swipeRefreshLayout.setHeaderView(refreshViewHolder.getHeaderView());
 		swipeRefreshLayout.setFooterView(refreshViewHolder.getFooterView());

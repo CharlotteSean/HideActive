@@ -17,7 +17,6 @@
     <color name="green_dark">#078614</color>
 
     <color name="top_bar_bg">#303537</color>
-    <color name="refresh_header_bg">#828282</color>
 
     <color name="btn_login_normal">#04BF01</color>
     <color name="btn_login_pressed">#078614</color>

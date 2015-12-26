@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,13 +27,14 @@ public class MainActivity extends BaseFragmentActivity {
     private SlidingMenu menu;
     private CircleImageView userLogoView;
     private TextView userNameView;
-    private View[] mTabs;
+
     private HomeFragment homeFragment;
     private MessageFragment messageFragment;
     private SettingFragment settingFragment;
     private Fragment[] fragments;
-    private int index;
-    private int currentTabIndex;
+
+    private int currentIndex;
+    private int menuIndex;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,15 +112,15 @@ public class MainActivity extends BaseFragmentActivity {
         // 设置触摸屏幕的模式
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         // 设置阴影宽度
-        menu.setShadowWidthRes(R.dimen.sliding_shadow);
+//        menu.setShadowWidthRes(R.dimen.sliding_shadow);
         // 设置阴影图片
 //        menu.setShadowDrawable(R.drawable.shadow);
         // 设置滑出时主页面显示的剩余宽度
         menu.setBehindOffsetRes(R.dimen.sliding_offset_res);
         // 设置菜单是否渐变
-        menu.setFadeEnabled(true);
+        menu.setFadeEnabled(false);
         // 设置渐变效果的值
-        menu.setFadeDegree(0.35f);
+//        menu.setFadeDegree(0.35f);
         // 使SlidingMenu附加在Activity
         menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         // 为侧滑菜单设置布局
@@ -135,14 +137,12 @@ public class MainActivity extends BaseFragmentActivity {
         userNameView = (TextView) findViewById(R.id.sliding_menu_nick);
 
         // tab选项初始化
-        mTabs = new View[3];
-        mTabs[0] = menu.findViewById(R.id.sliding_menu_home);
-        mTabs[1] = menu.findViewById(R.id.sliding_menu_message);
-        mTabs[2] = menu.findViewById(R.id.sliding_menu_setting);
-        mTabs[0].setOnClickListener(tabClickListener);
-        mTabs[1].setOnClickListener(tabClickListener);
-        mTabs[2].setOnClickListener(tabClickListener);
-        mTabs[0].setSelected(true);
+        View homeMenuTab = menu.findViewById(R.id.sliding_menu_home);
+        View messageMenuTab = menu.findViewById(R.id.sliding_menu_message);
+        View settingMenuTab = menu.findViewById(R.id.sliding_menu_setting);
+        homeMenuTab.setOnClickListener(tabClickListener);
+        messageMenuTab.setOnClickListener(tabClickListener);
+        settingMenuTab.setOnClickListener(tabClickListener);
     }
 
     private View.OnClickListener tabClickListener = new View.OnClickListener() {
@@ -150,31 +150,38 @@ public class MainActivity extends BaseFragmentActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.sliding_menu_home:
-                    index = 0;
+                    menuIndex = 0;
                     break;
                 case R.id.sliding_menu_message:
-                    index = 1;
+                    menuIndex = 1;
                     break;
                 case R.id.sliding_menu_setting:
-                    index = 2;
+                    menuIndex = 2;
                     break;
             }
-            if (currentTabIndex != index) {
-                FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
-                trx.hide(fragments[currentTabIndex]);
-                if (!fragments[index].isAdded()) {
-                    trx.add(R.id.fragment_container, fragments[index]);
-                }
-                trx.show(fragments[index]).commit();
-            }
-            mTabs[currentTabIndex].setSelected(false);
-            // 把当前tab设为选中状态
-            mTabs[index].setSelected(true);
-            currentTabIndex = index;
             // 关闭菜单
             menu.toggle();
+            showFragment(menuIndex);
         }
     };
+
+    /**
+     * 显示对应的页面
+     * @param index
+     */
+    private void showFragment(int index) {
+        if (index == currentIndex) {
+            // 要显示的页面是当前页面，则不做处理
+            return;
+        }
+        FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
+        trx.hide(fragments[currentIndex]);
+        if (!fragments[index].isAdded()) {
+            trx.add(R.id.fragment_container, fragments[index]);
+        }
+        trx.show(fragments[index]).commit();
+        currentIndex = index;
+    }
 
     private static long firstTime;
 

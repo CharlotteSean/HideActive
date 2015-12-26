@@ -66,7 +66,7 @@ public class MessageReceiver extends BroadcastReceiver {
                     boolean isAllowVoice = userConfig.isAllowVoice();
                     NotifyUtil.getInstance(context).showNotifyWithExtras(
                             isAllowVoice, isAllowVirbate,
-                            R.mipmap.tab_home_normal, context.getString(R.string.new_comment),
+                            R.mipmap.logo, context.getString(R.string.new_comment),
                             context.getString(R.string.app_name), content,
                             targetIntent
                     );

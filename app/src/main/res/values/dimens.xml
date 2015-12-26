@@ -9,7 +9,7 @@
     <dimen name="line_width">1px</dimen>
 
     <dimen name="sliding_shadow">16dp</dimen>
-    <dimen name="sliding_offset_res">96dp</dimen>
+    <dimen name="sliding_offset_res">56dp</dimen>
     <dimen name="sliding_top_height">160dp</dimen>
 
 </resources>

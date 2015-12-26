@@ -55,12 +55,17 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        init();
+        // 延迟初始化数据
+        new android.os.Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                init();
+            }
+        }, 500);
     }
 
     private void init() {
         userConfig = application.getUserConfig();
-
         if (userConfig.isAllowNotify()) {
             isNotifyTb.setToggleOn();
         } else {
@@ -168,7 +173,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
                 break;
             case R.id.setting_item_clear_cache:
-                clearCacheTask.execute();
+                new ClearCacheTask().execute();
                 break;
             case R.id.setting_item_about:
                 startActivity(new Intent(getActivity(), AboutActivity.class));
@@ -183,19 +188,21 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     /**
      * 清除缓存异步任务
      */
-    AsyncTask clearCacheTask = new AsyncTask() {
+    class ClearCacheTask extends AsyncTask<Void, Integer, Integer> {
+
         @Override
-        protected Object doInBackground(Object[] params) {
+        protected Integer doInBackground(Void... params) {
             File file = new File(Constant.IMAGE_CACHE_PATH);
             FileUtil.clearCache(file);
             return null;
         }
 
         @Override
-        protected void onPostExecute(Object o) {
+        protected void onPostExecute(Integer result) {
             ToastUtil.showShort("缓存清除完毕");
             cacheSizeTv.setText(null);
         }
-    };
+
+    }
 
 }

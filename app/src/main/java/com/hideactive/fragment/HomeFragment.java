@@ -66,7 +66,7 @@ public class HomeFragment extends BaseFragment {
 		});
 
 		swipeRefreshLayout = (SuperSwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-//		swipeRefreshLayout.setHeaderViewBackgroundColor(getResources().getColor(R.color.refresh_header_bg));
+		swipeRefreshLayout.setHeaderViewBackgroundColor(getResources().getColor(R.color.white));
 		refreshViewHolder = new RefreshViewHolder(getActivity());
 		swipeRefreshLayout.setHeaderView(refreshViewHolder.getHeaderView());
 		swipeRefreshLayout.setFooterView(refreshViewHolder.getFooterView());
