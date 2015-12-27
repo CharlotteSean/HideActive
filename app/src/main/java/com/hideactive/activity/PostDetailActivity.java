@@ -83,7 +83,7 @@ public class PostDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
-        likesDB = new LikesDB(this, application.getCurrentUser().getObjectId());
+        likesDB = application.getLikesDB();
         initView();
         initPost();
     }
@@ -103,7 +103,6 @@ public class PostDetailActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
     	super.onDestroy();
-        likesDB.closedDB();
     	loadingDialog.dismiss();
     }
 

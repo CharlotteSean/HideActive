@@ -20,6 +20,8 @@
     <string name="regist">注册</string>
     <string name="login_out">注销登录</string>
 
+    <string name="regist_tips">提示：由4~15位字母数字及下划线组成，区分大小写</string>
+
     <string name="home">首页</string>
     <string name="message">消息</string>
     <string name="user_info">个人资料</string>

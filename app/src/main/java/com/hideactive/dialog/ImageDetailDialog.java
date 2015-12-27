@@ -51,6 +51,13 @@ public class ImageDetailDialog extends Dialog{
 		// 启用缩放功能
 		photoView.enable();
 		ImageLoader.getInstance().displayImage(imageSrc, photoView, ImageLoaderOptions.getOptions());
+		// 单击关闭
+		photoView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				cancel();
+			}
+		});
 	}
 	
 }

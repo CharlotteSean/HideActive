@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hideactive.R;
+import com.hideactive.activity.UserInfoActivity;
 import com.hideactive.config.ImageLoaderOptions;
 import com.hideactive.model.Comment;
 import com.hideactive.util.TimeUtil;
@@ -62,6 +63,12 @@ public class CommentListAdapter extends BaseAdapter {
         } else {
 			userLogo.setImageResource(R.mipmap.user_logo_default);
 		}
+		userLogo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				UserInfoActivity.start(context, list.get(position).getUser().getObjectId());
+			}
+		});
 		String nickname = TextUtils.isEmpty(list.get(position).getUser().getNickname())
 				? list.get(position).getUser().getUsername()
 				: list.get(position).getUser().getNickname();

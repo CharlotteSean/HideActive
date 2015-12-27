@@ -3,6 +3,7 @@ package com.hideactive;
 import com.hideactive.activity.LoginActivity;
 import com.hideactive.config.Constant;
 import com.hideactive.config.UserConfig;
+import com.hideactive.db.LikesDB;
 import com.hideactive.model.Like;
 import com.hideactive.model.User;
 import com.hideactive.util.PushUtil;
@@ -39,9 +40,9 @@ public class SessionApplication extends Application{
 
 	private static Context context;
 	private static SessionApplication application;
-	private UserConfig userConfig;
-	private ImageLoader imageLoader;
+	private static UserConfig userConfig;
 	private static List<Activity> activities = new ArrayList<Activity>();
+	private static LikesDB likesDB;
 
 	@Override
 	public void onCreate() {
@@ -62,7 +63,7 @@ public class SessionApplication extends Application{
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
 				.imageDownloader(new BaseImageDownloader(application, 5 * 1000, 30 * 1000))
 				.build();
-		imageLoader = ImageLoader.getInstance();
+		ImageLoader imageLoader = ImageLoader.getInstance();
 		imageLoader.init(config);
 
 		// 初始化Bmob
@@ -76,6 +77,8 @@ public class SessionApplication extends Application{
 	public static SessionApplication getInstance() {
         return application;
     }
+
+
 
 	/**
 	 * 获取全局上下文
@@ -104,6 +107,17 @@ public class SessionApplication extends Application{
 		return BmobUser.getCurrentUser(context, User.class);
 	}
 
+	/**
+	 * 获取用户设置信息
+	 * @return
+	 */
+	public synchronized LikesDB getLikesDB() {
+		if (likesDB == null) {
+			likesDB = new LikesDB(context);
+		}
+		return likesDB;
+	}
+
 	/***** Activity管理 start ****/
 	public void addActivity(Activity activity) {
 		activities.add(activity);
@@ -122,16 +136,27 @@ public class SessionApplication extends Application{
 	}
 	/***** Activity管理 end ****/
 
+	private void closedDB() {
+		likesDB.closedDB();
+		likesDB = null;
+	}
+
 	/**
 	 * 注销
 	 * @param isOffsite 是否显示异地登录
 	 */
 	public void logout(boolean isOffsite) {
+		// 关闭数据库
+		closedDB();
 		// 注销登录设备
 		PushUtil.logoutInstallation(context);
+		// 用户缓存注销
 		BmobUser.logOut(context);
+		// 清空缓存用户配置
 		userConfig = null;
+		// 清空所有界面
 		finishAll();
+		// 跳转至登录页
 		Intent intent = new Intent(context, LoginActivity.class);
 		intent.putExtra("isOffsite", isOffsite);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

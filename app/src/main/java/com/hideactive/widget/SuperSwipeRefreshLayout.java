@@ -337,6 +337,10 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
         mHeadViewContainer.setBackgroundColor(color);
     }
 
+    public void setFooterViewBackgroundColor(int color) {
+        mFooterViewContainer.setBackgroundColor(color);
+    }
+
     /**
      * 设置上拉加载更多的接口
      *

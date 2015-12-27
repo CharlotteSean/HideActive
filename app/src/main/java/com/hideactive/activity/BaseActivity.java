@@ -52,6 +52,17 @@ public class BaseActivity extends Activity {
 	}
 
 	/**
+	 * 打开Activity，并附带动画
+	 * 可选则anim文件夹下任意动画，此处为其中一种案例
+	 * @param intent
+	 * @param requestCode
+	 */
+	protected void openForResultActivity(Intent intent, int requestCode) {
+		startActivityForResult(intent, requestCode);
+		overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+	}
+
+	/**
 	 * 关闭Activity，并附带动画
      * 可选则anim文件夹下任意动画，此处为其中一种案例
 	 */

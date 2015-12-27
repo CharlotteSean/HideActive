@@ -20,8 +20,8 @@ public class LikesDB {
 			+ LikesDB.TB_NAME
 			+ "(userId text, postId text)";
 
-	public LikesDB(Context context, String account) {
-		helper = new DBOpenHelper(context, account);
+	public LikesDB(Context context) {
+		helper = new DBOpenHelper(context);
 		db = helper.getWritableDatabase();
 	}
 

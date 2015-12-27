@@ -34,12 +34,14 @@ public class PostListAdapter extends BaseAdapter {
 	private Context context;
 	private List<Post> list;
 	private LayoutInflater inflater;
+	private LikesDB likesDB;
 
 	public PostListAdapter(Context context, List<Post> list) {
 		super();
 		this.context = context;
 		this.list = list;
 		inflater = LayoutInflater.from(context);
+		likesDB = SessionApplication.getInstance().getLikesDB();
 	}
 
 	@Override
@@ -116,9 +118,7 @@ public class PostListAdapter extends BaseAdapter {
 
 		String uId = SessionApplication.getInstance().getCurrentUser().getObjectId();
 		Like like = new Like(uId, list.get(position).getObjectId());
-		LikesDB likesDB = new LikesDB(context, uId);
 		postLike.setSelected(likesDB.isLike(like));
-		likesDB.closedDB();
 		postLike.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -132,7 +132,6 @@ public class PostListAdapter extends BaseAdapter {
 				post.setObjectId(list.get(position).getObjectId());
 				BmobRelation relation = new BmobRelation();
 				final Like like = new Like(user.getObjectId(), list.get(position).getObjectId());
-				final LikesDB likesDB = new LikesDB(context, user.getObjectId());
 				if (postLike.isSelected()) {
 					// 取消点赞
 					relation.remove(user);
@@ -170,7 +169,6 @@ public class PostListAdapter extends BaseAdapter {
 						public void onFailure(int i, String s) {
 						}
 					});
-					likesDB.closedDB();
 				}
 			}
 		});

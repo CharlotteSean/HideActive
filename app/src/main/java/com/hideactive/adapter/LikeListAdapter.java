@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hideactive.R;
+import com.hideactive.activity.UserInfoActivity;
 import com.hideactive.config.ImageLoaderOptions;
 import com.hideactive.model.User;
 import com.hideactive.util.ViewHolder;
@@ -59,6 +60,12 @@ public class LikeListAdapter extends BaseAdapter {
         } else {
 			userLogo.setImageResource(R.mipmap.user_logo_default);
 		}
+		userLogo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				UserInfoActivity.start(context, list.get(position).getObjectId());
+			}
+		});
 		String nickname = TextUtils.isEmpty(list.get(position).getNickname())
 				? list.get(position).getUsername()
 				: list.get(position).getNickname();

@@ -13,14 +13,12 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 	// 数据库名
 	public static final String DATABASE_NAME = "_HideActive.db";
 
-    private String account;
-    
     public DBOpenHelper(Context context, String name, CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
     
-    public DBOpenHelper(Context context, String account) {
-        super(context, account + DATABASE_NAME, null, DATABASE_VERSION);
+    public DBOpenHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -31,7 +29,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL( "DROP TABLE IF EXISTS " + LikesDB.TB_NAME + "_" + account);
+        db.execSQL( "DROP TABLE IF EXISTS " + LikesDB.TB_NAME);
         onCreate(db);
         Log. d("Database" ,"onUpgrade" );
     }

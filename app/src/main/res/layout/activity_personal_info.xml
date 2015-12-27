@@ -143,8 +143,9 @@
         <RelativeLayout
             android:id="@+id/user_item_signature"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/user_item_age"
+            android:minHeight="48dp"
             android:paddingLeft="@dimen/dimen_small"
             android:paddingRight="@dimen/dimen_small"
             android:clickable="true"
@@ -161,6 +162,7 @@
                 android:id="@+id/user_signature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/dimen_small"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="96dp"

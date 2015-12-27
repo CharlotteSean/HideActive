@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hideactive.R;
+import com.hideactive.activity.UserInfoActivity;
 import com.hideactive.config.ImageLoaderOptions;
 import com.hideactive.model.Message;
 import com.hideactive.util.TimeUtil;
@@ -66,6 +67,12 @@ public class MessageListAdapter extends BaseAdapter {
         } else {
 			userLogo.setImageResource(R.mipmap.user_logo_default);
 		}
+		userLogo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				UserInfoActivity.start(context, list.get(position).getFromUser().getObjectId());
+			}
+		});
 		String nickname = TextUtils.isEmpty(list.get(position).getFromUser().getNickname())
 				? list.get(position).getFromUser().getUsername()
 				: list.get(position).getFromUser().getNickname();

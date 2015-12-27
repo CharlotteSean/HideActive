@@ -23,6 +23,8 @@ import cn.bmob.v3.listener.LogInListener;
 
 public class LoginActivity extends BaseActivity implements OnClickListener {
 
+    private static final int REQUEST_CODE_REGIST = 0;
+
     private EditText usernameView;
     private EditText passwordView;
     private Button loginButton;
@@ -73,14 +75,23 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			}
 			break;
 		case R.id.regist:
-            openActivity(new Intent(this, RegistActivity.class));
+            openForResultActivity(new Intent(this, RegistActivity.class), REQUEST_CODE_REGIST);
 			break;
 		default:
 			break;
 		}
 	}
-	
-	/**
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // 注册成功回调
+        if (requestCode == REQUEST_CODE_REGIST && resultCode == RESULT_OK) {
+            usernameView.setText(data.getStringExtra("username"));
+            passwordView.requestFocus();
+        }
+    }
+
+    /**
 	 * 用户登录
 	 * @param account
 	 * @param password
@@ -99,6 +110,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     openActivityAndClose(new Intent(LoginActivity.this, MainActivity.class));
                 } else {
                     ToastUtil.showShort("账号或密码错误！");
+                    loginButton.setEnabled(true);
+                    loginButton.setText(getString(R.string.login));
                 }
             }
         });

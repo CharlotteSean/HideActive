@@ -6,14 +6,13 @@
     <include
         layout="@layout/layout_top_bar"/>
 
-    <LinearLayout 
+    <LinearLayout
         android:id="@+id/inputEare"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_below="@+id/top_bar"
         android:paddingLeft="@dimen/dimen_small"
         android:paddingRight="@dimen/dimen_small"
-        android:layout_marginTop="@dimen/dimen_small"
         android:orientation="vertical">
         <com.hideactive.widget.ClearEditText
             android:id="@+id/username"
@@ -23,10 +22,19 @@
             android:drawableLeft="@mipmap/login_icon_username"
             android:drawableRight="@mipmap/et_clear"
             android:singleLine="true"
+            android:maxLength="15"
             android:padding="@dimen/dimen_small"
             android:textSize="16sp"
             android:textColor="@color/text_color_1"
             android:hint="@string/account"/>
+        <TextView
+            android:id="@+id/tv_username_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_small"
+            android:text="@string/regist_tips"
+            android:textSize="12sp"
+            android:textColor="@color/text_color_2"/>
         <com.hideactive.widget.ClearEditText
             android:id="@+id/password"
             android:layout_width="match_parent"
@@ -36,11 +44,20 @@
             android:drawableLeft="@mipmap/login_icon_password"
             android:drawableRight="@mipmap/et_clear"
             android:singleLine="true"
+            android:maxLength="15"
             android:padding="@dimen/dimen_small"
             android:inputType="textPassword"
             android:textSize="16sp"
             android:textColor="@color/text_color_1"
             android:hint="@string/password"/>
+        <TextView
+            android:id="@+id/tv_password_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_small"
+            android:text="@string/regist_tips"
+            android:textSize="12sp"
+            android:textColor="@color/text_color_2"/>
         <com.hideactive.widget.ClearEditText
             android:id="@+id/repassword"
             android:layout_width="match_parent"
@@ -50,6 +67,7 @@
             android:drawableLeft="@mipmap/login_icon_password"
             android:drawableRight="@mipmap/et_clear"
             android:singleLine="true"
+            android:maxLength="15"
             android:padding="@dimen/dimen_small"
             android:inputType="textPassword"
             android:textSize="16sp"
