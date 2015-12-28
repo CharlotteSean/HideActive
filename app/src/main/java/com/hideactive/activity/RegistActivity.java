@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -68,46 +69,36 @@ public class RegistActivity extends BaseActivity {
 		repasswordView = (EditText) findViewById(R.id.repassword);
 
 		usernametipsView.setVisibility(View.GONE);
-		usernameView.addTextChangedListener(new TextWatcher() {
+		usernameView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			}
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				Pattern pattern = Pattern.compile(regEx);
-				Matcher matcher = pattern.matcher(usernameView.getText().toString());
-				isMatchUsername = matcher.matches();
-				if (!isMatchUsername) {
-					usernametipsView.setVisibility(View.VISIBLE);
-				} else {
-					usernametipsView.setVisibility(View.GONE);
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (!hasFocus) {
+					// 失去焦点时判断合法性
+					Pattern pattern = Pattern.compile(regEx);
+					Matcher matcher = pattern.matcher(usernameView.getText().toString());
+					isMatchUsername = matcher.matches();
+					if (!isMatchUsername) {
+						usernametipsView.setVisibility(View.VISIBLE);
+					} else {
+						usernametipsView.setVisibility(View.GONE);
+					}
 				}
 			}
 		});
 		passwordtipsView.setVisibility(View.GONE);
-		passwordView.addTextChangedListener(new TextWatcher() {
+		passwordView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			}
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				Pattern pattern = Pattern.compile(regEx);
-				Matcher matcher = pattern.matcher(passwordView.getText().toString());
-				isMatchPassword = matcher.matches();
-				if (!isMatchPassword) {
-					passwordtipsView.setVisibility(View.VISIBLE);
-				} else {
-					passwordtipsView.setVisibility(View.GONE);
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (!hasFocus) {
+					// 失去焦点时判断合法性
+					Pattern pattern = Pattern.compile(regEx);
+					Matcher matcher = pattern.matcher(passwordView.getText().toString());
+					isMatchPassword = matcher.matches();
+					if (!isMatchPassword) {
+						passwordtipsView.setVisibility(View.VISIBLE);
+					} else {
+						passwordtipsView.setVisibility(View.GONE);
+					}
 				}
 			}
 		});
