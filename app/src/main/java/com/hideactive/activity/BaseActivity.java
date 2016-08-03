@@ -7,10 +7,11 @@ import com.hideactive.dialog.LoadingDialog;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-public class BaseActivity extends Activity {
+public class BaseActivity extends AppCompatActivity {
 
 	protected LoadingDialog loadingDialog;
 	protected SessionApplication application;

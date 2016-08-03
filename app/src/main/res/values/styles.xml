@@ -1,33 +1,13 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light.NoActionBar">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
-    </style>
-
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- 跳转时不显示黑色 -->
-        <item name="android:windowBackground">@null</item>
-    	<item name="android:windowContentOverlay">@null</item>  <!-- 去除阴影 -->
-    	<item name="android:windowIsTranslucent">false</item>
-    	<item name="android:windowAnimationStyle">@null</item>
-    	<item name="android:windowDisablePreview">true</item>
-    	<item name="android:windowNoDisplay">false</item>
-        <!--<item name="android:actionBarStyle">@style/CustomActionBarStyle</item>-->
-        <!--<item name="android:itemBackground">@drawable/btn_action_bar_selector</item>-->
-        <!--<item name="android:actionBarItemBackground">@drawable/btn_action_bar_selector</item>-->
-        <!--<item name="android:itemTextAppearance">@style/CustomActionBarOverflow</item>-->
-        <!--<item name="android:actionOverflowButtonStyle">@style/CustomActionButtonOverflow</item>-->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
     </style>
+
+	<style name="FullScreenTheme" parent="AppTheme">
+		<item name="android:windowFullscreen">true</item>
+	</style>
 
     <style name="NormalDialog" parent="@android:style/Theme.Dialog">
 		<item name="android:windowFrame">@null</item>

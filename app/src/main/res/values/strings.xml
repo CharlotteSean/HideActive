@@ -57,4 +57,9 @@
     <string name="new_comment">您有新的评论</string>
     <string name="offsite_notify_message">您已在其他设备登录</string>
 
+    <string name="load_more">正在加载...</string>
+    <string name="no_more">没有更多图片</string>
+    <string name="load_completed">加载完成</string>
+    <string name="load_error">加载失败，点击重新加载！</string>
+
 </resources>

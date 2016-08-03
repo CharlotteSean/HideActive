@@ -1,13 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="TabButtonView">
-        <attr name="icon" format="reference" />
-        <attr name="icon_selected" format="reference" />
-        <attr name="text" format="string" />
-        <attr name="text_size" format="dimension" />
-        <attr name="text_color" format="reference" />
-        <attr name="text_color_selected" format="reference" />
-    </declare-styleable>
-
 </resources>
