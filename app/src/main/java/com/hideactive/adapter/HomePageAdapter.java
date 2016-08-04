@@ -35,17 +35,13 @@ public class HomePageAdapter extends BaseLoadMoreAdapter<Post> {
 
     // 单击事件
     private OnItemClickListener onItemClickListener;
-    // 长按事件
-    private OnItemLongClickListener onItemLongClickListener;
 
     private Context context;
-    private List<Post> list;
     private LikesDB likesDB;
 
-    public HomePageAdapter(RecyclerView recyclerView, Context context, List<Post> list) {
+    public HomePageAdapter(RecyclerView recyclerView, Context context) {
         super(recyclerView);
         this.context = context;
-        this.list = list;
         likesDB = SessionApplication.getInstance().getLikesDB();
     }
 
@@ -87,7 +83,7 @@ public class HomePageAdapter extends BaseLoadMoreAdapter<Post> {
         viewHolder.postDateView.setText(TimeUtil.getDescriptionTimeFromTimestamp(TimeUtil.stringToLong(createAt, TimeUtil.FORMAT_DATE_TIME_SECOND)));
         if (!TextUtils.isEmpty(post.getContent())) {
             viewHolder.postContentView.setVisibility(View.VISIBLE);
-            viewHolder.postContentView.setText(post.getContent());
+            viewHolder.postContentView.setMText(post.getContent());
         } else {
             viewHolder.postContentView.setVisibility(View.GONE);
         }
@@ -142,7 +138,7 @@ public class HomePageAdapter extends BaseLoadMoreAdapter<Post> {
         public SimpleDraweeView userLogoView;
         public TextView userNameView;
         public TextView postDateView;
-        public TextView postContentView;
+        public EmoticonsTextView postContentView;
         public ImageView postImageView;
         public ImageButton postCommentView;
         public ImageButton postLikeView;
@@ -156,7 +152,7 @@ public class HomePageAdapter extends BaseLoadMoreAdapter<Post> {
             userLogoView = (SimpleDraweeView) view.findViewById(R.id.user_logo);
             userNameView = (TextView) view.findViewById(R.id.user_name);
             postDateView = (TextView) view.findViewById(R.id.post_date);
-            postContentView = (TextView) view.findViewById(R.id.post_content);
+            postContentView = (EmoticonsTextView) view.findViewById(R.id.post_content);
             postImageView = (ImageView) view.findViewById(R.id.post_image);
             postCommentView = (ImageButton) view.findViewById(R.id.post_comment);
             postLikeView = (ImageButton) view.findViewById(R.id.post_like);

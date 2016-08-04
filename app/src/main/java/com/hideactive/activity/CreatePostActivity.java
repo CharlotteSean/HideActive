@@ -9,12 +9,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -82,24 +85,14 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     }
 
     public void initView() {
-        TextView topBarTitle = (TextView) findViewById(R.id.tv_top_bar_title);
-        topBarTitle.setText(getResources().getString(R.string.edit));
-        Button topBarLeftBtn = (Button) findViewById(R.id.btn_top_bar_left);
-        topBarLeftBtn.setVisibility(View.VISIBLE);
-        topBarLeftBtn.setText(getResources().getString(R.string.cancle));
-        topBarLeftBtn.setOnClickListener(new OnClickListener() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar.setTitle(R.string.edit);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.mipmap.ic_close_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 closeActivity();
-            }
-        });
-        Button topBarRightBtn = (Button) findViewById(R.id.btn_top_bar_right);
-        topBarRightBtn.setVisibility(View.VISIBLE);
-        topBarRightBtn.setText(getResources().getString(R.string.post));
-        topBarRightBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                post();
             }
         });
 
@@ -172,6 +165,20 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             default:
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_create_post, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_post) {
+            post();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

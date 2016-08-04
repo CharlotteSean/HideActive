@@ -59,7 +59,7 @@ public class HomeFragment extends BaseFragment {
         postListView.setItemAnimator(new DefaultItemAnimator());
 
 		postList = new ArrayList<>();
-		homePageAdapter = new HomePageAdapter(postListView, getActivity(), postList);
+		homePageAdapter = new HomePageAdapter(postListView, getActivity());
 		postListView.setAdapter(homePageAdapter);
 		homePageAdapter.setOnItemClickListener(new HomePageAdapter.OnItemClickListener() {
 			@Override
@@ -122,6 +122,12 @@ public class HomeFragment extends BaseFragment {
 			@Override
 			public void onError(int code, String msg) {
 				ToastUtil.showShort("查询失败！" + msg);
+				if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+					swipeRefreshLayout.setRefreshing(false);
+				}
+				if (homePageAdapter.getLoadMoreStatus() == BaseLoadMoreAdapter.LoadMoreStatus.STATUS_LOADING) {
+					homePageAdapter.setLoadFailure();
+				}
 			}
 		});
 	}
