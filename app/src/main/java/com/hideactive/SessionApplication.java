@@ -1,40 +1,26 @@
 package com.hideactive;
 
-import com.hideactive.activity.LoginActivity;
-import com.hideactive.config.Constant;
-import com.hideactive.config.UserConfig;
-import com.hideactive.db.LikesDB;
-import com.hideactive.model.Like;
-import com.hideactive.model.User;
-import com.hideactive.util.PushUtil;
-import com.nostra13.universalimageloader.cache.disc.DiskCache;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.utils.IoUtils;
-
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.hideactive.activity.LoginActivity;
+import com.hideactive.config.Constant;
+import com.hideactive.config.UserConfig;
+import com.hideactive.db.LikesDB;
+import com.hideactive.model.User;
+import com.hideactive.util.PushUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.push.BmobPush;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobInstallation;
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.listener.FindListener;
 
 public class SessionApplication extends Application{
 
@@ -50,21 +36,11 @@ public class SessionApplication extends Application{
 		context = getApplicationContext();
 		application = this;
 
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(application)
-				.memoryCacheExtraOptions(480, 800)
-				.threadPoolSize(3)
-				.threadPriority(Thread.NORM_PRIORITY - 2)
-				.denyCacheImageMultipleSizesInMemory()
-				.diskCache(new UnlimitedDiskCache(new File(Constant.IMAGE_CACHE_PATH)))
-				.diskCacheFileNameGenerator(new Md5FileNameGenerator())
-				.memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
-				.memoryCacheSize(2 * 1024 * 1024)
-				.diskCacheSize(50 * 1024 * 1024)
-				.tasksProcessingOrder(QueueProcessingType.LIFO)
-				.imageDownloader(new BaseImageDownloader(application, 5 * 1000, 30 * 1000))
+		// Fresco初始化
+		ImagePipelineConfig config = ImagePipelineConfig.newBuilder(application)
+				.setDownsampleEnabled(true) // 支持多种图片格式
 				.build();
-		ImageLoader imageLoader = ImageLoader.getInstance();
-		imageLoader.init(config);
+		Fresco.initialize(application, config);
 
 		// 初始化Bmob
 		Bmob.initialize(this, Constant.BMOB_APP_ID);

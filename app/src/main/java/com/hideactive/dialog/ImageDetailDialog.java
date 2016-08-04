@@ -6,13 +6,10 @@ import android.os.Bundle;
 
 import com.hideactive.R;
 
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
-import com.hideactive.config.ImageLoaderOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import com.bm.library.PhotoView;
 
@@ -50,7 +47,7 @@ public class ImageDetailDialog extends Dialog{
         photoView = (PhotoView) findViewById(R.id.photoview);
 		// 启用缩放功能
 		photoView.enable();
-		ImageLoader.getInstance().displayImage(imageSrc, photoView, ImageLoaderOptions.getOptions());
+//		ImageLoader.getInstance().displayImage(imageSrc, photoView, ImageLoaderOptions.getOptions());
 		// 单击关闭
 		photoView.setOnClickListener(new View.OnClickListener() {
 			@Override

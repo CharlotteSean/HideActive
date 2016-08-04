@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.hideactive.R;
 import com.hideactive.adapter.CommentListAdapter;
 import com.hideactive.adapter.LikeListAdapter;
-import com.hideactive.config.ImageLoaderOptions;
 import com.hideactive.db.LikesDB;
 import com.hideactive.dialog.ImageDetailDialog;
 import com.hideactive.model.Comment;
@@ -30,10 +29,6 @@ import com.hideactive.util.PushUtil;
 import com.hideactive.util.TimeUtil;
 import com.hideactive.util.ToastUtil;
 import com.hideactive.widget.EmoticonsTextView;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -217,8 +212,8 @@ public class PostDetailActivity extends BaseActivity {
      */
     private void refreshView() {
         if (mPost.getAuthor().getLogo() != null) {
-            ImageLoader.getInstance().displayImage(mPost.getAuthor().getLogo().getUrl(),
-                    userLogo, ImageLoaderOptions.getOptions());
+//            ImageLoader.getInstance().displayImage(mPost.getAuthor().getLogo().getUrl(),
+//                    userLogo, ImageLoaderOptions.getOptions());
         }
         String nickname = TextUtils.isEmpty(mPost.getAuthor().getNickname())
                 ? mPost.getAuthor().getUsername()
@@ -234,8 +229,8 @@ public class PostDetailActivity extends BaseActivity {
         }
         if (mPost.getImage() != null) {
             postImage.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance().displayImage(mPost.getImage().getUrl(),
-                    postImage, ImageLoaderOptions.getOptions());
+//            ImageLoader.getInstance().displayImage(mPost.getImage().getUrl(),
+//                    postImage, ImageLoaderOptions.getOptions());
             postImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

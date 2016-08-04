@@ -11,10 +11,8 @@ import android.widget.TextView;
 
 import com.hideactive.R;
 import com.hideactive.activity.UserInfoActivity;
-import com.hideactive.config.ImageLoaderOptions;
 import com.hideactive.model.User;
 import com.hideactive.util.ViewHolder;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -55,8 +53,8 @@ public class LikeListAdapter extends BaseAdapter {
 		TextView userName = ViewHolder.get(convertView, R.id.user_name);
 
         if (list.get(position).getLogo() != null) {
-            ImageLoader.getInstance().displayImage(list.get(position).getLogo().getUrl(),
-                    userLogo, ImageLoaderOptions.getOptions());
+//            ImageLoader.getInstance().displayImage(list.get(position).getLogo().getUrl(),
+//                    userLogo, ImageLoaderOptions.getOptions());
         } else {
 			userLogo.setImageResource(R.mipmap.user_logo_default);
 		}

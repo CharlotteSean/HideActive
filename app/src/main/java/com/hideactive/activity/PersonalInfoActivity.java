@@ -18,14 +18,12 @@ import com.bmob.BmobProFile;
 import com.bmob.btp.callback.UploadListener;
 import com.hideactive.R;
 import com.hideactive.config.Constant;
-import com.hideactive.config.ImageLoaderOptions;
 import com.hideactive.dialog.CameraOrNativeDialog;
 import com.hideactive.dialog.EditTextDialog;
 import com.hideactive.dialog.SelectSexDialog;
 import com.hideactive.model.User;
 import com.hideactive.util.PhotoUtil;
 import com.hideactive.util.ToastUtil;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 
@@ -81,8 +79,8 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
 
         User user = application.getCurrentUser();
         if (user.getLogo() != null) {
-            ImageLoader.getInstance().displayImage(user.getLogo().getUrl(),
-                    userLogoView, ImageLoaderOptions.getOptions());
+//            ImageLoader.getInstance().displayImage(user.getLogo().getUrl(),
+//                    userLogoView, ImageLoaderOptions.getOptions());
         } else {
             userLogoView.setImageResource(R.mipmap.user_logo_default);
         }

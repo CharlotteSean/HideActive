@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="colorPrimaryDark">#393A3E</color>
+
     <color name="transparent">#00000000</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
@@ -16,7 +18,7 @@
     <color name="green_light">#04BF01</color>
     <color name="green_dark">#078614</color>
 
-    <color name="top_bar_bg">#303537</color>
+    <color name="top_bar_bg">#393A3E</color>
 
     <color name="btn_login_normal">#04BF01</color>
     <color name="btn_login_pressed">#078614</color>

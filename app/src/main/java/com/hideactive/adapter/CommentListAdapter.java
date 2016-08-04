@@ -11,11 +11,9 @@ import android.widget.TextView;
 
 import com.hideactive.R;
 import com.hideactive.activity.UserInfoActivity;
-import com.hideactive.config.ImageLoaderOptions;
 import com.hideactive.model.Comment;
 import com.hideactive.util.TimeUtil;
 import com.hideactive.util.ViewHolder;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -58,8 +56,8 @@ public class CommentListAdapter extends BaseAdapter {
 		TextView postContent = ViewHolder.get(convertView, R.id.comment_content);
 
         if (list.get(position).getUser().getLogo() != null) {
-            ImageLoader.getInstance().displayImage(list.get(position).getUser().getLogo().getUrl(),
-                    userLogo, ImageLoaderOptions.getOptions());
+//            ImageLoader.getInstance().displayImage(list.get(position).getUser().getLogo().getUrl(),
+//                    userLogo, ImageLoaderOptions.getOptions());
         } else {
 			userLogo.setImageResource(R.mipmap.user_logo_default);
 		}
