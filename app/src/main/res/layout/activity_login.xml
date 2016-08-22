@@ -1,16 +1,24 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
-    <include
-        layout="@layout/layout_top_bar"/>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimaryDark"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ToolbarTheme"/>
 
     <LinearLayout
         android:id="@+id/input_eare"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_below="@+id/top_bar"
         android:paddingLeft="@dimen/dimen_small"
         android:paddingRight="@dimen/dimen_small"
         android:layout_marginTop="@dimen/dimen_small"
@@ -46,9 +54,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/input_eare"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dimen_normal"
-        android:layout_centerHorizontal="true"
         android:orientation="horizontal">
         <Button
             android:id="@+id/login"
@@ -69,4 +76,4 @@
             android:text="@string/regist"/>
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

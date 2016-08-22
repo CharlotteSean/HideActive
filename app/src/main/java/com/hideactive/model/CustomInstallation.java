@@ -12,7 +12,7 @@ public class CustomInstallation extends BmobInstallation {
     private String uId;// 用户ID
 
     public CustomInstallation(Context context) {
-        super(context);
+        super();
     }
 
     public String getuId() {

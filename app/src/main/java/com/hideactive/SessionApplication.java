@@ -9,24 +9,22 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.hideactive.activity.LoginActivity;
 import com.hideactive.config.Constant;
-import com.hideactive.config.UserConfig;
+import com.hideactive.config.SharedPreference;
 import com.hideactive.db.LikesDB;
 import com.hideactive.model.User;
-import com.hideactive.util.PushUtil;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bmob.push.BmobPush;
 import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobInstallation;
 import cn.bmob.v3.BmobUser;
 
 public class SessionApplication extends Application{
 
 	private static Context context;
 	private static SessionApplication application;
-	private static UserConfig userConfig;
+	private static SharedPreference userConfig;
 	private static List<Activity> activities = new ArrayList<Activity>();
 	private static LikesDB likesDB;
 
@@ -40,14 +38,12 @@ public class SessionApplication extends Application{
 		ImagePipelineConfig config = ImagePipelineConfig.newBuilder(application)
 				.setDownsampleEnabled(true) // 支持多种图片格式
 				.build();
-		Fresco.initialize(application, config);
+		Fresco.initialize(this, config);
 
 		// 初始化Bmob
 		Bmob.initialize(this, Constant.BMOB_APP_ID);
-		// 使用推送服务时的初始化操作
-		BmobInstallation.getCurrentInstallation(this).save();
-		// 启动推送服务
-		BmobPush.startWork(this, Constant.BMOB_APP_ID);
+
+		LeakCanary.install(this);
 	}
 	
 	public static SessionApplication getInstance() {
@@ -68,9 +64,9 @@ public class SessionApplication extends Application{
 	 * 获取用户设置信息
 	 * @return
 	 */
-	public UserConfig getUserConfig() {
+	public SharedPreference getUserConfig() {
         if (userConfig == null && getCurrentUser() != null) {
-			userConfig = new UserConfig(this, getCurrentUser().getObjectId());
+			userConfig = new SharedPreference(this, getCurrentUser().getObjectId());
         }
         return userConfig;
     }
@@ -80,7 +76,7 @@ public class SessionApplication extends Application{
 	 * @return
 	 */
 	public User getCurrentUser() {
-		return BmobUser.getCurrentUser(context, User.class);
+		return BmobUser.getCurrentUser(User.class);
 	}
 
 	/**
@@ -124,10 +120,8 @@ public class SessionApplication extends Application{
 	public void logout(boolean isOffsite) {
 		// 关闭数据库
 		closedDB();
-		// 注销登录设备
-		PushUtil.logoutInstallation(context);
 		// 用户缓存注销
-		BmobUser.logOut(context);
+		BmobUser.logOut();
 		// 清空缓存用户配置
 		userConfig = null;
 		// 清空所有界面

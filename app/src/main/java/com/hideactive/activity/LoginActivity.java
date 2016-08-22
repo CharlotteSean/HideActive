@@ -1,20 +1,17 @@
 package com.hideactive.activity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.hideactive.R;
 import com.hideactive.dialog.OffsiteNotifyDialog;
 import com.hideactive.model.User;
-import com.hideactive.util.PushUtil;
 import com.hideactive.util.ToastUtil;
 
 import cn.bmob.v3.BmobUser;
@@ -51,8 +48,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     }
 
     public void initView() {
-        TextView topBarTitle = (TextView) findViewById(R.id.tv_top_bar_title);
-        topBarTitle.setText(getResources().getString(R.string.login));
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar.setTitle(R.string.login);
+        toolbar.setTitleTextAppearance(this, R.style.ToolbarTitleTextAppearance);
+        setSupportActionBar(toolbar);
 
         usernameView = (EditText) findViewById(R.id.username);
         passwordView = (EditText) findViewById(R.id.password);
@@ -86,8 +85,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // 注册成功回调
         if (requestCode == REQUEST_CODE_REGIST && resultCode == RESULT_OK) {
-            usernameView.setText(data.getStringExtra("username"));
-            passwordView.requestFocus();
+            if (application.getCurrentUser() != null) {
+                // 跳转
+                openActivityAndClose(new Intent(LoginActivity.this, MainActivity.class));
+            }
         }
     }
 
@@ -100,12 +101,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         hideSoftInputView();
         loginButton.setEnabled(false);
         loginButton.setText(getString(R.string.logining));
-        BmobUser.loginByAccount(this, account, password, new LogInListener<User>() {
+        BmobUser.loginByAccount(account, password, new LogInListener<User>() {
             @Override
             public void done(User user, BmobException e) {
                 if (user != null) {
-                    // 检查异地登录，并更新登录信息
-                    PushUtil.notifyOffsite(LoginActivity.this, user.getObjectId());
                     // 跳转
                     openActivityAndClose(new Intent(LoginActivity.this, MainActivity.class));
                 } else {

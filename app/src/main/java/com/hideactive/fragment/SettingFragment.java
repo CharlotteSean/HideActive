@@ -3,7 +3,6 @@ package com.hideactive.fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +11,11 @@ import android.widget.TextView;
 
 import com.hideactive.R;
 import com.hideactive.activity.AboutActivity;
-import com.hideactive.activity.LoginActivity;
-import com.hideactive.activity.MainActivity;
 import com.hideactive.activity.PersonalInfoActivity;
-import com.hideactive.config.Constant;
-import com.hideactive.config.UserConfig;
+import com.hideactive.config.SharedPreference;
 import com.hideactive.util.FileUtil;
-import com.hideactive.util.PushUtil;
 import com.hideactive.util.ToastUtil;
 import com.zcw.togglebutton.ToggleButton;
-
-import java.io.File;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 public class SettingFragment extends BaseFragment implements View.OnClickListener {
 
@@ -44,7 +35,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     private TextView cacheSizeTv;
     private Button logoutBtn;
 
-    private UserConfig userConfig;
+    private SharedPreference userConfig;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -159,7 +150,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         });
 
         cacheSizeTv = (TextView) findViewById(R.id.tv_cache_size);
-        cacheSizeTv.setText(FileUtil.getFormatSize(FileUtil.getFolderSize(new File(Constant.IMAGE_CACHE_PATH))));
+        cacheSizeTv.setText(FileUtil.getTotalCacheSize(getActivity()));
 
         logoutBtn = (Button) findViewById(R.id.btn_logout);
         logoutBtn.setOnClickListener(this);
@@ -192,8 +183,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
         @Override
         protected Integer doInBackground(Void... params) {
-            File file = new File(Constant.IMAGE_CACHE_PATH);
-            FileUtil.clearCache(file);
+            FileUtil.clearAllCache(getActivity());
             return null;
         }
 

@@ -21,11 +21,8 @@ import com.hideactive.db.LikesDB;
 import com.hideactive.dialog.ImageDetailDialog;
 import com.hideactive.model.Comment;
 import com.hideactive.model.Like;
-import com.hideactive.model.Message;
 import com.hideactive.model.Post;
-import com.hideactive.model.PushMessage;
 import com.hideactive.model.User;
-import com.hideactive.util.PushUtil;
 import com.hideactive.util.TimeUtil;
 import com.hideactive.util.ToastUtil;
 import com.hideactive.widget.EmoticonsTextView;
@@ -36,8 +33,9 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.datatype.BmobRelation;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.GetListener;
+import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -289,20 +287,19 @@ public class PostDetailActivity extends BaseActivity {
             return;
         }
         query.include("author");
-        query.getObject(this, postId, new GetListener<Post>() {
+        query.getObject(postId, new QueryListener<Post>() {
             @Override
-            public void onSuccess(Post object) {
-                mPost = object;
-                // 获取到数据后，刷新页面
-                refreshView();
-                // 加载评论
-                currentPageIndex = 0;
-                loadComments();
-            }
-
-            @Override
-            public void onFailure(int code, String arg0) {
-                ToastUtil.showShort("获取数据失败");
+            public void done(Post post, BmobException e) {
+                if (e == null) {
+                    mPost = post;
+                    // 获取到数据后，刷新页面
+                    refreshView();
+                    // 加载评论
+                    currentPageIndex = 0;
+                    loadComments();
+                } else {
+                    ToastUtil.showShort("获取数据失败");
+                }
             }
         });
     }
@@ -319,35 +316,34 @@ public class PostDetailActivity extends BaseActivity {
         query.order("createdAt");
         query.setLimit(PAGE_SIZE);
         query.setSkip(PAGE_SIZE * currentPageIndex);
-        query.findObjects(this, new FindListener<Comment>() {
+        query.findObjects(new FindListener<Comment>() {
             @Override
-            public void onSuccess(List<Comment> object) {
-                // 若是起始页，则删除列表
-                if (currentPageIndex == 0) {
-                    commentList.clear();
-                    if (object == null || object.size() == 0) {
-                        tipsBtn.setText("暂无评论");
-                        tipsBtn.setClickable(false);
-                        return;
+            public void done(List<Comment> list, BmobException e) {
+                if (e == null) {
+                    // 若是起始页，则删除列表
+                    if (currentPageIndex == 0) {
+                        commentList.clear();
+                        if (list == null || list.size() == 0) {
+                            tipsBtn.setText("暂无评论");
+                            tipsBtn.setClickable(false);
+                            return;
+                        }
                     }
-                }
-                currentPageIndex++;
-                commentList.addAll(object);
-                commentListAdapter.notifyDataSetChanged();
-                setListViewHeightBasedOnChildren(commentListView);
+                    currentPageIndex++;
+                    commentList.addAll(list);
+                    commentListAdapter.notifyDataSetChanged();
+                    setListViewHeightBasedOnChildren(commentListView);
 
-                if (commentList.size() < PAGE_SIZE * currentPageIndex) {
-                    tipsBtn.setText("无更多评论");
-                    tipsBtn.setClickable(false);
+                    if (commentList.size() < PAGE_SIZE * currentPageIndex) {
+                        tipsBtn.setText("无更多评论");
+                        tipsBtn.setClickable(false);
+                    } else {
+                        tipsBtn.setText("加载更多");
+                        tipsBtn.setClickable(true);
+                    }
                 } else {
-                    tipsBtn.setText("加载更多");
-                    tipsBtn.setClickable(true);
+                    tipsBtn.setText("暂无评论");
                 }
-            }
-
-            @Override
-            public void onError(int code, String msg) {
-                tipsBtn.setText("暂无评论");
             }
         });
     }
@@ -369,37 +365,33 @@ public class PostDetailActivity extends BaseActivity {
         comment.setContent(content);
         comment.setPost(post);
         comment.setUser(user);
-        comment.save(this, new SaveListener() {
+        comment.save(new SaveListener<String>() {
             @Override
-            public void onSuccess() {
-                currentCommentNum++;
-                Post post = new Post();
-                post.setCommentNum(currentCommentNum);
-                post.update(PostDetailActivity.this, mPost.getObjectId(), new UpdateListener() {
-                    @Override
-                    public void onSuccess() {
-                        commentNumBtn.setText(getString(R.string.comment) + " " + currentCommentNum);
-                        if (commentList.size() < PAGE_SIZE * currentPageIndex) {
-                            commentList.add(comment);
-                            commentListAdapter.notifyDataSetChanged();
-                            setListViewHeightBasedOnChildren(commentListView);
-                        } else {
-                            loadComments();
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    currentCommentNum++;
+                    Post post = new Post();
+                    post.setCommentNum(currentCommentNum);
+                    post.update(mPost.getObjectId(), new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if (e == null) {
+                                commentNumBtn.setText(getString(R.string.comment) + " " + currentCommentNum);
+                                if (commentList.size() < PAGE_SIZE * currentPageIndex) {
+                                    commentList.add(comment);
+                                    commentListAdapter.notifyDataSetChanged();
+                                    setListViewHeightBasedOnChildren(commentListView);
+                                } else {
+                                    loadComments();
+                                }
+                            } else {
+                                ToastUtil.showShort("评论失败：" + e.getMessage());
+                            }
                         }
-                        // 发送消息
-                        sendMessage(comment.getContent());
-                    }
-
-                    @Override
-                    public void onFailure(int code, String msg) {
-                        ToastUtil.showShort("评论失败：" + msg);
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(int code, String msg) {
-                ToastUtil.showShort("评论失败：" + msg);
+                    });
+                } else {
+                    ToastUtil.showShort("评论失败：" + e.getMessage());
+                }
             }
         });
     }
@@ -415,35 +407,34 @@ public class PostDetailActivity extends BaseActivity {
         query.order("createdAt");
         query.setLimit(PAGE_SIZE);
         query.setSkip(PAGE_SIZE * currentPageIndex);
-        query.findObjects(this, new FindListener<User>() {
+        query.findObjects(new FindListener<User>() {
             @Override
-            public void onSuccess(List<User> object) {
-                // 若是起始页，则删除列表
-                if (currentPageIndex == 0) {
-                    likeList.clear();
-                    if (object == null || object.size() == 0) {
-                        tipsBtn.setText("暂无点赞");
-                        tipsBtn.setClickable(false);
-                        return;
+            public void done(List<User> list, BmobException e) {
+                if (e == null) {
+                    // 若是起始页，则删除列表
+                    if (currentPageIndex == 0) {
+                        likeList.clear();
+                        if (list == null || list.size() == 0) {
+                            tipsBtn.setText("暂无点赞");
+                            tipsBtn.setClickable(false);
+                            return;
+                        }
                     }
-                }
-                currentPageIndex++;
-                likeList.addAll(object);
-                likeListAdapter.notifyDataSetChanged();
-                setListViewHeightBasedOnChildren(likeListView);
+                    currentPageIndex++;
+                    likeList.addAll(list);
+                    likeListAdapter.notifyDataSetChanged();
+                    setListViewHeightBasedOnChildren(likeListView);
 
-                if (likeList.size() < PAGE_SIZE * currentPageIndex) {
-                    tipsBtn.setText("无更多点赞");
-                    tipsBtn.setClickable(false);
+                    if (likeList.size() < PAGE_SIZE * currentPageIndex) {
+                        tipsBtn.setText("无更多点赞");
+                        tipsBtn.setClickable(false);
+                    } else {
+                        tipsBtn.setText("加载更多");
+                        tipsBtn.setClickable(true);
+                    }
                 } else {
-                    tipsBtn.setText("加载更多");
-                    tipsBtn.setClickable(true);
+                    tipsBtn.setText("暂无点赞");
                 }
-            }
-
-            @Override
-            public void onError(int code, String msg) {
-                tipsBtn.setText("暂无点赞");
             }
         });
     }
@@ -459,7 +450,6 @@ public class PostDetailActivity extends BaseActivity {
         }
         sendLikeBTn.setClickable(false);
         Post post = new Post();
-        post.setObjectId(mPost.getObjectId());
         BmobRelation relation = new BmobRelation();
         final Like like = new Like(user.getObjectId(), mPost.getObjectId());
         if (sendLikeBTn.isSelected()) {
@@ -467,85 +457,54 @@ public class PostDetailActivity extends BaseActivity {
             relation.remove(user);
             post.setLikes(relation);
             post.increment("likeNum", -1);
-            post.update(this, new UpdateListener() {
+            post.update(mPost.getObjectId(), new UpdateListener() {
                 @Override
-                public void onSuccess() {
-                    currentLikeNum--;
-                    sendLikeBTn.setSelected(false);
-                    sendLikeBTn.setText(getString(R.string.like));
-                    likesDB.delete(like);
-                    likeNumBtn.setText(getString(R.string.like) + " " + currentLikeNum);
-                    if (likeList.size() < PAGE_SIZE * currentPageIndex) {
-                        for (int i = 0; i < likeList.size(); i++) {
-                            if (likeList.get(i).getObjectId().equalsIgnoreCase(user.getObjectId())) {
-                                likeList.remove(i);
-                                break;
+                public void done(BmobException e) {
+                    if (e == null) {
+                        currentLikeNum--;
+                        sendLikeBTn.setSelected(false);
+                        sendLikeBTn.setText(getString(R.string.like));
+                        likesDB.delete(like);
+                        likeNumBtn.setText(getString(R.string.like) + " " + currentLikeNum);
+                        if (likeList.size() < PAGE_SIZE * currentPageIndex) {
+                            for (int i = 0; i < likeList.size(); i++) {
+                                if (likeList.get(i).getObjectId().equalsIgnoreCase(user.getObjectId())) {
+                                    likeList.remove(i);
+                                    break;
+                                }
                             }
+                            likeListAdapter.notifyDataSetChanged();
+                            setListViewHeightBasedOnChildren(likeListView);
                         }
-                        likeListAdapter.notifyDataSetChanged();
-                        setListViewHeightBasedOnChildren(likeListView);
+                        sendLikeBTn.setClickable(true);
                     }
-                    sendLikeBTn.setClickable(true);
-                }
-                @Override
-                public void onFailure(int arg0, String arg1) {
                 }
             });
-            return;
         } else {
             // 点赞
             relation.add(user);
             post.setLikes(relation);
             post.increment("likeNum", 1);
-            post.update(this, new UpdateListener() {
+            post.update(mPost.getObjectId(), new UpdateListener() {
                 @Override
-                public void onSuccess() {
-                    currentLikeNum++;
-                    sendLikeBTn.setSelected(true);
-                    sendLikeBTn.setText(getString(R.string.unlike));
-                    likesDB.addOne(like);
-                    likeNumBtn.setText(getString(R.string.like) + " " + currentLikeNum);
-                    if (likeList.size() < PAGE_SIZE * currentPageIndex) {
-                        likeList.add(user);
-                        likeListAdapter.notifyDataSetChanged();
-                        setListViewHeightBasedOnChildren(likeListView);
-                    } else {
-                        loadLikes();
+                public void done(BmobException e) {
+                    if (e == null) {
+                        currentLikeNum++;
+                        sendLikeBTn.setSelected(true);
+                        sendLikeBTn.setText(getString(R.string.unlike));
+                        likesDB.addOne(like);
+                        likeNumBtn.setText(getString(R.string.like) + " " + currentLikeNum);
+                        if (likeList.size() < PAGE_SIZE * currentPageIndex) {
+                            likeList.add(user);
+                            likeListAdapter.notifyDataSetChanged();
+                            setListViewHeightBasedOnChildren(likeListView);
+                        } else {
+                            loadLikes();
+                        }
+                        sendLikeBTn.setClickable(true);
                     }
-                    sendLikeBTn.setClickable(true);
-                }
-                @Override
-                public void onFailure(int i, String s) {
                 }
             });
         }
     }
-
-    /**
-     * 发送一条消息
-     * @param content
-     */
-    private void sendMessage(final String content) {
-        Message message = new Message();
-        message.setContent(content);
-        message.setFromUser(application.getCurrentUser());
-        message.setToUser(mPost.getAuthor());
-        message.setPost(mPost);
-        message.save(this, new SaveListener() {
-            @Override
-            public void onSuccess() {
-                // 发送推送
-                PushMessage pushMessage = new PushMessage();
-                pushMessage.setType(PushMessage.TYPE_TEXT);
-                pushMessage.setUsername(application.getCurrentUser().getNickname());
-                pushMessage.setContent(content);
-                PushUtil.push2User(PostDetailActivity.this, mPost.getAuthor().getObjectId(), PushMessage.pase2Json(pushMessage).toString());
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-            }
-        });
-    }
-
 }

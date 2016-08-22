@@ -17,7 +17,9 @@ import com.hideactive.util.ToastUtil;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.QueryListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserInfoActivity extends BaseActivity {
@@ -98,21 +100,16 @@ public class UserInfoActivity extends BaseActivity {
     private void loadUser(String uId) {
         BmobQuery<User> query = new BmobQuery<User>();
         query.addWhereEqualTo("objectId", uId);
-        query.findObjects(this, new FindListener<User>() {
+        query.getObject(uId, new QueryListener<User>() {
             @Override
-            public void onSuccess(List<User> object) {
-                if (object != null && object.size() > 0) {
-                    user = object.get(0);
+            public void done(User object, BmobException e) {
+                if (e == null) {
+                    user = object;
                     // 加载页面
                     refreshView();
                 } else {
-                    ToastUtil.showShort("用户信息获取失败");
+                    ToastUtil.showShort("用户信息获取失败：" + e.getMessage());
                 }
-            }
-
-            @Override
-            public void onError(int code, String msg) {
-                ToastUtil.showShort("用户信息获取失败：" + msg);
             }
         });
     }

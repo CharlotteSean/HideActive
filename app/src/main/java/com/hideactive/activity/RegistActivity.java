@@ -2,10 +2,7 @@ package com.hideactive.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -19,7 +16,7 @@ import com.hideactive.util.ToastUtil;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 
 public class RegistActivity extends BaseActivity {
@@ -112,12 +109,12 @@ public class RegistActivity extends BaseActivity {
 				}
 				String username = usernameView.getText().toString().trim();
 				String password = passwordView.getText().toString().trim();
-				String repassword = repasswordView.getText().toString().trim();
-				if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password) || TextUtils.isEmpty(repassword)) {
+				String rePassword = repasswordView.getText().toString().trim();
+				if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password) || TextUtils.isEmpty(rePassword)) {
 					ToastUtil.showShort("请填写完整信息！");
 					return;
 				}
-				if (!password.equals(repassword)) {
+				if (!password.equals(rePassword)) {
 					ToastUtil.showShort("密码与确认密码不一致！");
 					repasswordView.setText("");
 					return;
@@ -139,24 +136,20 @@ public class RegistActivity extends BaseActivity {
 		user.setPassword(password);
 		user.setAge(0);
 		user.setSex(0);
-		user.signUp(this, new SaveListener() {
+		user.signUp(new SaveListener<User>() {
 			@Override
-			public void onSuccess() {
+			public void done(User user, BmobException e) {
 				loadingDialog.dismiss();
-				ToastUtil.showShort("注册成功！");
-				// 缓存清空
-				BmobUser.logOut(RegistActivity.this);
-				// 返回登录
-				Intent intent = new Intent();
-				intent.putExtra("username", username);
-				setResult(RESULT_OK, intent);
-                closeActivity();
-			}
-
-			@Override
-			public void onFailure(int i, String s) {
-				loadingDialog.dismiss();
-				ToastUtil.showShort(s);
+				if (e == null) {
+					ToastUtil.showShort("注册成功！");
+					// 返回登录
+					Intent intent = new Intent();
+					intent.putExtra("username", username);
+					setResult(RESULT_OK, intent);
+					closeActivity();
+				} else {
+					ToastUtil.showShort(e.getMessage());
+				}
 			}
 		});
 	}

@@ -96,9 +96,9 @@ public class HomePageAdapter extends BaseLoadMoreAdapter<Post> {
                     .build();
             DraweeController controller = Fresco.newDraweeControllerBuilder()
                     .setImageRequest(request)
-                    .setOldController(viewHolder.userLogoView.getController())
+                    .setOldController(viewHolder.postImageView.getController())
                     .build();
-            viewHolder.userLogoView.setController(controller);
+            viewHolder.postImageView.setController(controller);
 
             viewHolder.postImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -139,7 +139,7 @@ public class HomePageAdapter extends BaseLoadMoreAdapter<Post> {
         public TextView userNameView;
         public TextView postDateView;
         public EmoticonsTextView postContentView;
-        public ImageView postImageView;
+        public SimpleDraweeView postImageView;
         public ImageButton postCommentView;
         public ImageButton postLikeView;
         public TextView postCommentNumView;
@@ -153,7 +153,7 @@ public class HomePageAdapter extends BaseLoadMoreAdapter<Post> {
             userNameView = (TextView) view.findViewById(R.id.user_name);
             postDateView = (TextView) view.findViewById(R.id.post_date);
             postContentView = (EmoticonsTextView) view.findViewById(R.id.post_content);
-            postImageView = (ImageView) view.findViewById(R.id.post_image);
+            postImageView = (SimpleDraweeView) view.findViewById(R.id.post_image);
             postCommentView = (ImageButton) view.findViewById(R.id.post_comment);
             postLikeView = (ImageButton) view.findViewById(R.id.post_like);
             postCommentNumView = (TextView) view.findViewById(R.id.post_comment_num);

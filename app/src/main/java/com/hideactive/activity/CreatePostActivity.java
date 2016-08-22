@@ -23,15 +23,12 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bmob.BmobProFile;
-import com.bmob.btp.callback.UploadListener;
 import com.hideactive.R;
 import com.hideactive.adapter.EmoViewPagerAdapter;
 import com.hideactive.adapter.EmoteAdapter;
@@ -40,6 +37,7 @@ import com.hideactive.model.FaceText;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
 import com.hideactive.util.FaceTextUtils;
+import com.hideactive.util.FileUtil;
 import com.hideactive.util.PhotoUtil;
 import com.hideactive.util.ToastUtil;
 import com.hideactive.widget.EmoticonsEditText;
@@ -49,7 +47,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UploadFileListener;
 
 public class CreatePostActivity extends BaseActivity implements OnClickListener {
 
@@ -59,7 +59,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     private static final int INPUT_LIMITED_LENGTH = 200;
 
     private EmoticonsEditText inputView;
-    private TextView inputLenthTv;
+    private TextView inputLengthTv;
     private ImageButton nativeButton;
     private ImageButton cameraButton;
     private ImageButton emojButton;
@@ -87,6 +87,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     public void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         toolbar.setTitle(R.string.edit);
+        toolbar.setTitleTextAppearance(this, R.style.ToolbarTitleTextAppearance);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_close_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -111,10 +112,10 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             @Override
             public void afterTextChanged(Editable s) {
                 int length = INPUT_LIMITED_LENGTH - inputView.getText().toString().length();
-                inputLenthTv.setText(String.valueOf(length));
+                inputLengthTv.setText(String.valueOf(length));
             }
         });
-        inputLenthTv = (TextView) findViewById(R.id.tv_input_length);
+        inputLengthTv = (TextView) findViewById(R.id.tv_input_length);
 
         nativeButton = (ImageButton) findViewById(R.id.image_native);
         nativeButton.setOnClickListener(this);
@@ -192,22 +193,22 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             return;
         }
         // 有图片，上传图片
-        BmobProFile.getInstance(this).upload(imagePath, new UploadListener() {
+        final BmobFile bmobFile = new BmobFile(new File(imagePath));
+        bmobFile.uploadblock(new UploadFileListener() {
             @Override
-            public void onSuccess(String s, String s1, BmobFile bmobFile) {
-                Log.d("bmob", "bmobFile-Url：" + bmobFile.getUrl());
-                publishPost(bmobFile);
+            public void done(BmobException e) {
+                if (e == null) {
+                    Log.d("bmob", "bmobFile-Url：" + bmobFile.getFileUrl());
+                    publishPost(bmobFile);
+                } else {
+                    loadingDialog.dismiss();
+                    ToastUtil.showShort("发表失败：" + e.getMessage());
+                }
             }
 
             @Override
-            public void onProgress(int i) {
-                Log.d("bmob", "onProgress：" + i);
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                loadingDialog.dismiss();
-                ToastUtil.showShort("发表失败：" + s);
+            public void onProgress(Integer value) {
+                Log.d("bmob", "onProgress：" + value);
             }
         });
     }
@@ -231,18 +232,17 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         post.setImage(imageFile);
         post.setCommentNum(0);
         post.setLikeNum(0);
-        post.save(this, new SaveListener() {
+        post.save(new SaveListener<String>() {
             @Override
-            public void onSuccess() {
-                loadingDialog.dismiss();
-                ToastUtil.showShort("发表成功！");
-                closeActivity();
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-                loadingDialog.dismiss();
-                ToastUtil.showShort("发表失败：" + s);
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    loadingDialog.dismiss();
+                    ToastUtil.showShort("发表成功！");
+                    closeActivity();
+                } else {
+                    loadingDialog.dismiss();
+                    ToastUtil.showShort("发表失败：" + e.getMessage());
+                }
             }
         });
     }
@@ -251,11 +251,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
      * 启动相机拍照
      */
     public void selectImageFromCamera() {
-        File dir = new File(Constant.IMAGE_CACHE_PATH + File.separator);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        File file = new File(dir, String.valueOf(System.currentTimeMillis()));
+        File file = FileUtil.getDiskCacheDir(this, String.valueOf(System.currentTimeMillis()));
         localCameraPath = file.getPath();
         Uri imageUri = Uri.fromFile(file);
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -285,7 +281,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             switch (requestCode) {
                 case REQUEST_CODE_IMAGE_CAMERA:
                     // 获取拍照的压缩图片
-                    String cameraPath = Constant.IMAGE_CACHE_PATH + File.separator + String.valueOf(System.currentTimeMillis());
+                    String cameraPath = FileUtil.getDiskCacheDir(this, String.valueOf(System.currentTimeMillis()) + ".jpg").getPath();
                     Bitmap cameraBitmap = PhotoUtil.compressImage(localCameraPath, cameraPath, true);
                     // 界面显示
                     showImageEare.setVisibility(View.VISIBLE);
@@ -313,7 +309,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                                 nativeBitmap = BitmapFactory.decodeFile(localSelectPath);
                                 imagePath = localSelectPath;
                             } else {
-                                String nativePath = Constant.IMAGE_CACHE_PATH  + File.separator + String.valueOf(System.currentTimeMillis());
+                                String nativePath = FileUtil.getDiskCacheDir(this, String.valueOf(System.currentTimeMillis()) + ".jpg").getPath();
                                 nativeBitmap = PhotoUtil.compressImage(localSelectPath, nativePath, false);
                                 imagePath = nativePath;
                             }

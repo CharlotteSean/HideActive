@@ -2,7 +2,6 @@ package com.hideactive.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobPointer;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 public class MessageFragment extends BaseFragment {
@@ -139,33 +139,32 @@ public class MessageFragment extends BaseFragment {
 		query.order("-createdAt");
 		query.setLimit(PAGE_SIZE);
 		query.setSkip(PAGE_SIZE * currentPageIndex);
-		query.findObjects(getActivity(), new FindListener<Message>() {
+		query.findObjects(new FindListener<Message>() {
 			@Override
-			public void onSuccess(List<Message> object) {
-				// 若是起始页，则删除列表
-				if (currentPageIndex == 0) {
-					messageList.clear();
-					if (object == null || object.size() == 0) {
-						tipsView.setText("暂无评论");
-						return;
-					} else {
-						tipsView.setVisibility(View.GONE);
+			public void done(List<Message> list, BmobException e) {
+				if (e == null) {
+					// 若是起始页，则删除列表
+					if (currentPageIndex == 0) {
+						messageList.clear();
+						if (list == null || list.size() == 0) {
+							tipsView.setText("暂无评论");
+							return;
+						} else {
+							tipsView.setVisibility(View.GONE);
+						}
 					}
+					if (list != null && list.size() != 0) {
+						currentPageIndex++;
+						messageList.addAll(list);
+						messageListAdapter.notifyDataSetChanged();
+					}
+					refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_FINISHED);
+					refreshViewHolder.refreshFooterView(RefreshViewHolder.REFRESH_FINISHED);
+					swipeRefreshLayout.setRefreshCompleted();
+					swipeRefreshLayout.setLoadMoreCompleted();
+				} else {
+					tipsView.setText("暂无评论");
 				}
-				if (object != null && object.size() != 0) {
-					currentPageIndex++;
-					messageList.addAll(object);
-					messageListAdapter.notifyDataSetChanged();
-				}
-				refreshViewHolder.refreshHeaderView(RefreshViewHolder.REFRESH_FINISHED);
-				refreshViewHolder.refreshFooterView(RefreshViewHolder.REFRESH_FINISHED);
-				swipeRefreshLayout.setRefreshCompleted();
-				swipeRefreshLayout.setLoadMoreCompleted();
-			}
-
-			@Override
-			public void onError(int code, String msg) {
-				tipsView.setText("暂无评论");
 			}
 		});
 	}

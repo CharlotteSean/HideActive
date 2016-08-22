@@ -1,6 +1,5 @@
 package com.hideactive.util;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -13,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
+ * 图片处理类
  * Created by Senierr on 2015/12/12.
  */
 public class PhotoUtil {

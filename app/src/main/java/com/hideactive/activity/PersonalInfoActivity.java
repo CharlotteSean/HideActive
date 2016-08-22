@@ -14,21 +14,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bmob.BmobProFile;
-import com.bmob.btp.callback.UploadListener;
 import com.hideactive.R;
 import com.hideactive.config.Constant;
 import com.hideactive.dialog.CameraOrNativeDialog;
 import com.hideactive.dialog.EditTextDialog;
 import com.hideactive.dialog.SelectSexDialog;
 import com.hideactive.model.User;
+import com.hideactive.util.FileUtil;
 import com.hideactive.util.PhotoUtil;
 import com.hideactive.util.ToastUtil;
 
 import java.io.File;
 
 import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
+import cn.bmob.v3.listener.UploadFileListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PersonalInfoActivity extends BaseActivity implements View.OnClickListener {
@@ -135,15 +136,14 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
                                 user.setNickname(contentStr);
                                 updateUser(user, new UpdateListener() {
                                     @Override
-                                    public void onSuccess() {
-                                        userNameView.setText(contentStr);
-                                        loadingDialog.dismiss();
-                                    }
-
-                                    @Override
-                                    public void onFailure(int i, String s) {
-                                        ToastUtil.showShort("更新用户信息失败:" + s);
-                                        loadingDialog.dismiss();
+                                    public void done(BmobException e) {
+                                        if (e == null) {
+                                            userNameView.setText(contentStr);
+                                            loadingDialog.dismiss();
+                                        } else {
+                                            ToastUtil.showShort("更新用户信息失败:" + e.getMessage());
+                                            loadingDialog.dismiss();
+                                        }
                                     }
                                 });
                             }
@@ -160,14 +160,14 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
                                 user.setSex(sex);
                                 updateUser(user, new UpdateListener() {
                                     @Override
-                                    public void onSuccess() {
-                                        userSexView.setText(sex.intValue() == 0 ? "男" : "女");
-                                        loadingDialog.dismiss();
-                                    }
-                                    @Override
-                                    public void onFailure(int i, String s) {
-                                        ToastUtil.showShort("更新用户信息失败:" + s);
-                                        loadingDialog.dismiss();
+                                    public void done(BmobException e) {
+                                        if (e == null) {
+                                            userSexView.setText(sex.intValue() == 0 ? "男" : "女");
+                                            loadingDialog.dismiss();
+                                        } else {
+                                            ToastUtil.showShort("更新用户信息失败:" + e.getMessage());
+                                            loadingDialog.dismiss();
+                                        }
                                     }
                                 });
                             }
@@ -186,14 +186,14 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
                                 user.setAge(Integer.parseInt(contentStr));
                                 updateUser(user, new UpdateListener() {
                                     @Override
-                                    public void onSuccess() {
-                                        userAgeView.setText(contentStr);
-                                        loadingDialog.dismiss();
-                                    }
-                                    @Override
-                                    public void onFailure(int i, String s) {
-                                        ToastUtil.showShort("更新用户信息失败:" + s);
-                                        loadingDialog.dismiss();
+                                    public void done(BmobException e) {
+                                        if (e == null) {
+                                            userAgeView.setText(contentStr);
+                                            loadingDialog.dismiss();
+                                        } else {
+                                            ToastUtil.showShort("更新用户信息失败:" + e.getMessage());
+                                            loadingDialog.dismiss();
+                                        }
                                     }
                                 });
                             }
@@ -212,14 +212,14 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
                                 user.setSignature(contentStr);
                                 updateUser(user, new UpdateListener() {
                                     @Override
-                                    public void onSuccess() {
-                                        userSignatureView.setText(contentStr);
-                                        loadingDialog.dismiss();
-                                    }
-                                    @Override
-                                    public void onFailure(int i, String s) {
-                                        ToastUtil.showShort("更新用户信息失败:" + s);
-                                        loadingDialog.dismiss();
+                                    public void done(BmobException e) {
+                                        if (e == null) {
+                                            userSignatureView.setText(contentStr);
+                                            loadingDialog.dismiss();
+                                        } else {
+                                            ToastUtil.showShort("更新用户信息失败:" + e.getMessage());
+                                            loadingDialog.dismiss();
+                                        }
                                     }
                                 });
                             }
@@ -240,32 +240,29 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
             return;
         }
         loadingDialog.show();
-        BmobProFile.getInstance(this).upload(imagePath, new UploadListener() {
+        final BmobFile bmobFile = new BmobFile(new File(imagePath));
+        bmobFile.uploadblock(new UploadFileListener() {
             @Override
-            public void onSuccess(String s, String s1, BmobFile bmobFile) {
-                User user = new User();
-                user.setLogo(bmobFile);
-                updateUser(user, new UpdateListener() {
-                    @Override
-                    public void onSuccess() {
-                        userLogoView.setImageBitmap(bitmap);
-                        loadingDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onFailure(int i, String s) {
-                        ToastUtil.showShort("更新用户信息失败:" + s);
-                        loadingDialog.dismiss();
-                    }
-                });
-            }
-
-            @Override
-            public void onProgress(int i) {
-            }
-
-            @Override
-            public void onError(int i, String s) {
+            public void done(BmobException e) {
+                if (e == null) {
+                    User user = new User();
+                    user.setLogo(bmobFile);
+                    updateUser(user, new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if (e == null) {
+                                userLogoView.setImageBitmap(bitmap);
+                                loadingDialog.dismiss();
+                            } else {
+                                ToastUtil.showShort("更新用户信息失败:" + e.getMessage());
+                                loadingDialog.dismiss();
+                            }
+                        }
+                    });
+                } else {
+                    ToastUtil.showShort("更新用户信息失败:" + e.getMessage());
+                    loadingDialog.dismiss();
+                }
             }
         });
     }
@@ -280,18 +277,14 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
             return;
         }
         User currentUser = application.getCurrentUser();
-        newUser.update(this, currentUser.getObjectId(), listener);
+        newUser.update(currentUser.getObjectId(), listener);
     }
 
     /**
      * 启动相机拍照
      */
     public void selectImageFromCamera() {
-        File dir = new File(Constant.IMAGE_CACHE_PATH + File.separator);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        File file = new File(dir, String.valueOf(System.currentTimeMillis()));
+        File file = FileUtil.getDiskCacheDir(this, String.valueOf(System.currentTimeMillis()));
         localCameraPath = file.getPath();
         Uri imageUri = Uri.fromFile(file);
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -321,7 +314,7 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
             switch (requestCode) {
                 case REQUEST_CODE_IMAGE_CAMERA:
                     // 获取拍照的压缩图片
-                    String cameraPath = Constant.IMAGE_CACHE_PATH + File.separator + String.valueOf(System.currentTimeMillis());
+                    String cameraPath = FileUtil.getDiskCacheDir(this, String.valueOf(System.currentTimeMillis()) + ".jpg").getPath();
                     Bitmap cameraBitmap = PhotoUtil.compressImage(localCameraPath, cameraPath, true);
                     imagePath = cameraPath;
                     // 更新头像
@@ -348,7 +341,7 @@ public class PersonalInfoActivity extends BaseActivity implements View.OnClickLi
                                 nativeBitmap = BitmapFactory.decodeFile(localSelectPath);
                                 imagePath = localSelectPath;
                             } else {
-                                String nativePath = Constant.IMAGE_CACHE_PATH  + File.separator + String.valueOf(System.currentTimeMillis());
+                                String nativePath = FileUtil.getDiskCacheDir(this, String.valueOf(System.currentTimeMillis()) + ".jpg").getPath();
                                 nativeBitmap = PhotoUtil.compressImage(localSelectPath, nativePath, false);
                                 imagePath = nativePath;
                             }

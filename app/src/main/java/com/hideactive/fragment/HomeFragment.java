@@ -5,7 +5,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 public class HomeFragment extends BaseFragment {
@@ -95,38 +95,37 @@ public class HomeFragment extends BaseFragment {
 		query.include("author");// 希望在查询帖子信息的同时也把发布人的信息查询出来
 		query.setLimit(PAGE_SIZE);
 		query.setSkip(PAGE_SIZE * currentPageIndex);
-		query.findObjects(getActivity(), new FindListener<Post>() {
+		query.findObjects(new FindListener<Post>() {
 			@Override
-			public void onSuccess(List<Post> object) {
-				if (object != null && object.size() != 0) {
-					if (currentPageIndex == 0) {
-						postList = homePageAdapter.resetData(object);
+			public void done(List<Post> list, BmobException e) {
+				if (e == null) {
+					if (list != null && list.size() != 0) {
+						if (currentPageIndex == 0) {
+							postList = homePageAdapter.resetData(list);
+						} else {
+							postList = homePageAdapter.setLoadMore(list);
+						}
+						currentPageIndex++;
+						tipsView.setVisibility(View.GONE);
 					} else {
-						postList = homePageAdapter.setLoadMore(object);
+						if (currentPageIndex == 0) {
+							postList = homePageAdapter.resetData(null);
+							tipsView.setText("还没帖子，赶紧发布吧！");
+						} else {
+							homePageAdapter.setLoadNoMore();
+						}
 					}
-                    currentPageIndex++;
-					tipsView.setVisibility(View.GONE);
+					if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+						swipeRefreshLayout.setRefreshing(false);
+					}
 				} else {
-					if (currentPageIndex == 0) {
-						postList = homePageAdapter.resetData(null);
-						tipsView.setText("还没帖子，赶紧发布吧！");
-					} else {
-						homePageAdapter.setLoadNoMore();
+					ToastUtil.showShort("查询失败！" + e.getMessage());
+					if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+						swipeRefreshLayout.setRefreshing(false);
 					}
-				}
-                if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-			}
-
-			@Override
-			public void onError(int code, String msg) {
-				ToastUtil.showShort("查询失败！" + msg);
-				if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
-					swipeRefreshLayout.setRefreshing(false);
-				}
-				if (homePageAdapter.getLoadMoreStatus() == BaseLoadMoreAdapter.LoadMoreStatus.STATUS_LOADING) {
-					homePageAdapter.setLoadFailure();
+					if (homePageAdapter.getLoadMoreStatus() == BaseLoadMoreAdapter.LoadMoreStatus.STATUS_LOADING) {
+						homePageAdapter.setLoadFailure();
+					}
 				}
 			}
 		});

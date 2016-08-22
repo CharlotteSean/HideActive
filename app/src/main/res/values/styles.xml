@@ -2,14 +2,12 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-
         <!-- 标题栏颜色-->
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <!-- 状态栏颜色-->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <!-- 标题颜色-->
         <item name="android:textColorPrimary">@android:color/white</item>
-
     </style>
 
 	<style name="FullScreenTheme" parent="AppTheme">
@@ -20,6 +18,12 @@
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="actionMenuTextColor">@color/white</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- toolbar菜单文字尺寸 -->
+    <style name="ToolbarTitleTextAppearance">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <!-- tab样式 -->
