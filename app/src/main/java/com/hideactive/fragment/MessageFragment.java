@@ -47,14 +47,8 @@ public class MessageFragment extends BaseFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		initView();
-		// 延迟初始化数据
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				currentPageIndex = 0;
-				loadMessage();
-			}
-		}, 500);
+		currentPageIndex = 0;
+		loadMessage();
 	}
 
 	private void initView() {

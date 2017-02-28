@@ -20,6 +20,10 @@ import com.hideactive.util.ToastUtil;
 
 public class MainActivity extends BaseActivity {
 
+    private static final int ACTION_HOME = 100;
+    private static final int ACTION_MESSAGE = 101;
+    private static final int ACTION_SETTINGS = 102;
+
     private DrawerLayout drawerLayout;
 
     private HomeFragment homeFragment;
@@ -28,6 +32,7 @@ public class MainActivity extends BaseActivity {
     private Fragment[] fragments;
 
     private int currentPageIndex;
+    private int action = ACTION_HOME;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +58,20 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-
+                switch (action) {
+                    case ACTION_HOME:
+                        showFragment(0);
+                        break;
+                    case ACTION_MESSAGE:
+                        showFragment(1);
+                        break;
+                    case ACTION_SETTINGS:
+                        showFragment(2);
+                        break;
+                    default:
+                        showFragment(0);
+                        break;
+                }
             }
         };
         mDrawerToggle.syncState();
@@ -80,25 +98,27 @@ public class MainActivity extends BaseActivity {
     private View.OnClickListener tabClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.sliding_menu_home:
-                    showFragment(0);
-                    break;
-                case R.id.sliding_menu_message:
-                    showFragment(1);
-                    break;
-                case R.id.sliding_menu_setting:
-                    showFragment(2);
-                    break;
-            }
             if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 drawerLayout.closeDrawer(GravityCompat.START);
+                switch (v.getId()) {
+                    case R.id.sliding_menu_home:
+                        drawerLayout.setTag(ACTION_HOME);
+                        action = ACTION_HOME;
+                        break;
+                    case R.id.sliding_menu_message:
+                        action = ACTION_MESSAGE;
+                        break;
+                    case R.id.sliding_menu_setting:
+                        action = ACTION_SETTINGS;
+                        break;
+                }
             }
         }
     };
 
     /**
      * 显示对应的页面
+     *
      * @param index
      */
     private void showFragment(int index) {

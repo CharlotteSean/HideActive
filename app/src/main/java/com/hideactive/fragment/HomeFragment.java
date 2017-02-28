@@ -12,12 +12,12 @@ import android.widget.TextView;
 
 import com.hideactive.R;
 import com.hideactive.activity.PostDetailActivity;
-import com.hideactive.adapter.BaseLoadMoreAdapter;
+import com.hideactive.adapter.BaseRVAdapter;
 import com.hideactive.adapter.HomePageAdapter;
+import com.hideactive.adapter.ViewHolder;
 import com.hideactive.model.Post;
 import com.hideactive.util.ToastUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -32,7 +32,6 @@ public class HomeFragment extends BaseFragment {
 
 	private static final int PAGE_SIZE = 10;
 
-	private List<Post>  postList;
 	private HomePageAdapter homePageAdapter;
 	private int currentPageIndex = 0;
 
@@ -45,7 +44,6 @@ public class HomeFragment extends BaseFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		initView();
-		// 初始化数据
 		currentPageIndex = 0;
 		loadPost();
 	}
@@ -58,29 +56,35 @@ public class HomeFragment extends BaseFragment {
         postListView.setHasFixedSize(true);
         postListView.setItemAnimator(new DefaultItemAnimator());
 
-		postList = new ArrayList<>();
-		homePageAdapter = new HomePageAdapter(postListView, getActivity());
+		homePageAdapter = new HomePageAdapter(getActivity());
+        homePageAdapter.setLMOpened(R.layout.layout_load_more, new BaseRVAdapter.OnLoadMoreListener() {
+            @Override
+            public boolean onLoadMore() {
+                if (swipeRefreshLayout.isRefreshing()) {
+                    return false;
+                }
+                loadPost();
+                return true;
+            }
+        });
+        homePageAdapter.setOnItemClickListener(new BaseRVAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(ViewHolder viewHolder, int position) {
+                PostDetailActivity.start(getActivity(), homePageAdapter.getData().get(position).getObjectId());
+            }
+        });
 		postListView.setAdapter(homePageAdapter);
-		homePageAdapter.setOnItemClickListener(new HomePageAdapter.OnItemClickListener() {
-			@Override
-			public void onItemClick(HomePageAdapter.LoadMoreViewHolder viewHolder, int position) {
-				PostDetailActivity.start(getActivity(), postList.get(position).getObjectId());
-			}
-		});
 
 		swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
 		swipeRefreshLayout.setColorSchemeResources(R.color.blue, R.color.blue_dark);
 		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
+                if (homePageAdapter.isLoading()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    return;
+                }
 				currentPageIndex = 0;
-				loadPost();
-			}
-		});
-
-		homePageAdapter.setOnLoadMoreListener(new BaseLoadMoreAdapter.OnLoadMoreListener() {
-			@Override
-			public void loadMore() {
 				loadPost();
 			}
 		});
@@ -98,34 +102,26 @@ public class HomeFragment extends BaseFragment {
 		query.findObjects(new FindListener<Post>() {
 			@Override
 			public void done(List<Post> list, BmobException e) {
+				if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+					swipeRefreshLayout.setRefreshing(false);
+				}
 				if (e == null) {
 					if (list != null && list.size() != 0) {
 						if (currentPageIndex == 0) {
-							postList = homePageAdapter.resetData(list);
+							homePageAdapter.resetData(list);
 						} else {
-							postList = homePageAdapter.setLoadMore(list);
+                            homePageAdapter.addData2Last(list);
 						}
+                        homePageAdapter.setLMNormal();
 						currentPageIndex++;
 						tipsView.setVisibility(View.GONE);
 					} else {
-						if (currentPageIndex == 0) {
-							postList = homePageAdapter.resetData(null);
-							tipsView.setText("还没帖子，赶紧发布吧！");
-						} else {
-							homePageAdapter.setLoadNoMore();
-						}
-					}
-					if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
-						swipeRefreshLayout.setRefreshing(false);
+						homePageAdapter.setLMNoMore();
+						tipsView.setText("还没帖子，赶紧发布吧！");
 					}
 				} else {
 					ToastUtil.showShort("查询失败！" + e.getMessage());
-					if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
-						swipeRefreshLayout.setRefreshing(false);
-					}
-					if (homePageAdapter.getLoadMoreStatus() == BaseLoadMoreAdapter.LoadMoreStatus.STATUS_LOADING) {
-						homePageAdapter.setLoadFailure();
-					}
+                    homePageAdapter.setLMFailure();
 				}
 			}
 		});

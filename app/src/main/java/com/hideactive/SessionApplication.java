@@ -12,7 +12,6 @@ import com.hideactive.config.Constant;
 import com.hideactive.config.SharedPreference;
 import com.hideactive.db.LikesDB;
 import com.hideactive.model.User;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class SessionApplication extends Application{
 		// 初始化Bmob
 		Bmob.initialize(this, Constant.BMOB_APP_ID);
 
-		LeakCanary.install(this);
+//		LeakCanary.install(this);
 	}
 	
 	public static SessionApplication getInstance() {

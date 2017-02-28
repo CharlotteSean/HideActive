@@ -17,8 +17,6 @@ allprojects {
         jcenter()
         // Bmob的maven仓库地址
         maven { url "https://raw.github.com/bmob/bmob-android-sdk/master" }
-        // 侧滑SlidingMenu仓库
-        maven { url "http://jzaccone.github.io/SlidingMenu-aar" }
     }
 }
 

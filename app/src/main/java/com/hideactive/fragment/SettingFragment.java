@@ -46,13 +46,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        // 延迟初始化数据
-        new android.os.Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                init();
-            }
-        }, 500);
+        init();
     }
 
     private void init() {
