@@ -1,9 +1,13 @@
 package com.hideactive.activity;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,11 +22,7 @@ import com.hideactive.fragment.MessageFragment;
 import com.hideactive.fragment.SettingFragment;
 import com.hideactive.util.ToastUtil;
 
-public class MainActivity extends BaseActivity {
-
-    private static final int ACTION_HOME = 100;
-    private static final int ACTION_MESSAGE = 101;
-    private static final int ACTION_SETTINGS = 102;
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
 
@@ -32,7 +32,6 @@ public class MainActivity extends BaseActivity {
     private Fragment[] fragments;
 
     private int currentPageIndex;
-    private int action = ACTION_HOME;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,42 +48,16 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                switch (action) {
-                    case ACTION_HOME:
-                        showFragment(0);
-                        break;
-                    case ACTION_MESSAGE:
-                        showFragment(1);
-                        break;
-                    case ACTION_SETTINGS:
-                        showFragment(2);
-                        break;
-                    default:
-                        showFragment(0);
-                        break;
-                }
-            }
-        };
-        mDrawerToggle.syncState();
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
 
-        View homeMenuTab = findViewById(R.id.sliding_menu_home);
-        View messageMenuTab = findViewById(R.id.sliding_menu_message);
-        View settingMenuTab = findViewById(R.id.sliding_menu_setting);
-        homeMenuTab.setOnClickListener(tabClickListener);
-        messageMenuTab.setOnClickListener(tabClickListener);
-        settingMenuTab.setOnClickListener(tabClickListener);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        ColorStateList csl = ContextCompat.getColorStateList(this, R.drawable.navigation_menu_item_color);
+        navigationView.setItemTextColor(csl);
+        navigationView.getMenu().getItem(0).setChecked(true);
 
-        // 展现首页
         homeFragment = new HomeFragment();
         messageFragment = new MessageFragment();
         settingFragment = new SettingFragment();
@@ -94,27 +67,6 @@ public class MainActivity extends BaseActivity {
                 .show(homeFragment)
                 .commit();
     }
-
-    private View.OnClickListener tabClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                drawerLayout.closeDrawer(GravityCompat.START);
-                switch (v.getId()) {
-                    case R.id.sliding_menu_home:
-                        drawerLayout.setTag(ACTION_HOME);
-                        action = ACTION_HOME;
-                        break;
-                    case R.id.sliding_menu_message:
-                        action = ACTION_MESSAGE;
-                        break;
-                    case R.id.sliding_menu_setting:
-                        action = ACTION_SETTINGS;
-                        break;
-                }
-            }
-        }
-    };
 
     /**
      * 显示对应的页面
@@ -146,6 +98,22 @@ public class MainActivity extends BaseActivity {
             openActivity(new Intent(MainActivity.this, CreatePostActivity.class));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_home) {
+            showFragment(0);
+        } else if (id == R.id.nav_message) {
+            showFragment(1);
+        } else if (id == R.id.nav_settings) {
+            showFragment(2);
+        } else {
+            showFragment(0);
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     private static long firstTime;

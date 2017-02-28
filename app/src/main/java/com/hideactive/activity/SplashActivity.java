@@ -34,11 +34,11 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 		// 自动登录
-//		User user = application.getCurrentUser();
-//		if (user != null) {
-//			mHandler.sendEmptyMessageDelayed(GO_HOME, 1000);
-//		} else {
-//			mHandler.sendEmptyMessageDelayed(GO_LOGIN, 1000);
-//		}
+		User user = application.getCurrentUser();
+		if (user != null) {
+			mHandler.sendEmptyMessageDelayed(GO_HOME, 1000);
+		} else {
+			mHandler.sendEmptyMessageDelayed(GO_LOGIN, 1000);
+		}
     }
 }
