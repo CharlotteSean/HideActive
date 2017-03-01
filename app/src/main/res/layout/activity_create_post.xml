@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tool_bar"
-        android:padding="@dimen/dimen_small"
+        android:padding="@dimen/dimen_8dp"
         android:background="@color/white"
         android:inputType="textMultiLine"
         android:textColor="@color/text_color_1"
@@ -39,8 +39,8 @@
     <RelativeLayout
         android:id="@+id/show_image_eare"
         android:layout_below="@+id/input_eare"
-        android:layout_marginLeft="@dimen/dimen_small"
-        android:layout_marginTop="@dimen/dimen_small"
+        android:layout_marginLeft="@dimen/dimen_8dp"
+        android:layout_marginTop="@dimen/dimen_8dp"
         android:visibility="gone"
         android:layout_width="150dp"
         android:layout_height="150dp">
@@ -73,8 +73,8 @@
             android:id="@+id/operation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:layout_below="@+id/input_eare"
             android:orientation="horizontal">
             <ImageButton
@@ -88,14 +88,14 @@
                 android:src="@drawable/add_native_selector"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="@dimen/dimen_small"
+                android:layout_marginLeft="@dimen/dimen_8dp"
                 android:background="@color/transparent"/>
             <ImageButton
                 android:id="@+id/image_emoj"
                 android:src="@drawable/add_emoj_selector"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="@dimen/dimen_small"
+                android:layout_marginLeft="@dimen/dimen_8dp"
                 android:background="@color/transparent"/>
             <TextView
                 android:id="@+id/tv_input_length"

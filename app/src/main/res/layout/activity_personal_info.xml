@@ -14,10 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_below="@+id/top_bar"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:background="@drawable/item_normal_selector"
-            android:layout_marginTop="@dimen/dimen_small">
+            android:layout_marginTop="@dimen/dimen_8dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -48,8 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@+id/user_item_logo"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -80,9 +80,9 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@+id/user_item_name"
-            android:layout_marginTop="@dimen/dimen_small"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -113,8 +113,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@+id/user_item_sex"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -146,8 +146,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/user_item_age"
             android:minHeight="48dp"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -162,7 +162,7 @@
                 android:id="@+id/user_signature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dimen_small"
+                android:padding="@dimen/dimen_8dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="96dp"

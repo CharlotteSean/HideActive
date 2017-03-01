@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_centerInParent="true"
-            android:paddingLeft="@dimen/dimen_normal"
+            android:paddingLeft="@dimen/dimen_16dp"
             android:gravity="center"
             android:text="Loading"
             android:textColor="@color/text_color_1"/>

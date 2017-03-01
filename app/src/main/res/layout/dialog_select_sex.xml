@@ -10,11 +10,11 @@
 		android:id="@+id/item_male"
 		android:layout_width="240dp"
 		android:layout_height="40dp"
-		android:paddingLeft="@dimen/dimen_normal"
-		android:paddingRight="@dimen/dimen_normal"
+		android:paddingLeft="@dimen/dimen_16dp"
+		android:paddingRight="@dimen/dimen_16dp"
 		android:background="@drawable/item_normal_selector"
 		android:clickable="true"
-		android:layout_marginTop="@dimen/dimen_small">
+		android:layout_marginTop="@dimen/dimen_8dp">
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -41,8 +41,8 @@
 		android:id="@+id/item_female"
 		android:layout_width="240dp"
 		android:layout_height="40dp"
-		android:paddingLeft="@dimen/dimen_normal"
-		android:paddingRight="@dimen/dimen_normal"
+		android:paddingLeft="@dimen/dimen_16dp"
+		android:paddingRight="@dimen/dimen_16dp"
 		android:background="@drawable/item_normal_selector"
 		android:clickable="true">
 		<TextView

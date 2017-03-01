@@ -76,7 +76,7 @@ public class HomeFragment extends BaseFragment {
 		postListView.setAdapter(homePageAdapter);
 
 		swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-		swipeRefreshLayout.setColorSchemeResources(R.color.blue, R.color.blue_dark);
+		swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
 		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
@@ -94,7 +94,7 @@ public class HomeFragment extends BaseFragment {
 	 * 分页加载数据
 	 */
 	private void loadPost() {
-		BmobQuery<Post> query = new BmobQuery<Post>();
+		BmobQuery<Post> query = new BmobQuery<>();
 		query.order("-createdAt");
 		query.include("author");// 希望在查询帖子信息的同时也把发布人的信息查询出来
 		query.setLimit(PAGE_SIZE);

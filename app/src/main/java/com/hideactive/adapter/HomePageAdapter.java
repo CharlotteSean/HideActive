@@ -61,6 +61,7 @@ public class HomePageAdapter extends BaseRVAdapter<Post> {
             Uri uri = Uri.parse(post.getAuthor().getLogo().getUrl());
             ImageRequest request = ImageRequestBuilder
                     .newBuilderWithSource(uri)
+                    .setResizeOptions(new ResizeOptions(60, 60))
                     .build();
             DraweeController controller = Fresco.newDraweeControllerBuilder()
                     .setImageRequest(request)

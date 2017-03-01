@@ -3,6 +3,7 @@ package com.hideactive.activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -12,23 +13,28 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.hideactive.R;
 import com.hideactive.fragment.HomeFragment;
 import com.hideactive.fragment.MessageFragment;
 import com.hideactive.fragment.SettingFragment;
+import com.hideactive.model.User;
 import com.hideactive.util.ToastUtil;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
-
-    private HomeFragment homeFragment;
-    private MessageFragment messageFragment;
-    private SettingFragment settingFragment;
     private Fragment[] fragments;
 
     private int currentPageIndex;
@@ -47,6 +53,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         toolbar.setTitleTextAppearance(this, R.style.ToolbarTitleTextAppearance);
         setSupportActionBar(toolbar);
 
+        fragments = new Fragment[] {new HomeFragment(), new MessageFragment(), new SettingFragment() };
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, fragments[0])
+                .show(fragments[0])
+                .commit();
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
         drawerLayout.setDrawerListener(mDrawerToggle);
@@ -56,16 +68,33 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         navigationView.setNavigationItemSelectedListener(this);
         ColorStateList csl = ContextCompat.getColorStateList(this, R.drawable.navigation_menu_item_color);
         navigationView.setItemTextColor(csl);
+        navigationView.setItemIconTintList(csl);
         navigationView.getMenu().getItem(0).setChecked(true);
 
-        homeFragment = new HomeFragment();
-        messageFragment = new MessageFragment();
-        settingFragment = new SettingFragment();
-        fragments = new Fragment[] {homeFragment, messageFragment, settingFragment };
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, homeFragment)
-                .show(homeFragment)
-                .commit();
+        SimpleDraweeView logoView = (SimpleDraweeView) navigationView.getHeaderView(0).findViewById(R.id.iv_logo);
+        TextView sickNameView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_sick_name);
+
+        User user = application.getCurrentUser();
+        Uri uri;
+        if (user.getLogo() != null) {
+            uri = Uri.parse(user.getLogo().getUrl());
+        } else {
+            uri = Uri.parse("res://" + getPackageName() + "/" + R.mipmap.user_logo_default);
+        }
+        ImageRequest request = ImageRequestBuilder
+                .newBuilderWithSource(uri)
+                .setResizeOptions(new ResizeOptions(100, 100))
+                .build();
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(request)
+                .setOldController(logoView.getController())
+                .build();
+        logoView.setController(controller);
+
+        String nickname = TextUtils.isEmpty(user.getNickname())
+                ? user.getUsername()
+                : user.getNickname();
+        sickNameView.setText(nickname);
     }
 
     /**

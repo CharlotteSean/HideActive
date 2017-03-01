@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="@dimen/dimen_normal"
+    android:padding="@dimen/dimen_16dp"
     android:gravity="center"
     android:id="@+id/lly_loading">
 
     <ProgressBar
         android:id="@+id/progress_loading"
-        android:layout_width="@dimen/dimen_normal"
-        android:layout_height="@dimen/dimen_normal" />
+        android:layout_width="@dimen/dimen_16dp"
+        android:layout_height="@dimen/dimen_16dp" />
 
     <TextView
         android:id="@+id/tv_loading"
@@ -18,6 +18,6 @@
         android:layout_height="wrap_content"
         android:text="正在加载..."
         android:textSize="14sp"
-        android:layout_marginLeft="@dimen/dimen_small"/>
+        android:layout_marginLeft="@dimen/dimen_8dp"/>
 
 </LinearLayout>

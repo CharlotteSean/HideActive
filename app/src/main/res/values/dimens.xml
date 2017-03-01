@@ -1,16 +1,31 @@
 <resources>
 
-    <dimen name="dimen_min">4dp</dimen>
-    <dimen name="dimen_small">8dp</dimen>
-    <dimen name="dimen_normal">16dp</dimen>
-    <dimen name="dimen_large">24dp</dimen>
+    <dimen name="text_size_12sp">12sp</dimen>
+    <dimen name="text_size_14sp">14sp</dimen>
+    <dimen name="text_size_16sp">16sp</dimen>
+    <dimen name="text_size_18sp">18sp</dimen>
 
-    <dimen name="top_bar_height">48dp</dimen>
+    <dimen name="dimen_1dp">1dp</dimen>
+    <dimen name="dimen_2dp">2dp</dimen>
+    <dimen name="dimen_4dp">4dp</dimen>
+    <dimen name="dimen_8dp">8dp</dimen>
+    <dimen name="dimen_16dp">16dp</dimen>
+    <dimen name="dimen_24dp">24dp</dimen>
+    <dimen name="dimen_32dp">32dp</dimen>
+    <dimen name="dimen_40dp">40dp</dimen>
+    <dimen name="dimen_48dp">48dp</dimen>
+    <dimen name="dimen_56dp">56dp</dimen>
+    <dimen name="dimen_64dp">64dp</dimen>
+    <dimen name="dimen_72dp">72dp</dimen>
+    <dimen name="dimen_80dp">80dp</dimen>
+    <dimen name="dimen_88dp">88dp</dimen>
+    <dimen name="dimen_96dp">96dp</dimen>
+    <dimen name="dimen_160dp">160dp</dimen>
+    <dimen name="dimen_180dp">180dp</dimen>
+    <dimen name="dimen_200dp">200dp</dimen>
+    <dimen name="dimen_220dp">220dp</dimen>
+
     <dimen name="line_height">1px</dimen>
     <dimen name="line_width">1px</dimen>
-
-    <dimen name="sliding_shadow">16dp</dimen>
-    <dimen name="sliding_offset_res">56dp</dimen>
-    <dimen name="sliding_top_height">160dp</dimen>
 
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:paddingTop="@dimen/dimen_small"
+    android:paddingTop="@dimen/dimen_8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,7 +10,7 @@
         fresco:actualImageScaleType="focusCrop"
         fresco:placeholderImage="@mipmap/user_logo_default"
         fresco:placeholderImageScaleType="focusCrop"
-        android:layout_marginLeft="@dimen/dimen_small"
+        android:layout_marginLeft="@dimen/dimen_8dp"
         android:layout_width="45dp"
         android:layout_height="45dp" />
 
@@ -19,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/user_logo"
-        android:paddingLeft="@dimen/dimen_small"
-        android:paddingRight="@dimen/dimen_small"
+        android:paddingLeft="@dimen/dimen_8dp"
+        android:paddingRight="@dimen/dimen_8dp"
         android:orientation="vertical">
 
         <TextView
@@ -37,7 +37,7 @@
             android:text="name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_min"
+            android:layout_marginTop="@dimen/dimen_4dp"
             android:textColor="@color/text_color_1"
             android:textSize="15sp" />
 
@@ -47,14 +47,15 @@
             fresco:actualImageScaleType="focusCrop"
             fresco:placeholderImage="@mipmap/image_default"
             fresco:placeholderImageScaleType="focusCrop"
-            android:layout_marginTop="@dimen/dimen_small"
+            fresco:roundedCornerRadius="2dp"
+            android:layout_marginTop="@dimen/dimen_8dp"
             android:layout_width="96dp"
             android:layout_height="96dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_min">
+            android:layout_marginTop="@dimen/dimen_4dp">
 
             <TextView
                 android:id="@+id/post_date"

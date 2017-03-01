@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true"
     android:gravity="center"
-    android:background="@color/white" >
+    android:background="@drawable/splash_bg" >
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,7 +12,7 @@
         android:fitsSystemWindows="true"
         android:text="@string/app_name"
         android:textStyle="bold"
-        android:textColor="#4FAFAF"
+        android:textColor="@color/white"
         android:textSize="40sp"/>
 
 </LinearLayout>

@@ -9,10 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/dimen_small"
-        android:paddingBottom="@dimen/dimen_small"
-        android:paddingLeft="@dimen/dimen_normal"
-        android:paddingRight="@dimen/dimen_normal"
+        android:paddingTop="@dimen/dimen_8dp"
+        android:paddingBottom="@dimen/dimen_8dp"
+        android:paddingLeft="@dimen/dimen_16dp"
+        android:paddingRight="@dimen/dimen_16dp"
         android:background="@drawable/bg_grey2white_selector">
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                 android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_small"
+                android:layout_marginLeft="@dimen/dimen_8dp"
                 android:text="sda"
                 android:textColor="@color/text_color_1"
                 android:textSize="14sp" />

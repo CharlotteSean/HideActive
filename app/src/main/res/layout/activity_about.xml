@@ -21,7 +21,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_large"
+            android:layout_marginTop="@dimen/dimen_24dp"
             android:text="UI设计是个什么鬼..."
             android:textColor="@color/blue_dark"
             android:textSize="18sp"/>

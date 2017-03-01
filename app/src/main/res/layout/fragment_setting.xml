@@ -5,15 +5,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_small"
+        android:layout_marginTop="@dimen/dimen_8dp"
         android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/setting_item_user_info"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -41,9 +41,9 @@
             android:id="@+id/setting_item_is_notify"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="@dimen/dimen_small"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -78,8 +78,8 @@
             android:id="@+id/setting_item_is_notify_detail"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -114,8 +114,8 @@
             android:id="@+id/setting_item_is_notify_voice"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -150,8 +150,8 @@
             android:id="@+id/setting_item_is_notify_virbate"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -186,9 +186,9 @@
             android:id="@+id/setting_item_is_offsite_notify"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="@dimen/dimen_small"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -223,9 +223,9 @@
             android:id="@+id/setting_item_clear_cache"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="@dimen/dimen_small"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -255,8 +255,8 @@
             android:id="@+id/setting_item_about"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:paddingLeft="@dimen/dimen_small"
-            android:paddingRight="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_8dp"
+            android:paddingRight="@dimen/dimen_8dp"
             android:clickable="true"
             android:background="@drawable/item_normal_selector">
             <TextView
@@ -278,9 +278,9 @@
             android:id="@+id/btn_logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_small"
-            android:layout_marginRight="@dimen/dimen_small"
-            android:layout_marginTop="@dimen/dimen_small"
+            android:layout_marginLeft="@dimen/dimen_8dp"
+            android:layout_marginRight="@dimen/dimen_8dp"
+            android:layout_marginTop="@dimen/dimen_8dp"
             android:background="@drawable/btn_bg_red_selector"
             android:text="@string/login_out"
             android:textColor="@color/white"
