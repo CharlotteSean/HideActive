@@ -44,11 +44,15 @@ public class HomeFragment extends BaseFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		initView();
-		currentPageIndex = 0;
-		loadPost();
 	}
 
-	private void initView() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        autoRefresh(100);
+    }
+
+    private void initView() {
 		tipsView = (TextView) findViewById(R.id.tv_tips);
 
 		postListView = (RecyclerView) findViewById(R.id.lv_post);
@@ -88,6 +92,22 @@ public class HomeFragment extends BaseFragment {
 				loadPost();
 			}
 		});
+	}
+
+    /**
+     * 刷新
+     *
+     * @param delayMillis
+     */
+	private void autoRefresh(long delayMillis) {
+		swipeRefreshLayout.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				swipeRefreshLayout.setRefreshing(true);
+                currentPageIndex = 0;
+                loadPost();
+			}
+		}, delayMillis);
 	}
 
 	/**

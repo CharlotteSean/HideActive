@@ -1,7 +1,5 @@
 package com.hideactive.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -9,11 +7,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.hideactive.R;
-import com.hideactive.model.FaceText;
+import com.hideactive.util.FaceTextUtils;
+
+import java.util.List;
 
 public class EmoteAdapter extends BaseArrayListAdapter {
 
-	public EmoteAdapter(Context context, List<FaceText> datas) {
+	public EmoteAdapter(Context context, List<FaceTextUtils.FaceText> datas) {
 		super(context, datas);
 	}
 
@@ -29,7 +29,7 @@ public class EmoteAdapter extends BaseArrayListAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		FaceText faceText = (FaceText) getItem(position);
+		FaceTextUtils.FaceText faceText = (FaceTextUtils.FaceText) getItem(position);
 		String key = faceText.text.substring(1);
 		Drawable drawable =mContext.getResources().getDrawable(mContext.getResources().getIdentifier(key, "mipmap", mContext.getPackageName()));
 		holder.mIvImage.setImageDrawable(drawable);

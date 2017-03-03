@@ -29,15 +29,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
 import com.hideactive.R;
 import com.hideactive.adapter.EmoViewPagerAdapter;
 import com.hideactive.adapter.EmoteAdapter;
-import com.hideactive.config.Constant;
-import com.hideactive.model.FaceText;
 import com.hideactive.model.Post;
 import com.hideactive.model.User;
 import com.hideactive.util.FaceTextUtils;
 import com.hideactive.util.FileUtil;
+import com.hideactive.util.FrescoUtil;
 import com.hideactive.util.PhotoUtil;
 import com.hideactive.util.ToastUtil;
 import com.hideactive.widget.EmoticonsEditText;
@@ -63,9 +64,9 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     private ImageButton nativeButton;
     private ImageButton cameraButton;
     private ImageButton emojButton;
-    private ImageView showImage;
-    private ImageButton showImageDeleteBtn;
-    private RelativeLayout showImageEare;
+    private SimpleDraweeView imageView;
+    private ImageButton deleteBtn;
+    private RelativeLayout imageRl;
 
     private String localCameraPath;// 拍照后得到的图片地址
     private String imagePath;// 上传的图片地址
@@ -97,8 +98,10 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             }
         });
 
-        inputView = (EmoticonsEditText) findViewById(R.id.input_eare);
+        inputView = (EmoticonsEditText) findViewById(R.id.et_input);
         inputView.setOnClickListener(this);
+
+        inputLengthTv = (TextView) findViewById(R.id.tv_input_length);
         // 监听内容输入区，动态显示剩余字数
         inputView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -115,7 +118,6 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                 inputLengthTv.setText(String.valueOf(length));
             }
         });
-        inputLengthTv = (TextView) findViewById(R.id.tv_input_length);
 
         nativeButton = (ImageButton) findViewById(R.id.image_native);
         nativeButton.setOnClickListener(this);
@@ -124,16 +126,16 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         emojButton = (ImageButton) findViewById(R.id.image_emoj);
         emojButton.setOnClickListener(this);
 
-        showImage = (ImageView) findViewById(R.id.show_image);
-        showImageDeleteBtn = (ImageButton) findViewById(R.id.show_image_delete);
-        showImageDeleteBtn.setOnClickListener(this);
-        showImageEare = (RelativeLayout) findViewById(R.id.show_image_eare);
+        imageView = (SimpleDraweeView) findViewById(R.id.iv_image);
+        deleteBtn = (ImageButton) findViewById(R.id.ib_delete);
+        deleteBtn.setOnClickListener(this);
+        imageRl = (RelativeLayout) findViewById(R.id.rl_image);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.input_eare:
+            case R.id.et_input:
                 // 点击输入区域，隐藏表情输入区
                 pager_emo.setVisibility(View.GONE);
                 showSoftInputView();
@@ -157,11 +159,10 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                     }, 200);
                 }
                 break;
-            case R.id.show_image_delete:
+            case R.id.ib_delete:
                 localCameraPath = "";
                 imagePath = "";
-                showImageEare.setVisibility(View.GONE);
-                showImage.setImageDrawable(null);
+                imageRl.setVisibility(View.GONE);
                 break;
             default:
                 break;
@@ -282,10 +283,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                 case REQUEST_CODE_IMAGE_CAMERA:
                     // 获取拍照的压缩图片
                     String cameraPath = FileUtil.getDiskCacheDir(this, String.valueOf(System.currentTimeMillis()) + ".jpg").getPath();
-                    Bitmap cameraBitmap = PhotoUtil.compressImage(localCameraPath, cameraPath, true);
-                    // 界面显示
-                    showImageEare.setVisibility(View.VISIBLE);
-                    showImage.setImageBitmap(cameraBitmap);
+                    PhotoUtil.compressImage(localCameraPath, cameraPath, true);
                     imagePath = cameraPath;
                     break;
                 case REQUEST_CODE_IMAGE_NATIVE:
@@ -302,31 +300,29 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
                                 ToastUtil.showShort("未取到图片！");
                                 return;
                             }
-                            Bitmap nativeBitmap = null;
                             File localFile = new File(localSelectPath);
                             // 若此文件小于100KB，直接使用。为了减轻缓存容量
                             if (localFile.length() < 102400) {
-                                nativeBitmap = BitmapFactory.decodeFile(localSelectPath);
                                 imagePath = localSelectPath;
                             } else {
                                 String nativePath = FileUtil.getDiskCacheDir(this, String.valueOf(System.currentTimeMillis()) + ".jpg").getPath();
-                                nativeBitmap = PhotoUtil.compressImage(localSelectPath, nativePath, false);
+                                PhotoUtil.compressImage(localSelectPath, nativePath, false);
                                 imagePath = nativePath;
                             }
-                            // 界面显示
-                            showImageEare.setVisibility(View.VISIBLE);
-                            showImage.setImageBitmap(nativeBitmap);
                         }
                     }
                     break;
             }
+            // 界面显示
+            imageRl.setVisibility(View.VISIBLE);
+            FrescoUtil.show(imageView, Uri.fromFile(new File(imagePath)), new ResizeOptions(200, 200));
         }
     }
 
     /******************************************* 表情部分 ******************************************************/
 
     private ViewPager pager_emo;
-    private List<FaceText> emos;
+    private List<FaceTextUtils.FaceText> emos;
 
     /**
      * 初始化表情布局
@@ -336,7 +332,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
         emos = FaceTextUtils.faceTexts;
 
         List<View> views = new ArrayList<View>();
-        for (int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 5; i++) {
             views.add(getGridView(i));
         }
         pager_emo.setAdapter(new EmoViewPagerAdapter(views));
@@ -346,12 +342,19 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
     private View getGridView(final int i) {
         View view = View.inflate(this, R.layout.layout_emo_gridview, null);
         GridView gridview = (GridView) view.findViewById(R.id.gridview);
-        List<FaceText> list = new ArrayList<FaceText>();
+        List<FaceTextUtils.FaceText> list = new ArrayList<>();
         if (i == 0) {
             list.addAll(emos.subList(0, 21));
         } else if (i == 1) {
-            list.addAll(emos.subList(21, emos.size()));
+            list.addAll(emos.subList(21, 42));
+        } else if (i == 2) {
+            list.addAll(emos.subList(42, 63));
+        } else if (i == 3) {
+            list.addAll(emos.subList(63, 84));
+        } else if (i == 4) {
+            list.addAll(emos.subList(84, emos.size()));
         }
+
         final EmoteAdapter gridAdapter = new EmoteAdapter(CreatePostActivity.this,
                 list);
         gridview.setAdapter(gridAdapter);
@@ -359,7 +362,7 @@ public class CreatePostActivity extends BaseActivity implements OnClickListener 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1,
                                     int position, long arg3) {
-                FaceText name = (FaceText) gridAdapter.getItem(position);
+                FaceTextUtils.FaceText name = (FaceTextUtils.FaceText) gridAdapter.getItem(position);
                 String key = name.text.toString();
                 try {
                     if (inputView != null && !TextUtils.isEmpty(key)) {

@@ -48,7 +48,7 @@ public class RegistActivity extends BaseActivity {
 
     public void initView() {
 		TextView topBarTitle = (TextView) findViewById(R.id.tv_top_bar_title);
-		topBarTitle.setText(getString(R.string.regist));
+		topBarTitle.setText(getString(R.string.register));
 		Button topBarLeftBtn = (Button) findViewById(R.id.btn_top_bar_left);
 		topBarLeftBtn.setVisibility(View.VISIBLE);
 		topBarLeftBtn.setText(getString(R.string.cancle));

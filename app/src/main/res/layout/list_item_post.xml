@@ -49,8 +49,8 @@
             fresco:placeholderImageScaleType="focusCrop"
             fresco:roundedCornerRadius="2dp"
             android:layout_marginTop="@dimen/dimen_8dp"
-            android:layout_width="96dp"
-            android:layout_height="96dp" />
+            android:layout_width="@dimen/dimen_96dp"
+            android:layout_height="@dimen/dimen_96dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"

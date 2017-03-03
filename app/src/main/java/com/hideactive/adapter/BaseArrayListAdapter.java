@@ -10,15 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.hideactive.model.FaceText;
+import com.hideactive.util.FaceTextUtils;
 
 public class BaseArrayListAdapter extends BaseAdapter {
 
 	protected Context mContext;
 	protected LayoutInflater mInflater;
-	protected List<FaceText> mDatas = new ArrayList<FaceText>();
+	protected List<FaceTextUtils.FaceText> mDatas = new ArrayList<FaceTextUtils.FaceText>();
 
-	public BaseArrayListAdapter(Context context, FaceText... datas) {
+	public BaseArrayListAdapter(Context context, FaceTextUtils.FaceText... datas) {
 		mContext = context;
 		mInflater = LayoutInflater.from(context);
 		if (datas != null && datas.length > 0) {
@@ -26,7 +26,7 @@ public class BaseArrayListAdapter extends BaseAdapter {
 		}
 	}
 
-	public BaseArrayListAdapter(Context context, List<FaceText> datas) {
+	public BaseArrayListAdapter(Context context, List<FaceTextUtils.FaceText> datas) {
 		mContext = context;
 		mInflater = LayoutInflater.from(context);
 		if (datas != null && datas.size() > 0) {

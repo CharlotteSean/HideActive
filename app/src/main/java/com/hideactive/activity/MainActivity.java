@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -35,16 +36,25 @@ import com.hideactive.util.ToastUtil;
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
-    private Fragment[] fragments;
+    private View loginView;
+    private View unLoginView;
+    private SimpleDraweeView logoView;
+    private TextView sickNameView;
 
+    private Fragment[] fragments;
     private int currentPageIndex;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshNavigationView();
     }
 
     private void initView(){
@@ -71,30 +81,62 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         navigationView.setItemIconTintList(csl);
         navigationView.getMenu().getItem(0).setChecked(true);
 
-        SimpleDraweeView logoView = (SimpleDraweeView) navigationView.getHeaderView(0).findViewById(R.id.iv_logo);
-        TextView sickNameView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_sick_name);
+        loginView = navigationView.getHeaderView(0).findViewById(R.id.ll_login);
+        unLoginView = navigationView.getHeaderView(0).findViewById(R.id.ll_un_login);
 
+        Button loginBtn = (Button) navigationView.getHeaderView(0).findViewById(R.id.btn_login);
+        Button registerBtn = (Button) navigationView.getHeaderView(0).findViewById(R.id.btn_register);
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openActivity(new Intent(MainActivity.this, LoginActivity.class));
+            }
+        });
+        registerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openActivity(new Intent(MainActivity.this, RegistActivity.class));
+            }
+        });
+
+        logoView = (SimpleDraweeView) navigationView.getHeaderView(0).findViewById(R.id.iv_logo);
+        sickNameView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_sick_name);
+    }
+
+    /**
+     * 刷新侧边栏
+     */
+    private void refreshNavigationView() {
+        // 判断是否已登录
         User user = application.getCurrentUser();
-        Uri uri;
-        if (user.getLogo() != null) {
-            uri = Uri.parse(user.getLogo().getUrl());
+        if (user == null) {
+            loginView.setVisibility(View.GONE);
+            unLoginView.setVisibility(View.VISIBLE);
         } else {
-            uri = Uri.parse("res://" + getPackageName() + "/" + R.mipmap.user_logo_default);
-        }
-        ImageRequest request = ImageRequestBuilder
-                .newBuilderWithSource(uri)
-                .setResizeOptions(new ResizeOptions(100, 100))
-                .build();
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .setOldController(logoView.getController())
-                .build();
-        logoView.setController(controller);
+            loginView.setVisibility(View.VISIBLE);
+            unLoginView.setVisibility(View.GONE);
 
-        String nickname = TextUtils.isEmpty(user.getNickname())
-                ? user.getUsername()
-                : user.getNickname();
-        sickNameView.setText(nickname);
+            Uri uri;
+            if (user.getLogo() != null) {
+                uri = Uri.parse(user.getLogo().getUrl());
+            } else {
+                uri = Uri.parse("res://" + getPackageName() + "/" + R.mipmap.user_logo_default);
+            }
+            ImageRequest request = ImageRequestBuilder
+                    .newBuilderWithSource(uri)
+                    .setResizeOptions(new ResizeOptions(100, 100))
+                    .build();
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setOldController(logoView.getController())
+                    .build();
+            logoView.setController(controller);
+
+            String nickname = TextUtils.isEmpty(user.getNickname())
+                    ? user.getUsername()
+                    : user.getNickname();
+            sickNameView.setText(nickname);
+        }
     }
 
     /**

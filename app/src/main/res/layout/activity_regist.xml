@@ -86,6 +86,6 @@
         android:layout_marginTop="@dimen/dimen_16dp"
         android:textColor="@color/white"
         android:textSize="16sp"
-        android:text="@string/regist"/>
+        android:text="@string/register"/>
     
 </RelativeLayout>

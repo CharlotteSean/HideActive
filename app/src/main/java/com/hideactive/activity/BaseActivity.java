@@ -9,13 +9,19 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 public class BaseActivity extends AppCompatActivity {
 
     protected LoadingDialog loadingDialog;
     protected SessionApplication application;
+
+    private CompositeDisposable composite4Destroy = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +34,18 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        composite4Destroy.clear();
         application.removeActivity(this);
+        super.onDestroy();
+    }
+
+    /**
+     * 绑定至Destroy生命周期
+     *
+     * @param disposable
+     */
+    protected void bindUntilDestroy(Disposable disposable) {
+        composite4Destroy.add(disposable);
     }
 
     /**

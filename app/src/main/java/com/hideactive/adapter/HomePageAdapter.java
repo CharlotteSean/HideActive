@@ -116,9 +116,9 @@ public class HomePageAdapter extends BaseRVAdapter<Post> {
         postCommentNumView.setText(post.getCommentNum().toString());
         postLikeNumView.setText(post.getLikeNum().toString());
 
-        String uId = SessionApplication.getInstance().getCurrentUser().getObjectId();
-        Like like = new Like(uId, post.getObjectId());
-        postLikeView.setSelected(likesDB.isLike(like));
+//        String uId = SessionApplication.getInstance().getCurrentUser().getObjectId();
+//        Like like = new Like(uId, post.getObjectId());
+//        postLikeView.setSelected(likesDB.isLike(like));
     }
 
     @Override

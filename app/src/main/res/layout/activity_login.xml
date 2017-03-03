@@ -16,7 +16,7 @@
         app:theme="@style/ToolbarTheme"/>
 
     <LinearLayout
-        android:id="@+id/input_eare"
+        android:id="@+id/et_input"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:paddingLeft="@dimen/dimen_8dp"
@@ -73,7 +73,7 @@
             android:background="@drawable/btn_bg_grey_selector"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:text="@string/regist"/>
+            android:text="@string/register"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -17,7 +17,7 @@
     <string name="repassword">确认密码</string>
     <string name="login">登录</string>
     <string name="logining">登录中...</string>
-    <string name="regist">注册</string>
+    <string name="register">注册</string>
     <string name="login_out">注销登录</string>
 
     <string name="regist_tips">提示：由4~15位字母数字及下划线组成，区分大小写</string>
